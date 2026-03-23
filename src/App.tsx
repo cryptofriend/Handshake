@@ -8,6 +8,7 @@ import CreateAgreementPage from "./pages/CreateAgreementPage";
 import SignPage from "./pages/SignPage";
 import SignedDocsPage from "./pages/SignedDocsPage";
 import CounterpartyPage from "./pages/CounterpartyPage";
+import ProfilePage from "./pages/ProfilePage";
 import NotFound from "./pages/NotFound";
 import { BottomNav } from "./components/handshake/BottomNav";
 
