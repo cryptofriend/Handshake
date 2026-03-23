@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import LoginPage from "./pages/LoginPage";
 import CreateAgreementPage from "./pages/CreateAgreementPage";
 import SignPage from "./pages/SignPage";
+import SignedDocsPage from "./pages/SignedDocsPage";
 import CounterpartyPage from "./pages/CounterpartyPage";
 import NotFound from "./pages/NotFound";
 
