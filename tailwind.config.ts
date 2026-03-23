@@ -47,6 +47,12 @@ export default {
           DEFAULT: "hsl(var(--deep-blue))",
           foreground: "hsl(var(--deep-blue-foreground))",
         },
+        orb: {
+          blue: "hsl(var(--orb-blue))",
+          purple: "hsl(var(--orb-purple))",
+          cyan: "hsl(var(--orb-cyan))",
+          magenta: "hsl(var(--orb-magenta))",
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
