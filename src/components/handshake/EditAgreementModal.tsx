@@ -5,6 +5,7 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { ContactSelector } from './ContactSelector';
 
 interface EditAgreementModalProps {
   agreement: Agreement;
@@ -55,10 +56,9 @@ export const EditAgreementModal = ({ agreement, open, onClose, onSave }: EditAgr
             <div className="space-y-4">
               <div>
                 <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Party B</label>
-                <Input
+                <ContactSelector
                   value={form.counterpartyName}
-                  onChange={(e) => setForm(f => ({ ...f, counterpartyName: e.target.value }))}
-                  className="rounded-xl"
+                  onChange={(name) => setForm(f => ({ ...f, counterpartyName: name }))}
                 />
               </div>
               <div>
