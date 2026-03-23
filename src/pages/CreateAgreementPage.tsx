@@ -7,6 +7,8 @@ import { useAppStore } from '@/store/appStore';
 import { useNavigate } from 'react-router-dom';
 import { Agreement } from '@/types/agreement';
 import { Mic, Square, Pencil, PenTool, User } from 'lucide-react';
+
+type OrbAnimState = 'idle' | 'recording' | 'processing' | 'done';
 import { Button } from '@/components/ui/button';
 
 type FlowState = 'idle' | 'recording' | 'processing' | 'result';
