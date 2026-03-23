@@ -23,6 +23,14 @@ const SignPage = () => {
   const handleSign = () => {
     signAsCreator();
     setSigned(true);
+    
+    // Simulate push notification to Party B
+    setTimeout(() => {
+      toast('📩 Notification sent to ' + agreement.counterpartyName, {
+        description: 'They\'ve been notified via Telegram to review and sign.',
+        duration: 5000,
+      });
+    }, 800);
   };
 
   const handleShare = () => {

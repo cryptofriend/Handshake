@@ -6,7 +6,7 @@ import { EditAgreementModal } from '@/components/handshake/EditAgreementModal';
 import { useAppStore } from '@/store/appStore';
 import { useNavigate } from 'react-router-dom';
 import { Agreement } from '@/types/agreement';
-import { Mic, Square, Pencil, PenTool, User } from 'lucide-react';
+import { Mic, Square, Pencil, PenTool, User, FileCheck } from 'lucide-react';
 
 type OrbAnimState = 'idle' | 'recording' | 'processing' | 'done';
 import { Button } from '@/components/ui/button';
@@ -76,8 +76,16 @@ const CreateAgreementPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between px-5 pt-5 pb-2">
         <h1 className="logo-text text-2xl text-foreground">Handshake</h1>
-        <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
-          <User className="w-4 h-4 text-primary" />
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate('/signed-docs')}
+            className="w-9 h-9 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
+          >
+            <FileCheck className="w-4 h-4 text-muted-foreground" />
+          </button>
+          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+            <User className="w-4 h-4 text-primary" />
+          </div>
         </div>
       </div>
 
