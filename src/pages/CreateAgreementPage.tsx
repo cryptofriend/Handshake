@@ -113,7 +113,7 @@ const CreateAgreementPage = () => {
 
               {/* Orb */}
               <Orb
-                state={flowState === 'result' ? 'done' : flowState}
+                state={flowState as OrbAnimState}
                 onClick={flowState === 'idle' ? startRecording : undefined}
               />
 
