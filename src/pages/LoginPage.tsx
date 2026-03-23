@@ -1,20 +1,20 @@
 import { motion } from 'framer-motion';
 import { Orb } from '@/components/handshake/Orb';
-import { Send, Shield } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import { useAppStore } from '@/store/appStore';
 import { useNavigate } from 'react-router-dom';
+import { TelegramLoginButton, TelegramUser } from '@/components/handshake/TelegramLoginButton';
 
 const LoginPage = () => {
   const setUser = useAppStore((s) => s.setUser);
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    // Mock Telegram login
+  const handleTelegramAuth = (tgUser: TelegramUser) => {
     setUser({
-      id: '1',
-      name: 'Booga',
-      username: 'booga',
-      avatar: undefined,
+      id: String(tgUser.id),
+      name: tgUser.first_name + (tgUser.last_name ? ` ${tgUser.last_name}` : ''),
+      username: tgUser.username || tgUser.first_name,
+      avatar: tgUser.photo_url,
     });
     navigate('/create');
   };
@@ -38,16 +38,11 @@ const LoginPage = () => {
           Turn voice into agreements
         </p>
 
-        {/* CTA */}
-        <motion.button
-          onClick={handleLogin}
-          className="btn-handshake w-full flex items-center justify-center gap-3 bg-primary text-primary-foreground h-14 text-base font-semibold px-8"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <Send className="w-5 h-5" />
-          Continue with Telegram
-        </motion.button>
+        {/* Telegram Login Widget */}
+        <TelegramLoginButton
+          botName="handshakemonsterbot"
+          onAuth={handleTelegramAuth}
+        />
 
         {/* Trust note */}
         <div className="flex items-center gap-2 mt-6">

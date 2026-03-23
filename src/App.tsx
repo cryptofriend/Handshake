@@ -27,6 +27,7 @@ const App = () => (
             <Route path="/sign" element={<SignPage />} />
             <Route path="/signed-docs" element={<SignedDocsPage />} />
             <Route path="/agreement/:id" element={<CounterpartyPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
