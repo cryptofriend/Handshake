@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Orb } from '@/components/handshake/Orb';
-import { Shield } from 'lucide-react';
+
 import { useAppStore } from '@/store/appStore';
 import { useNavigate } from 'react-router-dom';
 import { TelegramLoginButton, TelegramUser } from '@/components/handshake/TelegramLoginButton';
