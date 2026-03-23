@@ -39,6 +39,10 @@ export default {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
         },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
         "deep-blue": {
           DEFAULT: "hsl(var(--deep-blue))",
           foreground: "hsl(var(--deep-blue-foreground))",
