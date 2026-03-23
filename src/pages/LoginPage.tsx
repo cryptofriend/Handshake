@@ -44,11 +44,6 @@ const LoginPage = () => {
           onAuth={handleTelegramAuth}
         />
 
-        {/* Trust note */}
-        <div className="flex items-center gap-2 mt-6">
-          <Shield className="w-3.5 h-3.5 text-muted-foreground" />
-          <span className="trust-text">Private. Encrypted. Simple.</span>
-        </div>
       </motion.div>
     </div>
   );
