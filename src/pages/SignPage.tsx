@@ -308,10 +308,10 @@ const SignPage = () => {
         <DialogContent
           className="rounded-3xl max-w-sm mx-auto border-0 overflow-hidden"
           style={{
-            background: 'hsla(230, 25%, 97%, 0.95)',
+            background: 'hsla(230, 25%, 97%, 0.85)',
             backdropFilter: 'blur(40px)',
-            boxShadow: '0 0 60px hsl(218 90% 60% / 0.08), 0 20px 60px hsl(230 25% 10% / 0.08)',
-            border: '1px solid hsl(218 90% 60% / 0.12)',
+            boxShadow: '0 0 60px hsl(var(--orb-blue) / 0.15), 0 0 120px hsl(var(--orb-purple) / 0.08), 0 20px 60px hsl(230 25% 10% / 0.08)',
+            border: '1px solid hsl(var(--orb-blue) / 0.15)',
           }}
         >
           <DialogHeader>
@@ -351,6 +351,7 @@ const SignPage = () => {
           </div>
         </DialogContent>
       </Dialog>
+      </div> {/* close relative z-10 wrapper */}
     </div>
   );
 };
