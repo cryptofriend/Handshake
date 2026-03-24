@@ -6,7 +6,8 @@ import { EditAgreementModal } from '@/components/handshake/EditAgreementModal';
 import { useAppStore } from '@/store/appStore';
 import { useNavigate } from 'react-router-dom';
 import { Agreement } from '@/types/agreement';
-import { Mic, Square, Pencil, PenTool, User, FileCheck } from 'lucide-react';
+import { Mic, Square, Pencil, PenTool } from 'lucide-react';
+import { ModeSwitcher } from '@/components/handshake/ModeSwitcher';
 
 type OrbAnimState = 'idle' | 'recording' | 'processing' | 'done';
 import { Button } from '@/components/ui/button';
