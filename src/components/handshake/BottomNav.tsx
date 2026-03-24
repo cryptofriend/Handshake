@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Sparkles, User, PenTool } from 'lucide-react';
+import { Sparkles, User, Handshake } from 'lucide-react';
 import { useTonAddress, useTonConnectModal } from '@tonconnect/ui-react';
 import { cn } from '@/lib/utils';
 import logoImg from '@/assets/logo.png';
