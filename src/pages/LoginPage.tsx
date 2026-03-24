@@ -76,8 +76,9 @@ const encodeComment = (text: string): string =>
     .toString('base64');
 
 const LoginPage = () => {
+  const signedPacts = useAppStore((s) => s.signedPacts);
+  const addSignedPact = useAppStore((s) => s.addSignedPact);
   const [selectedTemplate, setSelectedTemplate] = useState<typeof PACT_TEMPLATES[number] | null>(null);
-  const [signedPacts, setSignedPacts] = useState<Set<string>>(new Set());
   const [signing, setSigning] = useState(false);
   const navigate = useNavigate();
   const [tonConnectUI] = useTonConnectUI();
