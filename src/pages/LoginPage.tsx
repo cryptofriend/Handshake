@@ -1,23 +1,28 @@
 import { motion } from 'framer-motion';
 import { Orb } from '@/components/handshake/Orb';
-
 import { useAppStore } from '@/store/appStore';
 import { useNavigate } from 'react-router-dom';
-import { TelegramLoginButton, TelegramUser } from '@/components/handshake/TelegramLoginButton';
+import { TonConnectButton, useTonConnectUI, useTonAddress } from '@tonconnect/ui-react';
+import { useEffect } from 'react';
 
 const LoginPage = () => {
   const setUser = useAppStore((s) => s.setUser);
   const navigate = useNavigate();
+  const address = useTonAddress();
+  const [tonConnectUI] = useTonConnectUI();
 
-  const handleTelegramAuth = (tgUser: TelegramUser) => {
-    setUser({
-      id: String(tgUser.id),
-      name: tgUser.first_name + (tgUser.last_name ? ` ${tgUser.last_name}` : ''),
-      username: tgUser.username || tgUser.first_name,
-      avatar: tgUser.photo_url,
-    });
-    navigate('/create');
-  };
+  useEffect(() => {
+    if (address) {
+      const shortAddr = `${address.slice(0, 4)}...${address.slice(-4)}`;
+      setUser({
+        id: address,
+        name: shortAddr,
+        username: shortAddr,
+        avatar: undefined,
+      });
+      navigate('/create');
+    }
+  }, [address, setUser, navigate]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
@@ -34,16 +39,18 @@ const LoginPage = () => {
 
         {/* Logo */}
         <h1 className="logo-text text-4xl text-foreground mb-2">Handshake</h1>
-        <p className="text-muted-foreground text-base mb-10">
+        
+        {/* Headline */}
+        <p className="text-lg font-medium text-foreground/80 mb-1">
+          Agreements in the Age of AI
+        </p>
+        
+        <p className="text-muted-foreground text-sm mb-10">
           Turn voice into agreements
         </p>
 
-        {/* Telegram Login Widget */}
-        <TelegramLoginButton
-          botName="handshakemonsterbot"
-          onAuth={handleTelegramAuth}
-        />
-
+        {/* TON Connect */}
+        <TonConnectButton />
       </motion.div>
     </div>
   );
