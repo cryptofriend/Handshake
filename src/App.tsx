@@ -7,6 +7,7 @@ import { TonConnectUIProvider } from "@tonconnect/ui-react";
 import LoginPage from "./pages/LoginPage";
 import AgentChatPage from "./pages/AgentChatPage";
 import CounterpartyPage from "./pages/CounterpartyPage";
+import SignPage from "./pages/SignPage";
 import ProfilePage from "./pages/ProfilePage";
 import NotFound from "./pages/NotFound";
 import { BottomNav } from "./components/handshake/BottomNav";
