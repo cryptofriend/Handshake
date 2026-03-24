@@ -228,6 +228,20 @@ const SignPage = () => {
     toast.success('Agreement hash copied');
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'hsl(var(--background))' }}>
+        <motion.div
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+          className="text-muted-foreground text-sm"
+        >
+          Loading agreement...
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen pb-24 relative overflow-hidden" style={{ background: 'hsl(var(--background))' }}>
       {/* Ambient orb glow behind content */}
