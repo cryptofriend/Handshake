@@ -1,11 +1,10 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, Mic, FileCheck, User } from 'lucide-react';
+import { Home, Sparkles, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
   { icon: Home, label: 'Home', path: '/' },
-  { icon: FileCheck, label: 'Docs', path: '/signed-docs' },
-  { icon: Mic, label: 'Record', path: '/create' },
+  { icon: Sparkles, label: 'Agent', path: '/agent' },
   { icon: User, label: 'Profile', path: '/profile' },
 ];
 
