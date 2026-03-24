@@ -2,6 +2,9 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Orb } from '@/components/handshake/Orb';
 import { PactTemplateOrb } from '@/components/handshake/PactTemplateOrb';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Sparkles } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -9,6 +12,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
+
+const ORB_COLORS = ['hsla(218, 90%, 60%, 0.15)', 'hsla(260, 70%, 50%, 0.1)', 'hsla(200, 80%, 45%, 0.08)'] as [string, string, string];
 
 const PACT_TEMPLATES = [
   {
@@ -39,6 +44,8 @@ const PACT_TEMPLATES = [
 
 const LoginPage = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<typeof PACT_TEMPLATES[number] | null>(null);
+  const [newPactOpen, setNewPactOpen] = useState(false);
+  const [pactPrompt, setPactPrompt] = useState('');
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
@@ -56,10 +63,20 @@ const LoginPage = () => {
           Agreements in the Age of AI
         </p>
 
-        {/* Orb */}
-        <div className="mb-10">
+        {/* Orb - clickable */}
+        <div className="mb-8 cursor-pointer" onClick={() => setNewPactOpen(true)}>
           <Orb state="idle" />
         </div>
+
+        {/* Templates label */}
+        <motion.p
+          className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          Templates
+        </motion.p>
 
         {/* Pact Template Orbs */}
         <motion.div
@@ -79,6 +96,75 @@ const LoginPage = () => {
         </motion.div>
       </motion.div>
 
+      {/* New Agreement Dialog */}
+      <Dialog open={newPactOpen} onOpenChange={setNewPactOpen}>
+        <DialogContent
+          className="rounded-3xl max-w-sm mx-auto border-0 overflow-hidden"
+          style={{
+            background: 'hsla(230, 25%, 12%, 0.85)',
+            backdropFilter: 'blur(40px)',
+            boxShadow: `0 0 80px ${ORB_COLORS[0]}, 0 0 160px ${ORB_COLORS[1]}, 0 20px 60px hsla(0,0%,0%,0.4)`,
+            border: '1px solid hsla(0, 0%, 100%, 0.08)',
+          }}
+        >
+          {/* Mini orb */}
+          <div className="flex justify-center -mt-2 mb-2">
+            <div
+              className="relative w-16 h-16 rounded-full overflow-hidden"
+              style={{
+                background: `radial-gradient(circle at 35% 35%, ${ORB_COLORS[0]}, ${ORB_COLORS[1]}, ${ORB_COLORS[2]})`,
+                boxShadow: `0 0 40px ${ORB_COLORS[0]}, 0 0 80px ${ORB_COLORS[1]}`,
+              }}
+            >
+              <motion.div
+                className="absolute rounded-full blur-xl"
+                style={{
+                  width: 30, height: 30,
+                  background: 'hsla(218, 90%, 60%, 0.6)',
+                  left: '50%', top: '50%',
+                  marginLeft: -15, marginTop: -15,
+                }}
+                animate={{ x: [5, -8, 5], y: [3, -5, 3], scale: [1, 1.4, 1] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+              />
+            </div>
+          </div>
+
+          <DialogHeader>
+            <DialogTitle className="text-white text-center">New Agreement</DialogTitle>
+            <DialogDescription className="pt-2 text-center" style={{ color: 'hsla(0, 0%, 100%, 0.6)' }}>
+              Describe your agreement and the AI agent will structure it for you.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="pt-3 space-y-4">
+            <Textarea
+              value={pactPrompt}
+              onChange={(e) => setPactPrompt(e.target.value)}
+              placeholder="e.g. John will design a logo for $300 by Friday..."
+              className="min-h-[100px] rounded-2xl border-0 text-sm resize-none"
+              style={{
+                background: 'hsla(0, 0%, 100%, 0.06)',
+                color: 'hsla(0, 0%, 100%, 0.9)',
+                caretColor: 'hsl(218, 90%, 60%)',
+              }}
+            />
+            <Button
+              className="w-full rounded-2xl h-12 text-base font-semibold gap-2"
+              disabled={!pactPrompt.trim()}
+              onClick={() => {
+                // TODO: send to AI agent
+                setNewPactOpen(false);
+                setPactPrompt('');
+              }}
+            >
+              <Sparkles className="w-4 h-4" />
+              Create Agreement
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Template Detail Dialog */}
       <Dialog open={!!selectedTemplate} onOpenChange={(open) => !open && setSelectedTemplate(null)}>
         <DialogContent
@@ -92,7 +178,6 @@ const LoginPage = () => {
             border: '1px solid hsla(0, 0%, 100%, 0.08)',
           }}
         >
-          {/* Orb decoration at top */}
           {selectedTemplate && (
             <div className="flex justify-center -mt-2 mb-2">
               <div
