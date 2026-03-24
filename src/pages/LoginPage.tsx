@@ -24,7 +24,7 @@ const PACT_TEMPLATES = [
     color: 'hsl(260, 70%, 55%)',
     title: 'Non-Disclosure Agreement',
     description:
-      'Protect sensitive information shared between parties. Defines what's confidential, duration of obligation, and consequences of breach.',
+      'Protect sensitive information shared between parties. Defines what is confidential, duration of obligation, and consequences of breach.',
     fields: ['Confidential info scope', 'Duration', 'Permitted disclosures', 'Breach remedies'],
   },
   {
