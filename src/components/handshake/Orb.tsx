@@ -104,10 +104,10 @@ export const Orb = ({ state, onClick }: OrbProps) => {
         }}
       >
         {/* Floating color blobs inside */}
-        <FloatingBlob color="hsla(218, 90%, 60%, 0.5)" size={80} duration={5} delay={0} x={20} y={15} />
-        <FloatingBlob color="hsla(260, 80%, 55%, 0.4)" size={70} duration={6.5} delay={0.5} x={-25} y={20} />
-        <FloatingBlob color="hsla(190, 90%, 50%, 0.35)" size={60} duration={4.5} delay={1} x={15} y={-20} />
-        <FloatingBlob color="hsla(300, 60%, 55%, 0.25)" size={50} duration={7} delay={1.5} x={-18} y={-15} />
+        <FloatingBlob color="hsla(45, 95%, 60%, 0.5)" size={80} duration={5} delay={0} x={20} y={15} />
+        <FloatingBlob color="hsla(35, 90%, 50%, 0.4)" size={70} duration={6.5} delay={0.5} x={-25} y={20} />
+        <FloatingBlob color="hsla(55, 85%, 55%, 0.35)" size={60} duration={4.5} delay={1} x={15} y={-20} />
+        <FloatingBlob color="hsla(25, 80%, 50%, 0.25)" size={50} duration={7} delay={1.5} x={-18} y={-15} />
 
         {/* Glass highlight */}
         <div
