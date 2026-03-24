@@ -35,8 +35,8 @@ const WaveRing = ({ delay, duration }: { delay: number; duration: number }) => (
   <motion.div
     className="absolute inset-0 rounded-full"
     style={{
-      border: '1px solid hsla(218, 86%, 55%, 0.2)',
-      boxShadow: '0 0 20px hsla(218, 86%, 55%, 0.1)',
+    border: '1px solid hsla(45, 95%, 55%, 0.2)',
+    boxShadow: '0 0 20px hsla(45, 95%, 55%, 0.1)',
     }}
     initial={{ scale: 1.5, opacity: 0.5 }}
     animate={{ scale: 0.4, opacity: 0 }}
