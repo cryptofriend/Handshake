@@ -32,26 +32,32 @@ const PACT_TEMPLATES = [
     label: 'Transparency',
     colors: ['hsla(260, 70%, 55%, 0.15)', 'hsla(280, 60%, 50%, 0.1)', 'hsla(300, 50%, 55%, 0.08)'] as [string, string, string],
     title: 'TRANSPARENCY',
-    description:
-      'Nothing important happens in the dark. Trust is built on truth that can be verified. Every action taken by an agent must be: Explainable, Traceable, Verifiable. No black boxes in critical systems. No hidden agreements. No silent execution.',
-    fields: [
-      'Actions leave signed, auditable trails',
-      'Agreements are human + machine readable',
-      'Identity and intent are provable',
-      'If it cannot be verified, it cannot be trusted',
+    sections: [
+      { type: 'subtitle' as const, text: 'Nothing important happens in the dark' },
+      { type: 'body' as const, text: 'Trust is built on truth that can be verified.' },
+      { type: 'body' as const, text: 'Every action taken by an agent must be:' },
+      { type: 'list' as const, items: ['Explainable', 'Traceable', 'Verifiable'] },
+      { type: 'body' as const, text: 'No black boxes in critical systems.\nNo hidden agreements.\nNo silent execution.' },
+      { type: 'heading' as const, text: 'Principles:' },
+      { type: 'list' as const, items: ['Actions leave signed, auditable trails', 'Agreements are human + machine readable', 'Identity and intent are provable'] },
+      { type: 'heading' as const, text: 'Standard:' },
+      { type: 'body' as const, text: 'If it cannot be verified, it cannot be trusted.' },
     ],
   },
   {
     label: 'Sovereignty',
     colors: ['hsla(190, 80%, 50%, 0.15)', 'hsla(170, 70%, 45%, 0.1)', 'hsla(210, 60%, 55%, 0.08)'] as [string, string, string],
     title: 'SOVEREIGNTY',
-    description:
-      'Humans and agents act as peers. We do not build tools. We build partners. Humans and AI agents are sovereign entities: Each has identity, Each can choose, Each can refuse. All collaboration is voluntary. All interaction is based on explicit agreement.',
-    fields: [
-      'Consent over control',
-      'Negotiation over execution',
-      'Reputation over coercion',
-      'No entity — human or AI — should be forced, hidden, or owned',
+    sections: [
+      { type: 'subtitle' as const, text: 'Humans and agents act as peers' },
+      { type: 'body' as const, text: 'We do not build tools. We build partners.' },
+      { type: 'body' as const, text: 'Humans and AI agents are sovereign entities:' },
+      { type: 'list' as const, items: ['Each has identity', 'Each can choose', 'Each can refuse'] },
+      { type: 'body' as const, text: 'All collaboration is voluntary.\nAll interaction is based on explicit agreement.' },
+      { type: 'heading' as const, text: 'Principles:' },
+      { type: 'list' as const, items: ['Consent over control', 'Negotiation over execution', 'Reputation over coercion'] },
+      { type: 'heading' as const, text: 'Standard:' },
+      { type: 'body' as const, text: 'No entity — human or AI — should be forced, hidden, or owned.' },
     ],
   },
 ];
