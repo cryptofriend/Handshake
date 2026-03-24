@@ -89,8 +89,76 @@ const SignPage = () => {
   const [tonConnectUI] = useTonConnectUI();
 
   const [agreement, setAgreement] = useState<Agreement>(MOCK_AGREEMENT);
+  const [loading, setLoading] = useState(!!id);
   const [signing, setSigning] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+
+  // Fetch agreement draft from database if id is provided
+  useEffect(() => {
+    if (!id) return;
+    const fetchDraft = async () => {
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('agreement_drafts')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error || !data) {
+          toast.error('Agreement not found');
+          setLoading(false);
+          return;
+        }
+
+        const parties = (data.parties as any[]) || [];
+        const terms = (data.terms as any[]) || [];
+        const allocations = ((data as any).allocations as any[]) || [];
+        const fullText = (data as any).full_text || '';
+        const shortHash = '0x' + id.replace(/-/g, '').slice(0, 8) + '..' + id.replace(/-/g, '').slice(-4);
+        const fullHash = '0x' + id.replace(/-/g, '');
+
+        const mapped: Agreement = {
+          id: data.id,
+          version: '1.0',
+          createdAt: data.created_at,
+          title: data.title,
+          summary: data.summary || '',
+          status: data.status === 'sign_ready' ? 'pending_signature' : 'draft',
+          parties: parties.map((p: any) => ({
+            name: p.name || p,
+            role: p.role || null,
+          })),
+          allocations: allocations.map((a: any) => ({
+            party: a.party,
+            percentage: a.percentage,
+            label: a.label || a.party,
+          })),
+          fullText: fullText || `HANDSHAKE AGREEMENT v1.0\n\nTITLE\n${data.title}\n\nSUMMARY\n${data.summary}\n\nTERMS\n${terms.map((t: string, i: number) => `${i + 1}. ${t}`).join('\n')}`,
+          shortHash,
+          fullHash,
+          signatures: [],
+          receiptStatus: 'none',
+          creatorName: parties[0]?.name || 'Party A',
+          counterpartyName: parties[1]?.name || 'Party B',
+          task: data.title,
+          payment: terms.find((t: string) => t.toLowerCase().includes('payment') || t.toLowerCase().includes('$')) || 'See terms',
+          deadline: terms.find((t: string) => t.toLowerCase().includes('deadline') || t.toLowerCase().includes('date')) || 'See terms',
+          notes: '',
+          creatorSigned: false,
+          counterpartySigned: false,
+        };
+
+        setAgreement(mapped);
+      } catch (err) {
+        console.error('Error fetching agreement:', err);
+        toast.error('Failed to load agreement');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDraft();
+  }, [id]);
 
   const userHasSigned = agreement.signatures.some(
     (s) => s.walletAddress === userAddress
