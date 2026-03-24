@@ -32,22 +32,18 @@ const LoginPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* Orb background */}
-        <div className="mb-4 scale-75 opacity-80">
-          <Orb state="idle" />
-        </div>
-
         {/* Logo */}
         <h1 className="logo-text text-4xl text-foreground mb-2">Handshake</h1>
         
         {/* Headline */}
-        <p className="text-lg font-medium text-foreground/80 mb-1">
+        <p className="text-lg font-medium text-foreground/80 mb-6">
           Agreements in the Age of AI
         </p>
-        
-        <p className="text-muted-foreground text-sm mb-10">
-          Turn voice into agreements
-        </p>
+
+        {/* Orb */}
+        <div className="mb-8">
+          <Orb state="idle" />
+        </div>
 
         {/* TON Connect */}
         <TonConnectButton />
