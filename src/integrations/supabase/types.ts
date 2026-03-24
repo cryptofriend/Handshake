@@ -16,8 +16,10 @@ export type Database = {
     Tables: {
       agreement_drafts: {
         Row: {
+          allocations: Json | null
           created_at: string
           full_response: Json | null
+          full_text: string | null
           id: string
           missing_fields: Json | null
           parties: Json
@@ -30,8 +32,10 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          allocations?: Json | null
           created_at?: string
           full_response?: Json | null
+          full_text?: string | null
           id?: string
           missing_fields?: Json | null
           parties?: Json
@@ -44,8 +48,10 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          allocations?: Json | null
           created_at?: string
           full_response?: Json | null
+          full_text?: string | null
           id?: string
           missing_fields?: Json | null
           parties?: Json
