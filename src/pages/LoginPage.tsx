@@ -26,7 +26,7 @@ const PACT_TEMPLATES = [
   },
   {
     label: 'NDA',
-    colors: ['hsla(260, 70%, 55%, 0.15)', 'hsla(280, 60%, 50%, 0.1)', 'hsla(300, 50%, 55%, 0.08)'] as [string, string, string],
+    colors: ['hsla(35, 90%, 50%, 0.15)', 'hsla(25, 80%, 50%, 0.1)', 'hsla(15, 70%, 55%, 0.08)'] as [string, string, string],
     title: 'Non-Disclosure Agreement',
     description:
       'Protect sensitive information shared between parties. Defines what is confidential, duration of obligation, and consequences of breach.',
