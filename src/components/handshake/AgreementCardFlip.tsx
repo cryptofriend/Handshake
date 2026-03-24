@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Agreement } from '@/types/agreement';
-import { RotateCw } from 'lucide-react';
+import { RotateCw, Copy } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Props {
   agreement: Agreement;
