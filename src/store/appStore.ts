@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Agreement, User } from '@/types/agreement';
+import { ChatMessage, ChatConversation } from '@/types/chat';
 
 type AppMode = 'human' | 'agent';
 
@@ -9,12 +10,15 @@ interface AppState {
   agreements: Agreement[];
   signedPacts: Set<string>;
   mode: AppMode;
+  chatConversation: ChatConversation | null;
   setUser: (user: User | null) => void;
   setMode: (mode: AppMode) => void;
   setCurrentAgreement: (agreement: Agreement | null) => void;
   updateAgreement: (updates: Partial<Agreement>) => void;
   addAgreement: (agreement: Agreement) => void;
   addSignedPact: (pactTitle: string, walletAddress: string, txHash?: string) => void;
+  addChatMessage: (message: ChatMessage) => void;
+  clearChat: () => void;
   signAsCreator: () => void;
   signAsCounterparty: () => void;
 }
@@ -25,6 +29,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   agreements: [],
   signedPacts: new Set<string>(),
   mode: 'human',
+  chatConversation: null,
   setUser: (user) => set({ user }),
   setMode: (mode) => set({ mode }),
   setCurrentAgreement: (agreement) => set({ currentAgreement: agreement }),
@@ -79,6 +84,22 @@ export const useAppStore = create<AppState>((set, get) => ({
       agreements: [manifestoAgreement, ...state.agreements],
     };
   }),
+  addChatMessage: (message) => set((state) => {
+    const conv = state.chatConversation || {
+      id: crypto.randomUUID(),
+      messages: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    return {
+      chatConversation: {
+        ...conv,
+        messages: [...conv.messages, message],
+        updatedAt: new Date().toISOString(),
+      },
+    };
+  }),
+  clearChat: () => set({ chatConversation: null }),
   signAsCreator: () => set((state) => {
     if (!state.currentAgreement) return state;
     const updated = {
