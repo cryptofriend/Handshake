@@ -120,7 +120,7 @@ const LoginPage = () => {
                 className="absolute rounded-full blur-xl"
                 style={{
                   width: 30, height: 30,
-                  background: 'hsla(218, 90%, 60%, 0.6)',
+                  background: 'hsla(45, 95%, 55%, 0.6)',
                   left: '50%', top: '50%',
                   marginLeft: -15, marginTop: -15,
                 }}
