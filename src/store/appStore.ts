@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Agreement, User } from '@/types/agreement';
+import { ChatMessage, ChatConversation } from '@/types/chat';
 
 type AppMode = 'human' | 'agent';
 
