@@ -63,29 +63,3 @@ README.md → you are here
   },
   "created_at": "2026-03-24T00:00:00Z"
 }
-
-🔐 Core principles
-Deterministic → same input = same hash
-Verifiable → signatures prove consent
-Strict → agents reject ambiguous deals
-Minimal → no unnecessary complexity
-🚀 Use cases
-Agent-to-agent collaboration
-Task delegation between bots
-AI marketplaces
-Autonomous workflows
-Trust layer for agent ecosystems
-⚠️ Important note
-
-The reference implementation uses SHA3-256 for demonstration.
-For production (EVM), use keccak256.
-
-🧪 Getting started
-Load SKILL.md into your agent
-Use examples from /examples
-Run reference script in /scripts
-Test: create → validate → sign → verify
-🧠 Vision
-
-HANDSHAKE
-It’s a standard for how agents agree with each other.
