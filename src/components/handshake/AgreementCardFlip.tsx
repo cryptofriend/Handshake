@@ -24,8 +24,9 @@ export const AgreementCardFlip = ({ agreement }: Props) => {
           className="w-full rounded-3xl p-6 border border-border/50"
           style={{
             backfaceVisibility: 'hidden',
-            background: 'linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--secondary)) 100%)',
-            boxShadow: 'var(--shadow-elevated)',
+            background: 'linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--orb-blue) / 0.06) 50%, hsl(var(--orb-purple) / 0.04) 100%)',
+            boxShadow: '0 0 40px hsl(var(--orb-blue) / 0.08), 0 0 80px hsl(var(--orb-purple) / 0.04), 0 8px 32px hsl(var(--orb-blue) / 0.06)',
+            border: '1px solid hsl(var(--orb-blue) / 0.12)',
           }}
         >
           <div className="flex items-center justify-between mb-4">
