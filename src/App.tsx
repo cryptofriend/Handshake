@@ -7,6 +7,7 @@ import { TonConnectUIProvider } from "@tonconnect/ui-react";
 import LoginPage from "./pages/LoginPage";
 import AgentChatPage from "./pages/AgentChatPage";
 import CounterpartyPage from "./pages/CounterpartyPage";
+import SignPage from "./pages/SignPage";
 import ProfilePage from "./pages/ProfilePage";
 import NotFound from "./pages/NotFound";
 import { BottomNav } from "./components/handshake/BottomNav";
@@ -24,6 +25,8 @@ const App = () => (
             <Routes>
               <Route path="/" element={<LoginPage />} />
               <Route path="/agent" element={<AgentChatPage />} />
+              <Route path="/sign/:id" element={<SignPage />} />
+              <Route path="/sign" element={<SignPage />} />
               <Route path="/agreement/:id" element={<CounterpartyPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="*" element={<NotFound />} />

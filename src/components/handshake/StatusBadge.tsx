@@ -2,9 +2,11 @@ import { AgreementStatus } from '@/types/agreement';
 
 const statusConfig: Record<AgreementStatus, { label: string; className: string }> = {
   draft: { label: 'Draft', className: 'status-draft' },
+  pending_signature: { label: 'Pending signature', className: 'status-waiting' },
   signed_by_one: { label: 'Waiting for counterparty', className: 'status-waiting' },
   fully_signed: { label: 'Fully signed', className: 'status-signed' },
   rejected: { label: 'Rejected', className: 'status-rejected' },
+  disputed: { label: 'Disputed', className: 'status-rejected' },
 };
 
 export const StatusBadge = ({ status }: { status: AgreementStatus }) => {
