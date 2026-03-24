@@ -72,7 +72,7 @@ const LoginPage = () => {
             <PactTemplateOrb
               key={t.label}
               label={t.label}
-              color={t.color}
+              colors={t.colors}
               onClick={() => setSelectedTemplate(t)}
             />
           ))}
