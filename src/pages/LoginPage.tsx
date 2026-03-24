@@ -13,7 +13,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 
-const ORB_COLORS = ['hsla(218, 90%, 60%, 0.15)', 'hsla(260, 70%, 50%, 0.1)', 'hsla(200, 80%, 45%, 0.08)'] as [string, string, string];
+const ORB_COLORS = ['hsla(45, 95%, 55%, 0.15)', 'hsla(35, 90%, 50%, 0.1)', 'hsla(55, 85%, 60%, 0.08)'] as [string, string, string];
 
 const PACT_TEMPLATES = [
   {
