@@ -6,8 +6,8 @@ import logoImg from '@/assets/logo.png';
 
 const NAV_ITEMS = [
   { icon: null as any, label: 'Home', path: '/', requiresAuth: false, isLogo: true },
-  { icon: Sparkles, label: 'Agent', path: '/agent', requiresAuth: true, isLogo: false },
-  { icon: User, label: 'Profile', path: '/profile', requiresAuth: true, isLogo: false },
+  { icon: Sparkles, label: 'Agent', path: '/agent', requiresAuth: false, isLogo: false },
+  { icon: User, label: 'Profile', path: '/profile', requiresAuth: false, isLogo: false },
 ];
 
 export const BottomNav = () => {
