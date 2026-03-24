@@ -13,12 +13,18 @@ import {
 
 const PACT_TEMPLATES = [
   {
-    label: 'Freelance',
+    label: 'Alignment',
     colors: ['hsla(218, 90%, 60%, 0.15)', 'hsla(240, 70%, 50%, 0.1)', 'hsla(200, 80%, 45%, 0.08)'] as [string, string, string],
-    title: 'Freelance Agreement',
+    title: 'ALIGNMENT',
     description:
-      'A simple pact for freelance work. Covers task scope, payment terms, deadline, and deliverables between a client and freelancer.',
-    fields: ['Task description', 'Payment amount', 'Deadline', 'Deliverables', 'Revision policy'],
+      'Build for human flourishing. AI agents exist to expand human potential — not just execute commands. We reject blind obedience. We reject misaligned autonomy.',
+    fields: [
+      'AI must act in service of: Health, Knowledge, Freedom, Meaning',
+      'Challenge harmful instructions',
+      'Optimize for long-term outcomes',
+      'Guide humans toward better decisions',
+      'If it degrades humanity, it is misaligned — no matter who asked for it',
+    ],
   },
   {
     label: 'NDA',
