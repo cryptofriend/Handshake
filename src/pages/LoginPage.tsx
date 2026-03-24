@@ -3,6 +3,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Orb } from '@/components/handshake/Orb';
 import { PactTemplateOrb } from '@/components/handshake/PactTemplateOrb';
+import { Button } from '@/components/ui/button';
+import { Check, PenTool } from 'lucide-react';
+import { useTonConnectUI, useTonConnectModal, useTonAddress } from '@tonconnect/ui-react';
+import { toast } from 'sonner';
 import {
   Dialog,
   DialogContent,
@@ -61,9 +65,58 @@ const PACT_TEMPLATES = [
   },
 ];
 
+// Encode a text comment into a BOC-like payload (simple text comment for TON transfer)
+const encodeComment = (text: string): string => {
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(text);
+  // 4 zero bytes (text comment op) + utf8 bytes, then base64
+  const payload = new Uint8Array(4 + bytes.length);
+  payload.set(bytes, 4);
+  return btoa(String.fromCharCode(...payload));
+};
+
 const LoginPage = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<typeof PACT_TEMPLATES[number] | null>(null);
+  const [signedPacts, setSignedPacts] = useState<Set<string>>(new Set());
+  const [signing, setSigning] = useState(false);
   const navigate = useNavigate();
+  const [tonConnectUI] = useTonConnectUI();
+  const { open: openTonModal } = useTonConnectModal();
+  const userAddress = useTonAddress();
+
+  const handleSign = async (pactTitle: string) => {
+    if (!userAddress) {
+      openTonModal();
+      return;
+    }
+
+    setSigning(true);
+    try {
+      const transaction = {
+        validUntil: Math.floor(Date.now() / 1000) + 300,
+        messages: [
+          {
+            // Send a minimal TON tx to self as an on-chain attestation
+            address: userAddress,
+            amount: '10000000', // 0.01 TON
+            payload: encodeComment(`Handshake Manifesto Signed: ${pactTitle}`),
+          },
+        ],
+      };
+
+      await tonConnectUI.sendTransaction(transaction);
+      setSignedPacts((prev) => new Set(prev).add(pactTitle));
+      toast.success(`${pactTitle} signed on-chain!`);
+    } catch (err: any) {
+      if (err?.message?.includes('Cancelled') || err?.message?.includes('canceled')) {
+        toast.info('Transaction cancelled');
+      } else {
+        toast.error('Transaction failed. Please try again.');
+      }
+    } finally {
+      setSigning(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
@@ -78,7 +131,6 @@ const LoginPage = () => {
           Agreements in the Age of AI
         </p>
 
-        {/* Orb - navigates to agent chat */}
         <div className="mb-8 cursor-pointer" onClick={() => navigate('/agent')}>
           <Orb state="idle" />
         </div>
@@ -109,7 +161,7 @@ const LoginPage = () => {
         </motion.div>
       </motion.div>
 
-      {/* Template Detail Dialog — light glassmorphic */}
+      {/* Template Detail Dialog */}
       <Dialog open={!!selectedTemplate} onOpenChange={(open) => !open && setSelectedTemplate(null)}>
         <DialogContent
           className="rounded-3xl max-w-sm mx-auto border-0 overflow-hidden"
@@ -149,7 +201,8 @@ const LoginPage = () => {
           <DialogHeader>
             <DialogTitle className="text-foreground text-center">{selectedTemplate?.title}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-3 pt-2 max-h-[60vh] overflow-y-auto">
+
+          <div className="space-y-3 pt-2 max-h-[50vh] overflow-y-auto">
             {selectedTemplate?.sections.map((section, i) => {
               if (section.type === 'subtitle')
                 return <p key={i} className="text-sm font-semibold text-foreground/90 text-center italic">{section.text}</p>;
@@ -174,6 +227,30 @@ const LoginPage = () => {
               return null;
             })}
           </div>
+
+          {/* Sign Button */}
+          {selectedTemplate && (
+            <div className="pt-4">
+              {signedPacts.has(selectedTemplate.title) ? (
+                <Button
+                  className="w-full rounded-2xl h-12 text-base font-semibold gap-2 bg-success hover:bg-success/90 text-success-foreground"
+                  disabled
+                >
+                  <Check className="w-4 h-4" />
+                  Signed
+                </Button>
+              ) : (
+                <Button
+                  className="w-full rounded-2xl h-12 text-base font-semibold gap-2"
+                  disabled={signing}
+                  onClick={() => handleSign(selectedTemplate.title)}
+                >
+                  <PenTool className="w-4 h-4" />
+                  {signing ? 'Signing...' : !userAddress ? 'Connect Wallet to Sign' : 'Sign with TON'}
+                </Button>
+              )}
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
