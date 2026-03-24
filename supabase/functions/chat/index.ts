@@ -43,12 +43,28 @@ The JSON shape must be:
     "parties": [{ "name": "string", "role": "string or null" }],
     "terms": ["string"],
     "missingFields": ["string"],
-    "signReady": false
+    "signReady": false,
+    "allocations": [{ "party": "string", "percentage": number, "label": "string" }],
+    "fullText": "string"
   },
   "actions": {
     "openAgreementUrl": null
   }
-}`;
+}
+
+When status is "sign_ready":
+- signReady must be true
+- missingFields must be empty
+- fullText must contain the complete formal agreement text with sections: PARTIES, ROLES & COMMITMENTS, TERMS, OWNERSHIP MODEL (if allocations exist), PROOF MODEL, AMENDMENT RULE
+- allocations should reflect any ownership/revenue split mentioned, or empty array if none
+
+When status is "draft_ready":
+- Include a brief fullText draft
+- missingFields lists what is still needed
+
+When status is "needs_clarification":
+- agreement can be null or partial
+- fullText can be empty`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
