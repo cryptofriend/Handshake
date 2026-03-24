@@ -10,12 +10,15 @@ interface AppState {
   agreements: Agreement[];
   signedPacts: Set<string>;
   mode: AppMode;
+  chatConversation: ChatConversation | null;
   setUser: (user: User | null) => void;
   setMode: (mode: AppMode) => void;
   setCurrentAgreement: (agreement: Agreement | null) => void;
   updateAgreement: (updates: Partial<Agreement>) => void;
   addAgreement: (agreement: Agreement) => void;
   addSignedPact: (pactTitle: string, walletAddress: string, txHash?: string) => void;
+  addChatMessage: (message: ChatMessage) => void;
+  clearChat: () => void;
   signAsCreator: () => void;
   signAsCounterparty: () => void;
 }
