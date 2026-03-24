@@ -6,6 +6,7 @@ import { PactTemplateOrb } from '@/components/handshake/PactTemplateOrb';
 import { Button } from '@/components/ui/button';
 import { Check, PenTool, Wallet } from 'lucide-react';
 import { useTonConnectUI, useTonConnectModal, useTonAddress } from '@tonconnect/ui-react';
+import { beginCell, toNano } from '@ton/ton';
 import { toast } from 'sonner';
 import {
   Dialog,
