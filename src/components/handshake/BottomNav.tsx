@@ -13,8 +13,7 @@ export const BottomNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Don't show on login page
-  if (location.pathname === '/') return null;
+  // Always show bottom nav
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-xl border-t border-border safe-area-bottom">
