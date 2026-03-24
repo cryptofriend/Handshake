@@ -84,6 +84,22 @@ export const useAppStore = create<AppState>((set, get) => ({
       agreements: [manifestoAgreement, ...state.agreements],
     };
   }),
+  addChatMessage: (message) => set((state) => {
+    const conv = state.chatConversation || {
+      id: crypto.randomUUID(),
+      messages: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    return {
+      chatConversation: {
+        ...conv,
+        messages: [...conv.messages, message],
+        updatedAt: new Date().toISOString(),
+      },
+    };
+  }),
+  clearChat: () => set({ chatConversation: null }),
   signAsCreator: () => set((state) => {
     if (!state.currentAgreement) return state;
     const updated = {
