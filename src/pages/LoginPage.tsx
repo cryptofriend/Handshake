@@ -81,19 +81,57 @@ const LoginPage = () => {
 
       {/* Template Detail Dialog */}
       <Dialog open={!!selectedTemplate} onOpenChange={(open) => !open && setSelectedTemplate(null)}>
-        <DialogContent className="rounded-3xl max-w-sm mx-auto">
+        <DialogContent
+          className="rounded-3xl max-w-sm mx-auto border-0 overflow-hidden"
+          style={{
+            background: 'hsla(230, 25%, 12%, 0.85)',
+            backdropFilter: 'blur(40px)',
+            boxShadow: selectedTemplate
+              ? `0 0 80px ${selectedTemplate.colors[0]}, 0 0 160px ${selectedTemplate.colors[1]}, 0 20px 60px hsla(0,0%,0%,0.4)`
+              : undefined,
+            border: '1px solid hsla(0, 0%, 100%, 0.08)',
+          }}
+        >
+          {/* Orb decoration at top */}
+          {selectedTemplate && (
+            <div className="flex justify-center -mt-2 mb-2">
+              <div
+                className="relative w-16 h-16 rounded-full overflow-hidden"
+                style={{
+                  background: `radial-gradient(circle at 35% 35%, ${selectedTemplate.colors[0]}, ${selectedTemplate.colors[1]}, ${selectedTemplate.colors[2]})`,
+                  boxShadow: `0 0 40px ${selectedTemplate.colors[0]}, 0 0 80px ${selectedTemplate.colors[1]}`,
+                }}
+              >
+                <motion.div
+                  className="absolute rounded-full blur-xl"
+                  style={{
+                    width: 30, height: 30,
+                    background: selectedTemplate.colors[0].replace(/[\d.]+\)$/, '0.6)'),
+                    left: '50%', top: '50%',
+                    marginLeft: -15, marginTop: -15,
+                  }}
+                  animate={{ x: [5, -8, 5], y: [3, -5, 3], scale: [1, 1.4, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                />
+              </div>
+            </div>
+          )}
+
           <DialogHeader>
-            <DialogTitle>{selectedTemplate?.title}</DialogTitle>
-            <DialogDescription className="pt-2">
+            <DialogTitle className="text-white text-center">{selectedTemplate?.title}</DialogTitle>
+            <DialogDescription className="pt-2 text-center" style={{ color: 'hsla(0, 0%, 100%, 0.6)' }}>
               {selectedTemplate?.description}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-2 pt-2">
-            <p className="text-sm font-medium text-foreground">Fields covered:</p>
-            <ul className="space-y-1">
+            <p className="text-sm font-medium" style={{ color: 'hsla(0, 0%, 100%, 0.8)' }}>Fields covered:</p>
+            <ul className="space-y-1.5">
               {selectedTemplate?.fields.map((f) => (
-                <li key={f} className="text-sm text-muted-foreground flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block" />
+                <li key={f} className="text-sm flex items-center gap-2.5" style={{ color: 'hsla(0, 0%, 100%, 0.55)' }}>
+                  <span
+                    className="w-1.5 h-1.5 rounded-full inline-block flex-shrink-0"
+                    style={{ background: selectedTemplate.colors[0].replace(/[\d.]+\)$/, '0.8)') }}
+                  />
                   {f}
                 </li>
               ))}
