@@ -26,6 +26,7 @@ const App = () => (
           <div className="pb-16">
             <Routes>
               <Route path="/" element={<LoginPage />} />
+              <Route path="/agent" element={<AgentChatPage />} />
               <Route path="/create" element={<CreateAgreementPage />} />
               <Route path="/sign" element={<SignPage />} />
               <Route path="/signed-docs" element={<SignedDocsPage />} />

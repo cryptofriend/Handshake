@@ -63,8 +63,8 @@ const AgentChatPage = () => {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <div className="flex items-center gap-3 px-5 pt-5 pb-3">
-        <div className="w-10 h-10">
-          <Orb state={isThinking ? 'processing' : 'idle'} size={40} />
+        <div className="w-10 h-10 [&>div]:!w-10 [&>div]:!h-10">
+          <Orb state={isThinking ? 'processing' : 'idle'} />
         </div>
         <div>
           <h1 className="logo-text text-lg text-foreground leading-tight">Handshake Agent</h1>
