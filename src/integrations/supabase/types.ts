@@ -14,7 +14,87 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      agreement_drafts: {
+        Row: {
+          created_at: string
+          full_response: Json | null
+          id: string
+          missing_fields: Json | null
+          parties: Json
+          session_id: string
+          status: string
+          summary: string | null
+          terms: Json
+          title: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          full_response?: Json | null
+          id?: string
+          missing_fields?: Json | null
+          parties?: Json
+          session_id: string
+          status?: string
+          summary?: string | null
+          terms?: Json
+          title: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          full_response?: Json | null
+          id?: string
+          missing_fields?: Json | null
+          parties?: Json
+          session_id?: string
+          status?: string
+          summary?: string | null
+          terms?: Json
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          agreement_id: string | null
+          content: string
+          created_at: string
+          handshake_status: string | null
+          id: string
+          raw_response: Json | null
+          role: string
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          agreement_id?: string | null
+          content: string
+          created_at?: string
+          handshake_status?: string | null
+          id?: string
+          raw_response?: Json | null
+          role: string
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          agreement_id?: string | null
+          content?: string
+          created_at?: string
+          handshake_status?: string | null
+          id?: string
+          raw_response?: Json | null
+          role?: string
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
