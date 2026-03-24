@@ -119,7 +119,28 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen bg-background flex flex-col px-6">
+      {/* Header with sign in */}
+      <div className="flex items-center justify-between pt-5 pb-2 w-full max-w-sm mx-auto">
+        <div />
+        {userAddress ? (
+          <span className="text-xs text-muted-foreground font-mono truncate max-w-[120px]">
+            {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
+          </span>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-xl gap-1.5 text-xs h-8"
+            onClick={() => openTonModal()}
+          >
+            <Wallet className="w-3.5 h-3.5" />
+            Sign in
+          </Button>
+        )}
+      </div>
+
+      <div className="flex-1 flex flex-col items-center justify-center">
       <motion.div
         className="w-full max-w-sm flex flex-col items-center text-center"
         initial={{ opacity: 0, y: 20 }}
@@ -129,6 +150,7 @@ const LoginPage = () => {
         <h1 className="logo-text text-4xl text-foreground mb-2">Handshake</h1>
         <p className="text-lg font-medium text-foreground/80 mb-6">
           Agreements in the Age of AI
+        </p>
         </p>
 
         <div className="mb-8 cursor-pointer" onClick={() => navigate('/agent')}>
