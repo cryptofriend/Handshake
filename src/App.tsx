@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { TonConnectUIProvider } from "@tonconnect/ui-react";
 import LoginPage from "./pages/LoginPage";
+import AgentChatPage from "./pages/AgentChatPage";
 import CreateAgreementPage from "./pages/CreateAgreementPage";
 import SignPage from "./pages/SignPage";
 import SignedDocsPage from "./pages/SignedDocsPage";
@@ -25,6 +26,7 @@ const App = () => (
           <div className="pb-16">
             <Routes>
               <Route path="/" element={<LoginPage />} />
+              <Route path="/agent" element={<AgentChatPage />} />
               <Route path="/create" element={<CreateAgreementPage />} />
               <Route path="/sign" element={<SignPage />} />
               <Route path="/signed-docs" element={<SignedDocsPage />} />
