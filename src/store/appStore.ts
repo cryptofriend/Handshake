@@ -29,6 +29,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   agreements: [],
   signedPacts: new Set<string>(),
   mode: 'human',
+  chatConversation: null,
   setUser: (user) => set({ user }),
   setMode: (mode) => set({ mode }),
   setCurrentAgreement: (agreement) => set({ currentAgreement: agreement }),
