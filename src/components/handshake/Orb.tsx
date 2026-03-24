@@ -75,9 +75,9 @@ export const Orb = ({ state, onClick }: OrbProps) => {
         )}
       </AnimatePresence>
 
-      {/* Main orb container - glass morphism with H morph */}
+      {/* Main orb container - glass morphism */}
       <motion.div
-        className="relative w-40 h-40 overflow-hidden"
+        className="relative w-40 h-40 rounded-full overflow-hidden"
         style={{
           background: 'radial-gradient(circle at 30% 30%, hsla(218, 86%, 65%, 0.15), hsla(260, 70%, 50%, 0.1), hsla(200, 80%, 40%, 0.08))',
           backdropFilter: 'blur(40px)',
@@ -88,30 +88,17 @@ export const Orb = ({ state, onClick }: OrbProps) => {
             inset 0 0 60px hsla(218, 86%, 55%, 0.05)
           `,
         }}
-        animate={{
-          clipPath: state === 'idle'
-            ? [
-                'polygon(50% 0%, 79% 10%, 97% 35%, 97% 65%, 79% 90%, 50% 100%, 21% 90%, 3% 65%, 3% 35%, 21% 10%, 50% 0%, 50% 0%)',
-                'polygon(5% 0%, 35% 0%, 35% 38%, 65% 38%, 65% 0%, 95% 0%, 95% 100%, 65% 100%, 65% 62%, 35% 62%, 35% 100%, 5% 100%)',
-                'polygon(50% 0%, 79% 10%, 97% 35%, 97% 65%, 79% 90%, 50% 100%, 21% 90%, 3% 65%, 3% 35%, 21% 10%, 50% 0%, 50% 0%)',
-              ]
+        animate={
+          state === 'idle'
+            ? { scale: [1, 1.03, 1] }
             : isActive
-            ? [
-                'polygon(50% 0%, 79% 10%, 97% 35%, 97% 65%, 79% 90%, 50% 100%, 21% 90%, 3% 65%, 3% 35%, 21% 10%, 50% 0%, 50% 0%)',
-                'polygon(50% 2%, 78% 12%, 95% 36%, 95% 64%, 78% 88%, 50% 98%, 22% 88%, 5% 64%, 5% 36%, 22% 12%, 50% 2%, 50% 2%)',
-              ]
-            : ['polygon(50% 0%, 79% 10%, 97% 35%, 97% 65%, 79% 90%, 50% 100%, 21% 90%, 3% 65%, 3% 35%, 21% 10%, 50% 0%, 50% 0%)'],
-          scale: state === 'idle'
-            ? [1, 1.03, 1]
-            : isActive
-            ? [1, 1.08, 0.97, 1]
+            ? { scale: [1, 1.08, 0.97, 1] }
             : isProcessing
-            ? [1, 0.9, 1]
-            : [1, 1.1, 0.95, 1],
-          rotate: isProcessing ? [0, 180, 360] : 0,
-        }}
+            ? { scale: [1, 0.9, 1], rotate: [0, 180, 360] }
+            : { scale: [1, 1.1, 0.95, 1] }
+        }
         transition={{
-          duration: state === 'idle' ? 6 : isActive ? 1.2 : isProcessing ? 2 : 0.8,
+          duration: state === 'idle' ? 4 : isActive ? 1.2 : isProcessing ? 2 : 0.8,
           repeat: state === 'done' ? 0 : Infinity,
           ease: 'easeInOut',
         }}
