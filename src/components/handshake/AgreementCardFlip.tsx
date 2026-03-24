@@ -41,7 +41,12 @@ export const AgreementCardFlip = ({ agreement }: Props) => {
             <span className="text-[10px] font-medium tracking-widest uppercase text-muted-foreground">
               Handshake Agreement
             </span>
-            <RotateCw className="w-3.5 h-3.5 text-muted-foreground/50" />
+            <div className="flex items-center gap-2">
+              <button onClick={handleCopyLink} className="p-1 rounded-md hover:bg-muted/50 transition-colors">
+                <Copy className="w-3.5 h-3.5 text-muted-foreground/50 hover:text-muted-foreground" />
+              </button>
+              <RotateCw className="w-3.5 h-3.5 text-muted-foreground/50" />
+            </div>
           </div>
 
           <h3 className="text-lg font-semibold text-foreground mb-1">{agreement.title}</h3>
