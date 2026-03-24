@@ -11,6 +11,7 @@ import { AgreementCardFlip } from '@/components/handshake/AgreementCardFlip';
 import { FullAgreementText } from '@/components/handshake/FullAgreementText';
 import { ProofSection } from '@/components/handshake/ProofSection';
 import { Agreement, AgreementSignature } from '@/types/agreement';
+import { supabase } from '@/integrations/supabase/client';
 import logoImg from '@/assets/logo.png';
 import {
   Dialog,
