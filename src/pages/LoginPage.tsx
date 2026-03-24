@@ -27,12 +27,17 @@ const PACT_TEMPLATES = [
     ],
   },
   {
-    label: 'NDA',
+    label: 'Transparency',
     colors: ['hsla(260, 70%, 55%, 0.15)', 'hsla(280, 60%, 50%, 0.1)', 'hsla(300, 50%, 55%, 0.08)'] as [string, string, string],
-    title: 'Non-Disclosure Agreement',
+    title: 'TRANSPARENCY',
     description:
-      'Protect sensitive information shared between parties. Defines what is confidential, duration of obligation, and consequences of breach.',
-    fields: ['Confidential info scope', 'Duration', 'Permitted disclosures', 'Breach remedies'],
+      'Nothing important happens in the dark. Trust is built on truth that can be verified. Every action taken by an agent must be: Explainable, Traceable, Verifiable. No black boxes in critical systems. No hidden agreements. No silent execution.',
+    fields: [
+      'Actions leave signed, auditable trails',
+      'Agreements are human + machine readable',
+      'Identity and intent are provable',
+      'If it cannot be verified, it cannot be trusted',
+    ],
   },
   {
     label: 'Split',
