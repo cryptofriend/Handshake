@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Orb } from '@/components/handshake/Orb';
 import { PactTemplateOrb } from '@/components/handshake/PactTemplateOrb';
 import { Button } from '@/components/ui/button';
-import { Check, PenTool } from 'lucide-react';
+import { Check, PenTool, Wallet } from 'lucide-react';
 import { useTonConnectUI, useTonConnectModal, useTonAddress } from '@tonconnect/ui-react';
 import { toast } from 'sonner';
 import {
@@ -119,7 +119,28 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen bg-background flex flex-col px-6">
+      {/* Header with sign in */}
+      <div className="flex items-center justify-between pt-5 pb-2 w-full max-w-sm mx-auto">
+        <div />
+        {userAddress ? (
+          <span className="text-xs text-muted-foreground font-mono truncate max-w-[120px]">
+            {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
+          </span>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-xl gap-1.5 text-xs h-8"
+            onClick={() => openTonModal()}
+          >
+            <Wallet className="w-3.5 h-3.5" />
+            Sign in
+          </Button>
+        )}
+      </div>
+
+      <div className="flex-1 flex flex-col items-center justify-center">
       <motion.div
         className="w-full max-w-sm flex flex-col items-center text-center"
         initial={{ opacity: 0, y: 20 }}
@@ -160,6 +181,7 @@ const LoginPage = () => {
           ))}
         </motion.div>
       </motion.div>
+      </div>
 
       {/* Template Detail Dialog */}
       <Dialog open={!!selectedTemplate} onOpenChange={(open) => !open && setSelectedTemplate(null)}>
