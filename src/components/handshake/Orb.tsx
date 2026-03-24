@@ -35,8 +35,8 @@ const WaveRing = ({ delay, duration }: { delay: number; duration: number }) => (
   <motion.div
     className="absolute inset-0 rounded-full"
     style={{
-      border: '1px solid hsla(218, 86%, 55%, 0.2)',
-      boxShadow: '0 0 20px hsla(218, 86%, 55%, 0.1)',
+    border: '1px solid hsla(45, 95%, 55%, 0.2)',
+    boxShadow: '0 0 20px hsla(45, 95%, 55%, 0.1)',
     }}
     initial={{ scale: 1.5, opacity: 0.5 }}
     animate={{ scale: 0.4, opacity: 0 }}
@@ -54,7 +54,7 @@ export const Orb = ({ state, onClick }: OrbProps) => {
       <motion.div
         className="absolute inset-[-50px] rounded-full"
         style={{
-          background: 'radial-gradient(circle, hsla(218, 86%, 55%, 0.15), hsla(260, 80%, 60%, 0.08), transparent 70%)',
+          background: 'radial-gradient(circle, hsla(45, 95%, 55%, 0.15), hsla(35, 90%, 50%, 0.08), transparent 70%)',
           filter: 'blur(20px)',
         }}
         animate={{
@@ -79,13 +79,13 @@ export const Orb = ({ state, onClick }: OrbProps) => {
       <motion.div
         className="relative w-40 h-40 rounded-full overflow-hidden"
         style={{
-          background: 'radial-gradient(circle at 30% 30%, hsla(218, 86%, 65%, 0.15), hsla(260, 70%, 50%, 0.1), hsla(200, 80%, 40%, 0.08))',
+          background: 'radial-gradient(circle at 30% 30%, hsla(45, 95%, 65%, 0.15), hsla(35, 80%, 50%, 0.1), hsla(55, 80%, 50%, 0.08))',
           backdropFilter: 'blur(40px)',
-          border: '1px solid hsla(218, 86%, 55%, 0.15)',
+          border: '1px solid hsla(45, 95%, 55%, 0.15)',
           boxShadow: `
-            0 0 60px hsla(218, 86%, 55%, ${isActive ? 0.35 : 0.15}),
-            0 0 120px hsla(260, 70%, 50%, ${isActive ? 0.2 : 0.08}),
-            inset 0 0 60px hsla(218, 86%, 55%, 0.05)
+            0 0 60px hsla(45, 95%, 55%, ${isActive ? 0.35 : 0.15}),
+            0 0 120px hsla(35, 80%, 50%, ${isActive ? 0.2 : 0.08}),
+            inset 0 0 60px hsla(45, 95%, 55%, 0.05)
           `,
         }}
         animate={
@@ -104,10 +104,10 @@ export const Orb = ({ state, onClick }: OrbProps) => {
         }}
       >
         {/* Floating color blobs inside */}
-        <FloatingBlob color="hsla(218, 90%, 60%, 0.5)" size={80} duration={5} delay={0} x={20} y={15} />
-        <FloatingBlob color="hsla(260, 80%, 55%, 0.4)" size={70} duration={6.5} delay={0.5} x={-25} y={20} />
-        <FloatingBlob color="hsla(190, 90%, 50%, 0.35)" size={60} duration={4.5} delay={1} x={15} y={-20} />
-        <FloatingBlob color="hsla(300, 60%, 55%, 0.25)" size={50} duration={7} delay={1.5} x={-18} y={-15} />
+        <FloatingBlob color="hsla(45, 95%, 60%, 0.5)" size={80} duration={5} delay={0} x={20} y={15} />
+        <FloatingBlob color="hsla(35, 90%, 50%, 0.4)" size={70} duration={6.5} delay={0.5} x={-25} y={20} />
+        <FloatingBlob color="hsla(55, 85%, 55%, 0.35)" size={60} duration={4.5} delay={1} x={15} y={-20} />
+        <FloatingBlob color="hsla(25, 80%, 50%, 0.25)" size={50} duration={7} delay={1.5} x={-18} y={-15} />
 
         {/* Glass highlight */}
         <div
@@ -126,8 +126,8 @@ export const Orb = ({ state, onClick }: OrbProps) => {
             className="absolute inset-2 rounded-full"
             style={{
               border: '1.5px solid transparent',
-              borderTopColor: 'hsla(218, 86%, 55%, 0.5)',
-              borderBottomColor: 'hsla(260, 70%, 50%, 0.2)',
+              borderTopColor: 'hsla(45, 95%, 55%, 0.5)',
+              borderBottomColor: 'hsla(35, 80%, 50%, 0.2)',
             }}
             initial={{ opacity: 0, rotate: 0 }}
             animate={{ opacity: 1, rotate: 360 }}

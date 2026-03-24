@@ -13,12 +13,12 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 
-const ORB_COLORS = ['hsla(218, 90%, 60%, 0.15)', 'hsla(260, 70%, 50%, 0.1)', 'hsla(200, 80%, 45%, 0.08)'] as [string, string, string];
+const ORB_COLORS = ['hsla(45, 95%, 55%, 0.15)', 'hsla(35, 90%, 50%, 0.1)', 'hsla(55, 85%, 60%, 0.08)'] as [string, string, string];
 
 const PACT_TEMPLATES = [
   {
     label: 'Freelance',
-    colors: ['hsla(218, 90%, 60%, 0.15)', 'hsla(240, 70%, 50%, 0.1)', 'hsla(200, 80%, 45%, 0.08)'] as [string, string, string],
+    colors: ['hsla(45, 95%, 55%, 0.15)', 'hsla(40, 85%, 50%, 0.1)', 'hsla(50, 80%, 55%, 0.08)'] as [string, string, string],
     title: 'Freelance Agreement',
     description:
       'A simple pact for freelance work. Covers task scope, payment terms, deadline, and deliverables between a client and freelancer.',
@@ -26,7 +26,7 @@ const PACT_TEMPLATES = [
   },
   {
     label: 'NDA',
-    colors: ['hsla(260, 70%, 55%, 0.15)', 'hsla(280, 60%, 50%, 0.1)', 'hsla(300, 50%, 55%, 0.08)'] as [string, string, string],
+    colors: ['hsla(35, 90%, 50%, 0.15)', 'hsla(25, 80%, 50%, 0.1)', 'hsla(15, 70%, 55%, 0.08)'] as [string, string, string],
     title: 'Non-Disclosure Agreement',
     description:
       'Protect sensitive information shared between parties. Defines what is confidential, duration of obligation, and consequences of breach.',
@@ -34,7 +34,7 @@ const PACT_TEMPLATES = [
   },
   {
     label: 'Split',
-    colors: ['hsla(190, 80%, 50%, 0.15)', 'hsla(170, 70%, 45%, 0.1)', 'hsla(210, 60%, 55%, 0.08)'] as [string, string, string],
+    colors: ['hsla(55, 85%, 55%, 0.15)', 'hsla(50, 75%, 50%, 0.1)', 'hsla(60, 70%, 55%, 0.08)'] as [string, string, string],
     title: 'Revenue Split Agreement',
     description:
       'Define how revenue or profits are divided between collaborators. Covers percentage splits, payment schedule, and reporting.',
@@ -120,7 +120,7 @@ const LoginPage = () => {
                 className="absolute rounded-full blur-xl"
                 style={{
                   width: 30, height: 30,
-                  background: 'hsla(218, 90%, 60%, 0.6)',
+                  background: 'hsla(45, 95%, 55%, 0.6)',
                   left: '50%', top: '50%',
                   marginLeft: -15, marginTop: -15,
                 }}
@@ -146,7 +146,7 @@ const LoginPage = () => {
               style={{
                 background: 'hsla(0, 0%, 100%, 0.06)',
                 color: 'hsla(0, 0%, 100%, 0.9)',
-                caretColor: 'hsl(218, 90%, 60%)',
+                caretColor: 'hsl(45, 95%, 55%)',
               }}
             />
             <Button
