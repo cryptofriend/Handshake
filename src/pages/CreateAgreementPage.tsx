@@ -6,7 +6,8 @@ import { EditAgreementModal } from '@/components/handshake/EditAgreementModal';
 import { useAppStore } from '@/store/appStore';
 import { useNavigate } from 'react-router-dom';
 import { Agreement } from '@/types/agreement';
-import { Mic, Square, Pencil, PenTool, User, FileCheck } from 'lucide-react';
+import { Mic, Square, Pencil, PenTool } from 'lucide-react';
+import { ModeSwitcher } from '@/components/handshake/ModeSwitcher';
 
 type OrbAnimState = 'idle' | 'recording' | 'processing' | 'done';
 import { Button } from '@/components/ui/button';
@@ -76,8 +77,7 @@ const CreateAgreementPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between px-5 pt-5 pb-2">
         <h1 className="logo-text text-2xl text-foreground">Handshake</h1>
-        <div />
-
+        <ModeSwitcher />
       </div>
 
       <div className="px-5 pb-10 max-w-md mx-auto">
