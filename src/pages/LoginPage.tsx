@@ -225,7 +225,7 @@ const LoginPage = () => {
           </DialogHeader>
 
           <div className="space-y-3 pt-2 max-h-[50vh] overflow-y-auto">
-            {selectedTemplate?.sections.map((section, i) => {
+            {selectedTemplate?.sections?.map((section, i) => {
               if (section.type === 'subtitle')
                 return <p key={i} className="text-sm font-semibold text-foreground/90 text-center italic">{section.text}</p>;
               if (section.type === 'body')
