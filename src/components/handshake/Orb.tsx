@@ -54,7 +54,7 @@ export const Orb = ({ state, onClick }: OrbProps) => {
       <motion.div
         className="absolute inset-[-50px] rounded-full"
         style={{
-          background: 'radial-gradient(circle, hsla(218, 86%, 55%, 0.15), hsla(260, 80%, 60%, 0.08), transparent 70%)',
+          background: 'radial-gradient(circle, hsla(45, 95%, 55%, 0.15), hsla(35, 90%, 50%, 0.08), transparent 70%)',
           filter: 'blur(20px)',
         }}
         animate={{
