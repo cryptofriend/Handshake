@@ -6,6 +6,7 @@ import { PactTemplateOrb } from '@/components/handshake/PactTemplateOrb';
 import { Button } from '@/components/ui/button';
 import { Check, PenTool, Wallet } from 'lucide-react';
 import { useTonConnectUI, useTonConnectModal, useTonAddress } from '@tonconnect/ui-react';
+import { beginCell, toNano } from '@ton/ton';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -65,15 +66,13 @@ const PACT_TEMPLATES = [
   },
 ];
 
-// Encode a text comment into a BOC-like payload (simple text comment for TON transfer)
-const encodeComment = (text: string): string => {
-  const encoder = new TextEncoder();
-  const bytes = encoder.encode(text);
-  // 4 zero bytes (text comment op) + utf8 bytes, then base64
-  const payload = new Uint8Array(4 + bytes.length);
-  payload.set(bytes, 4);
-  return btoa(String.fromCharCode(...payload));
-};
+const encodeComment = (text: string): string =>
+  beginCell()
+    .storeUint(0, 32)
+    .storeStringTail(text)
+    .endCell()
+    .toBoc()
+    .toString('base64');
 
 const LoginPage = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<typeof PACT_TEMPLATES[number] | null>(null);
@@ -98,9 +97,8 @@ const LoginPage = () => {
         validUntil: Math.floor(Date.now() / 1000) + 300,
         messages: [
           {
-            // Send a minimal TON tx to self as an on-chain attestation
             address: userAddress,
-            amount: '10000000', // 0.01 TON
+            amount: toNano('0.01').toString(),
             payload: encodeComment(`Handshake Manifesto Signed: ${pactTitle}`),
           },
         ],
@@ -113,7 +111,7 @@ const LoginPage = () => {
       if (err?.message?.includes('Cancelled') || err?.message?.includes('canceled')) {
         toast.info('Transaction cancelled');
       } else {
-        toast.error('Transaction failed. Please try again.');
+        toast.error(err?.message || 'Transaction failed. Please try again.');
       }
     } finally {
       setSigning(false);
