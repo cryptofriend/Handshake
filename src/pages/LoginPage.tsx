@@ -111,7 +111,7 @@ const LoginPage = () => {
       if (err?.message?.includes('Cancelled') || err?.message?.includes('canceled')) {
         toast.info('Transaction cancelled');
       } else {
-        toast.error('Transaction failed. Please try again.');
+        toast.error(err?.message || 'Transaction failed. Please try again.');
       }
     } finally {
       setSigning(false);
