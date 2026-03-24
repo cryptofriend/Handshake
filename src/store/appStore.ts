@@ -1,11 +1,15 @@
 import { create } from 'zustand';
 import { Agreement, User } from '@/types/agreement';
 
+type AppMode = 'human' | 'agent';
+
 interface AppState {
   user: User | null;
   currentAgreement: Agreement | null;
   agreements: Agreement[];
+  mode: AppMode;
   setUser: (user: User | null) => void;
+  setMode: (mode: AppMode) => void;
   setCurrentAgreement: (agreement: Agreement | null) => void;
   updateAgreement: (updates: Partial<Agreement>) => void;
   addAgreement: (agreement: Agreement) => void;
