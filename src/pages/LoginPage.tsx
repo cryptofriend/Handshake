@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Orb } from '@/components/handshake/Orb';
+import { useAppStore } from '@/store/appStore';
 import { PactTemplateOrb } from '@/components/handshake/PactTemplateOrb';
 import { Button } from '@/components/ui/button';
 import { Check, PenTool, Wallet } from 'lucide-react';
