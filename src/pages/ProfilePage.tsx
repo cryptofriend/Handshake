@@ -2,9 +2,10 @@ import { motion } from 'framer-motion';
 import { useAppStore } from '@/store/appStore';
 import { TelegramLoginButton, TelegramUser } from '@/components/handshake/TelegramLoginButton';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { LogOut, FileCheck, CheckCircle, AlertTriangle } from 'lucide-react';
+import { LogOut, FileCheck, CheckCircle, AlertTriangle, Inbox } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Orb } from '@/components/handshake/Orb';
+import { AgreementCard } from '@/components/handshake/AgreementCard';
 
 const ProfilePage = () => {
   const user = useAppStore((s) => s.user);
@@ -26,6 +27,9 @@ const ProfilePage = () => {
 
   const signed = agreements.filter((a) => a.status === 'fully_signed').length;
   const pending = agreements.filter((a) => a.status === 'signed_by_one').length;
+  const signedAgreements = agreements.filter(
+    (a) => a.status === 'fully_signed' || a.status === 'signed_by_one'
+  );
 
   if (!user) {
     return (
@@ -49,10 +53,6 @@ const ProfilePage = () => {
             botName="handshakemonsterbot"
             onAuth={handleTelegramAuth}
           />
-
-          <p className="trust-text mt-6 text-muted-foreground text-xs">
-            Private. Encrypted. Simple.
-          </p>
         </motion.div>
       </div>
     );
@@ -97,6 +97,32 @@ const ProfilePage = () => {
             <p className="text-lg font-semibold text-foreground">{pending}</p>
             <p className="text-[11px] text-muted-foreground">Pending</p>
           </div>
+        </div>
+
+        {/* Signed Documents */}
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-foreground mb-4">Signed Documents</h3>
+          {signedAgreements.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center mb-3">
+                <Inbox className="w-7 h-7 text-muted-foreground" />
+              </div>
+              <p className="text-sm text-muted-foreground">No signed documents yet</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {signedAgreements.map((agreement, i) => (
+                <motion.div
+                  key={agreement.id}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.08 }}
+                >
+                  <AgreementCard agreement={agreement} />
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Logout */}

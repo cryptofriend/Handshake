@@ -6,9 +6,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { TonConnectUIProvider } from "@tonconnect/ui-react";
 import LoginPage from "./pages/LoginPage";
 import AgentChatPage from "./pages/AgentChatPage";
-import CreateAgreementPage from "./pages/CreateAgreementPage";
-import SignPage from "./pages/SignPage";
-import SignedDocsPage from "./pages/SignedDocsPage";
 import CounterpartyPage from "./pages/CounterpartyPage";
 import ProfilePage from "./pages/ProfilePage";
 import NotFound from "./pages/NotFound";
@@ -27,9 +24,6 @@ const App = () => (
             <Routes>
               <Route path="/" element={<LoginPage />} />
               <Route path="/agent" element={<AgentChatPage />} />
-              <Route path="/create" element={<CreateAgreementPage />} />
-              <Route path="/sign" element={<SignPage />} />
-              <Route path="/signed-docs" element={<SignedDocsPage />} />
               <Route path="/agreement/:id" element={<CounterpartyPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="*" element={<NotFound />} />
