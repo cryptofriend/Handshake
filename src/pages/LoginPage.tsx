@@ -34,7 +34,7 @@ const PACT_TEMPLATES = [
   },
   {
     label: 'Split',
-    colors: ['hsla(190, 80%, 50%, 0.15)', 'hsla(170, 70%, 45%, 0.1)', 'hsla(210, 60%, 55%, 0.08)'] as [string, string, string],
+    colors: ['hsla(55, 85%, 55%, 0.15)', 'hsla(50, 75%, 50%, 0.1)', 'hsla(60, 70%, 55%, 0.08)'] as [string, string, string],
     title: 'Revenue Split Agreement',
     description:
       'Define how revenue or profits are divided between collaborators. Covers percentage splits, payment schedule, and reporting.',
