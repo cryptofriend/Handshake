@@ -21,7 +21,9 @@ export const useAppStore = create<AppState>((set, get) => ({
   user: null,
   currentAgreement: null,
   agreements: [],
+  mode: 'human',
   setUser: (user) => set({ user }),
+  setMode: (mode) => set({ mode }),
   setCurrentAgreement: (agreement) => set({ currentAgreement: agreement }),
   updateAgreement: (updates) => set((state) => ({
     currentAgreement: state.currentAgreement 

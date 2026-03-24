@@ -77,8 +77,7 @@ const CreateAgreementPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between px-5 pt-5 pb-2">
         <h1 className="logo-text text-2xl text-foreground">Handshake</h1>
-        <div />
-
+        <ModeSwitcher />
       </div>
 
       <div className="px-5 pb-10 max-w-md mx-auto">
