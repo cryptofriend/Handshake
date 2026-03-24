@@ -70,48 +70,66 @@ const MiniOrb = ({ blobs }: { blobs: { color: string; size: number; dur: number;
 );
 
 /**
- * Mitosis-style idle animation.
+ * Liquid mitosis idle animation.
  * 
- * Timeline (10s loop):
- *   0-20%   single orb breathes
- *   20-40%  orb elongates horizontally (cell stretching)
- *   40-55%  two daughter orbs emerge, connected by a thinning bridge
- *   55-70%  fully separated — two smaller orbs drift apart, bridge snaps
- *   70-85%  daughters drift back together
- *   85-100% merge back into one orb
+ * The orb stretches into a peanut shape, the center neck thins like
+ * a liquid filament, then the two halves pinch off and drift apart
+ * before flowing back together.
+ * 
+ * Timeline (10s):
+ *   0-15%   breathe
+ *   15-35%  elongate into peanut (border-radius morphs)
+ *   35-50%  neck thins, daughters emerge from within
+ *   50-65%  pinch off — daughters fully separate, bridge snaps
+ *   65-80%  daughters drift back
+ *   80-100% merge back into sphere
  */
 const MITOSIS_DURATION = 10;
-const MITOSIS_TIMES = [0, 0.2, 0.4, 0.55, 0.7, 0.85, 1];
+const T = [0, 0.15, 0.35, 0.50, 0.65, 0.80, 1];
 
 const MitosisIdleOrb = () => {
-  // Main container stretches into an ellipse then back
-  const containerScaleX = [1, 1, 1.35, 1, 1, 1.35, 1];
-  const containerScaleY = [1, 1, 0.75, 1, 1, 0.75, 1];
-  const containerOpacity = [1, 1, 0.6, 0, 0, 0.6, 1];
-
-  // Daughter orbs: start hidden inside, emerge, drift out, come back, hide
-  const daughterOpacity = [0, 0, 0.3, 1, 1, 0.3, 0];
-  const daughterScale = [0.3, 0.3, 0.55, 0.7, 0.7, 0.55, 0.3];
-  const leftX = [0, 0, -15, -50, -50, -15, 0];
-  const rightX = [0, 0, 15, 50, 50, 15, 0];
-
-  // Bridge connecting the two daughters — stretches and thins
-  const bridgeScaleX = [0, 0, 0.6, 1, 1, 0.6, 0];
-  const bridgeOpacity = [0, 0, 0.5, 0.3, 0.3, 0.5, 0];
-  const bridgeScaleY = [1, 1, 0.8, 0.15, 0.15, 0.8, 1];
-
   const timing = {
     duration: MITOSIS_DURATION,
     repeat: Infinity,
     ease: 'easeInOut' as const,
-    times: MITOSIS_TIMES,
+    times: T,
   };
+
+  // Main orb: stretches wide into a peanut, fades only after daughters are fully visible
+  const mainScaleX =   [1,   1.02, 1.5,  1.6,  0,    0,    1];
+  const mainScaleY =   [1,   1.02, 0.72, 0.65, 0,    0,    1];
+  const mainOpacity =  [1,   1,    1,    0.8,  0,    0,    1];
+  // Morph border-radius into peanut/figure-8 shape
+  const mainRadius = [
+    '50%',                    // sphere
+    '50%',                    // sphere
+    '45% 45% 45% 45% / 50%', // slight peanut
+    '40% 40% 40% 40% / 50%', // deeper peanut indent
+    '50%',                    // hidden
+    '50%',                    // hidden
+    '50%',                    // sphere
+  ];
+
+  // Center "waist" pinch — a dark inward shadow to fake the neck indent
+  const waistOpacity = [0, 0, 0.4, 0.8, 0, 0, 0];
+  const waistScaleY =  [0, 0, 0.6, 0.3, 0, 0, 0];
+
+  // Daughters: emerge from edges of the stretched orb, then drift apart
+  const dOpacity =     [0,    0,    0.2,  0.9,  1,    0.5,  0];
+  const dScale =       [0.35, 0.35, 0.5,  0.65, 0.65, 0.5,  0.35];
+  const leftX =        [0,    0,    -10,  -30,  -50,  -20,  0];
+  const rightX =       [0,    0,    10,   30,   50,   20,   0];
+
+  // Liquid bridge/filament connecting daughters during split
+  const bridgeOpacity = [0, 0, 0.6, 0.7, 0, 0, 0];
+  const bridgeWidth =   [0, 0, 80,  100, 60, 0, 0];
+  const bridgeHeight =  [0, 0, 50,  16,  4,  0, 0];
 
   return (
     <div className="relative w-40 h-40 flex items-center justify-center">
-      {/* Main single orb — visible when merged */}
+      {/* Main single orb — morphs into peanut shape */}
       <motion.div
-        className="absolute w-40 h-40 rounded-full overflow-hidden"
+        className="absolute w-40 h-40 overflow-hidden"
         style={{
           background: 'radial-gradient(circle at 30% 30%, hsla(218, 86%, 65%, 0.15), hsla(260, 70%, 50%, 0.1), hsla(200, 80%, 40%, 0.08))',
           backdropFilter: 'blur(40px)',
@@ -123,9 +141,10 @@ const MitosisIdleOrb = () => {
           `,
         }}
         animate={{
-          scaleX: containerScaleX,
-          scaleY: containerScaleY,
-          opacity: containerOpacity,
+          scaleX: mainScaleX,
+          scaleY: mainScaleY,
+          opacity: mainOpacity,
+          borderRadius: mainRadius,
         }}
         transition={timing}
       >
@@ -139,11 +158,41 @@ const MitosisIdleOrb = () => {
         />
       </motion.div>
 
-      {/* Left daughter orb */}
+      {/* Center waist pinch — darkened inward area to enhance peanut look */}
+      <motion.div
+        className="absolute pointer-events-none"
+        style={{
+          width: 30,
+          height: 80,
+          borderRadius: '50%',
+          background: 'radial-gradient(ellipse, hsla(230, 30%, 10%, 0.15), transparent 70%)',
+          filter: 'blur(8px)',
+        }}
+        animate={{ opacity: waistOpacity, scaleY: waistScaleY }}
+        transition={timing}
+      />
+
+      {/* Liquid bridge/filament — stretches between the daughters */}
+      <motion.div
+        className="absolute pointer-events-none"
+        style={{
+          borderRadius: '50%',
+          background: 'radial-gradient(ellipse, hsla(218, 86%, 55%, 0.3), hsla(260, 70%, 50%, 0.15), transparent 80%)',
+          filter: 'blur(6px)',
+        }}
+        animate={{
+          width: bridgeWidth,
+          height: bridgeHeight,
+          opacity: bridgeOpacity,
+        }}
+        transition={timing}
+      />
+
+      {/* Left daughter */}
       <motion.div
         className="absolute"
         style={{ width: 100, height: 100 }}
-        animate={{ x: leftX, opacity: daughterOpacity, scale: daughterScale }}
+        animate={{ x: leftX, opacity: dOpacity, scale: dScale }}
         transition={timing}
       >
         <MiniOrb blobs={[
@@ -152,11 +201,11 @@ const MitosisIdleOrb = () => {
         ]} />
       </motion.div>
 
-      {/* Right daughter orb */}
+      {/* Right daughter */}
       <motion.div
         className="absolute"
         style={{ width: 100, height: 100 }}
-        animate={{ x: rightX, opacity: daughterOpacity, scale: daughterScale }}
+        animate={{ x: rightX, opacity: dOpacity, scale: dScale }}
         transition={timing}
       >
         <MiniOrb blobs={[
@@ -164,24 +213,6 @@ const MitosisIdleOrb = () => {
           { color: 'hsla(300, 60%, 55%, 0.35)', size: 40, dur: 5.5, x: 12, y: -6 },
         ]} />
       </motion.div>
-
-      {/* Connecting bridge — the "neck" that thins and snaps */}
-      <motion.div
-        className="absolute pointer-events-none"
-        style={{
-          width: 100,
-          height: 40,
-          borderRadius: '50%',
-          background: 'radial-gradient(ellipse, hsla(218, 86%, 55%, 0.25), hsla(260, 70%, 50%, 0.1), transparent 80%)',
-          filter: 'blur(10px)',
-        }}
-        animate={{
-          scaleX: bridgeScaleX,
-          scaleY: bridgeScaleY,
-          opacity: bridgeOpacity,
-        }}
-        transition={timing}
-      />
     </div>
   );
 };
