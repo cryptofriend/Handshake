@@ -152,7 +152,7 @@ const LoginPage = () => {
           Agreements in the Age of AI
         </p>
 
-        <div className="mb-8 cursor-pointer" onClick={() => navigate('/agent')}>
+        <div className="mb-8 cursor-pointer" onClick={() => window.open('https://t.me/handshakemonsterbot', '_blank')}>
           <Orb state="idle" />
         </div>
 
