@@ -86,7 +86,9 @@ const LoginPage = () => {
 
   const handleSign = async (pactTitle: string) => {
     if (!userAddress) {
-      openTonModal();
+      // Close the dialog first so TON Connect modal isn't blocked by focus trap
+      setSelectedTemplate(null);
+      setTimeout(() => openTonModal(), 150);
       return;
     }
 
