@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { AgreementSignature } from '@/types/agreement';
-import { Shield, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Shield, Clock, CheckCircle2, AlertCircle, ExternalLink } from 'lucide-react';
+
+const TONSCAN_BASE = 'https://tonscan.org';
 
 interface Props {
   signatures: AgreementSignature[];
