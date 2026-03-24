@@ -1,29 +1,17 @@
 import { motion } from 'framer-motion';
 import { useAppStore } from '@/store/appStore';
-import { TelegramLoginButton, TelegramUser } from '@/components/handshake/TelegramLoginButton';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { LogOut, FileCheck, CheckCircle, AlertTriangle, Inbox } from 'lucide-react';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { LogOut, FileCheck, CheckCircle, AlertTriangle, Inbox, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Orb } from '@/components/handshake/Orb';
 import { AgreementCard } from '@/components/handshake/AgreementCard';
+import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react';
+import { useNavigate } from 'react-router-dom';
 
 const ProfilePage = () => {
-  const user = useAppStore((s) => s.user);
-  const setUser = useAppStore((s) => s.setUser);
   const agreements = useAppStore((s) => s.agreements);
-
-  const handleTelegramAuth = (tgUser: TelegramUser) => {
-    setUser({
-      id: String(tgUser.id),
-      name: tgUser.first_name + (tgUser.last_name ? ` ${tgUser.last_name}` : ''),
-      username: tgUser.username || tgUser.first_name,
-      avatar: tgUser.photo_url,
-    });
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-  };
+  const userAddress = useTonAddress();
+  const [tonConnectUI] = useTonConnectUI();
+  const navigate = useNavigate();
 
   const signed = agreements.filter((a) => a.status === 'fully_signed').length;
   const pending = agreements.filter((a) => a.status === 'signed_by_one').length;
@@ -31,32 +19,14 @@ const ProfilePage = () => {
     (a) => a.status === 'fully_signed' || a.status === 'signed_by_one'
   );
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 pb-20">
-        <motion.div
-          className="w-full max-w-sm flex flex-col items-center text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <div className="mb-4 scale-75 opacity-80">
-            <Orb state="idle" />
-          </div>
+  const handleLogout = async () => {
+    await tonConnectUI.disconnect();
+    navigate('/');
+  };
 
-          <h1 className="logo-text text-3xl text-foreground mb-2">Sign in</h1>
-          <p className="text-muted-foreground text-sm mb-8">
-            Connect your Telegram to create and sign agreements
-          </p>
-
-          <TelegramLoginButton
-            botName="handshakemonsterbot"
-            onAuth={handleTelegramAuth}
-          />
-        </motion.div>
-      </div>
-    );
-  }
+  const shortAddress = userAddress
+    ? `${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`
+    : '';
 
   return (
     <div className="min-h-screen bg-background px-6 pt-12 pb-24">
@@ -69,15 +39,12 @@ const ProfilePage = () => {
         {/* Profile header */}
         <div className="flex flex-col items-center text-center mb-8">
           <Avatar className="w-20 h-20 mb-4 ring-2 ring-primary/20">
-            {user.avatar ? (
-              <AvatarImage src={user.avatar} alt={user.name} />
-            ) : null}
             <AvatarFallback className="bg-primary/10 text-primary text-xl font-semibold">
-              {user.name.charAt(0).toUpperCase()}
+              <Wallet className="w-8 h-8" />
             </AvatarFallback>
           </Avatar>
-          <h2 className="text-xl font-semibold text-foreground">{user.name}</h2>
-          <p className="text-muted-foreground text-sm">@{user.username}</p>
+          <h2 className="text-lg font-semibold text-foreground font-mono">{shortAddress}</h2>
+          <p className="text-muted-foreground text-xs mt-1">TON Wallet</p>
         </div>
 
         {/* Stats */}
@@ -128,11 +95,11 @@ const ProfilePage = () => {
         {/* Logout */}
         <Button
           variant="outline"
-          className="w-full h-12 rounded-2xl gap-2"
+          className="w-full h-12 rounded-2xl gap-2 text-destructive border-destructive/20 hover:bg-destructive/5"
           onClick={handleLogout}
         >
           <LogOut className="w-4 h-4" />
-          Sign out
+          Disconnect Wallet
         </Button>
       </motion.div>
     </div>
