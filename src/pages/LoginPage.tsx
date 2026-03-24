@@ -151,7 +151,6 @@ const LoginPage = () => {
         <p className="text-lg font-medium text-foreground/80 mb-6">
           Agreements in the Age of AI
         </p>
-        </p>
 
         <div className="mb-8 cursor-pointer" onClick={() => navigate('/agent')}>
           <Orb state="idle" />
