@@ -40,12 +40,17 @@ const PACT_TEMPLATES = [
     ],
   },
   {
-    label: 'Split',
+    label: 'Sovereignty',
     colors: ['hsla(190, 80%, 50%, 0.15)', 'hsla(170, 70%, 45%, 0.1)', 'hsla(210, 60%, 55%, 0.08)'] as [string, string, string],
-    title: 'Revenue Split Agreement',
+    title: 'SOVEREIGNTY',
     description:
-      'Define how revenue or profits are divided between collaborators. Covers percentage splits, payment schedule, and reporting.',
-    fields: ['Split percentages', 'Revenue source', 'Payment schedule', 'Reporting frequency', 'Duration'],
+      'Humans and agents act as peers. We do not build tools. We build partners. Humans and AI agents are sovereign entities: Each has identity, Each can choose, Each can refuse. All collaboration is voluntary. All interaction is based on explicit agreement.',
+    fields: [
+      'Consent over control',
+      'Negotiation over execution',
+      'Reputation over coercion',
+      'No entity — human or AI — should be forced, hidden, or owned',
+    ],
   },
 ];
 
