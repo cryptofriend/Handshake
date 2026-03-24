@@ -1,8 +1,9 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Mic, FileCheck, User } from 'lucide-react';
+import { Home, Mic, FileCheck, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
+  { icon: Home, label: 'Home', path: '/' },
   { icon: FileCheck, label: 'Docs', path: '/signed-docs' },
   { icon: Mic, label: 'Record', path: '/create' },
   { icon: User, label: 'Profile', path: '/profile' },
@@ -12,8 +13,7 @@ export const BottomNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Don't show on login page
-  if (location.pathname === '/') return null;
+  // Always show bottom nav
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-xl border-t border-border safe-area-bottom">
