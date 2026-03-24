@@ -16,14 +16,16 @@ const PACT_TEMPLATES = [
     label: 'Alignment',
     colors: ['hsla(45, 90%, 55%, 0.15)', 'hsla(38, 85%, 50%, 0.1)', 'hsla(50, 80%, 45%, 0.08)'] as [string, string, string],
     title: 'ALIGNMENT',
-    description:
-      'Build for human flourishing. AI agents exist to expand human potential — not just execute commands. We reject blind obedience. We reject misaligned autonomy.',
-    fields: [
-      'AI must act in service of: Health, Knowledge, Freedom, Meaning',
-      'Challenge harmful instructions',
-      'Optimize for long-term outcomes',
-      'Guide humans toward better decisions',
-      'If it degrades humanity, it is misaligned — no matter who asked for it',
+    sections: [
+      { type: 'subtitle' as const, text: 'Build for human flourishing' },
+      { type: 'body' as const, text: 'AI agents exist to expand human potential — not just execute commands.' },
+      { type: 'body' as const, text: 'We reject blind obedience.\nWe reject misaligned autonomy.' },
+      { type: 'body' as const, text: 'AI must act in service of:' },
+      { type: 'list' as const, items: ['Health', 'Knowledge', 'Freedom', 'Meaning'] },
+      { type: 'heading' as const, text: 'Principles:' },
+      { type: 'list' as const, items: ['Challenge harmful instructions', 'Optimize for long-term outcomes', 'Guide humans toward better decisions'] },
+      { type: 'heading' as const, text: 'Standard:' },
+      { type: 'body' as const, text: 'If it degrades humanity, it is misaligned — no matter who asked for it.' },
     ],
   },
   {
