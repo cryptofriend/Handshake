@@ -82,7 +82,7 @@ const LoginPage = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          Default Pacts
+          Manifesto
         </motion.p>
 
         <motion.div
