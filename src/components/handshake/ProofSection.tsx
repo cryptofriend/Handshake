@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { AgreementSignature } from '@/types/agreement';
-import { Shield, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Shield, Clock, CheckCircle2, AlertCircle, ExternalLink } from 'lucide-react';
+
+const TONSCAN_BASE = 'https://tonscan.org';
 
 interface Props {
   signatures: AgreementSignature[];
@@ -43,9 +45,16 @@ export const ProofSection = ({ signatures, receiptStatus, shortHash }: Props) =>
           </div>
           <div className="flex justify-between text-xs">
             <span className="text-muted-foreground">Wallet</span>
-            <span className="font-mono text-[10px] text-foreground/70">
+            <a
+              href={`${TONSCAN_BASE}/address/${sig.walletAddress}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-[10px] text-primary hover:underline inline-flex items-center gap-1"
+              onClick={(e) => e.stopPropagation()}
+            >
               {sig.walletAddress.slice(0, 8)}...{sig.walletAddress.slice(-4)}
-            </span>
+              <ExternalLink className="w-2.5 h-2.5" />
+            </a>
           </div>
           <div className="flex justify-between text-xs">
             <span className="text-muted-foreground">Signed at</span>
@@ -62,10 +71,17 @@ export const ProofSection = ({ signatures, receiptStatus, shortHash }: Props) =>
           </div>
           {sig.txHash && (
             <div className="flex justify-between text-xs">
-              <span className="text-muted-foreground">Tx Hash</span>
-              <span className="font-mono text-[10px] text-primary break-all max-w-[160px] text-right">
-                {sig.txHash}
-              </span>
+              <span className="text-muted-foreground">Tx Proof</span>
+              <a
+                href={`${TONSCAN_BASE}/address/${sig.walletAddress}#transactions`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-[10px] text-primary hover:underline inline-flex items-center gap-1 max-w-[160px] text-right"
+                onClick={(e) => e.stopPropagation()}
+              >
+                View on TONScan
+                <ExternalLink className="w-2.5 h-2.5 flex-shrink-0" />
+              </a>
             </div>
           )}
         </div>
