@@ -13,7 +13,7 @@ import {
 const PACT_TEMPLATES = [
   {
     label: 'Freelance',
-    color: 'hsl(218, 90%, 60%)',
+    colors: ['hsla(218, 90%, 60%, 0.15)', 'hsla(240, 70%, 50%, 0.1)', 'hsla(200, 80%, 45%, 0.08)'] as [string, string, string],
     title: 'Freelance Agreement',
     description:
       'A simple pact for freelance work. Covers task scope, payment terms, deadline, and deliverables between a client and freelancer.',
@@ -21,7 +21,7 @@ const PACT_TEMPLATES = [
   },
   {
     label: 'NDA',
-    color: 'hsl(260, 70%, 55%)',
+    colors: ['hsla(260, 70%, 55%, 0.15)', 'hsla(280, 60%, 50%, 0.1)', 'hsla(300, 50%, 55%, 0.08)'] as [string, string, string],
     title: 'Non-Disclosure Agreement',
     description:
       'Protect sensitive information shared between parties. Defines what is confidential, duration of obligation, and consequences of breach.',
@@ -29,7 +29,7 @@ const PACT_TEMPLATES = [
   },
   {
     label: 'Split',
-    color: 'hsl(190, 80%, 50%)',
+    colors: ['hsla(190, 80%, 50%, 0.15)', 'hsla(170, 70%, 45%, 0.1)', 'hsla(210, 60%, 55%, 0.08)'] as [string, string, string],
     title: 'Revenue Split Agreement',
     description:
       'Define how revenue or profits are divided between collaborators. Covers percentage splits, payment schedule, and reporting.',
