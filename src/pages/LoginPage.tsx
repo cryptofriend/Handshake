@@ -108,6 +108,7 @@ const LoginPage = () => {
 
       await tonConnectUI.sendTransaction(transaction);
       setSignedPacts((prev) => new Set(prev).add(pactTitle));
+      addSignedPact(pactTitle, userAddress);
       toast.success(`${pactTitle} signed on-chain!`);
     } catch (err: any) {
       if (err?.message?.includes('Cancelled') || err?.message?.includes('canceled')) {
