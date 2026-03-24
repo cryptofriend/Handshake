@@ -66,15 +66,13 @@ const PACT_TEMPLATES = [
   },
 ];
 
-// Encode a text comment into a BOC-like payload (simple text comment for TON transfer)
-const encodeComment = (text: string): string => {
-  const encoder = new TextEncoder();
-  const bytes = encoder.encode(text);
-  // 4 zero bytes (text comment op) + utf8 bytes, then base64
-  const payload = new Uint8Array(4 + bytes.length);
-  payload.set(bytes, 4);
-  return btoa(String.fromCharCode(...payload));
-};
+const encodeComment = (text: string): string =>
+  beginCell()
+    .storeUint(0, 32)
+    .storeStringTail(text)
+    .endCell()
+    .toBoc()
+    .toString('base64');
 
 const LoginPage = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<typeof PACT_TEMPLATES[number] | null>(null);
