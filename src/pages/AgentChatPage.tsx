@@ -3,9 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowUp, Sparkles } from 'lucide-react';
-import { ChatMessage, AgreementPreview } from '@/types/chat';
+import { ChatMessage, AgreementPreview, HandshakeStatus } from '@/types/chat';
 import { ChatAgreementCard } from '@/components/handshake/ChatAgreementCard';
 import { useAppStore } from '@/store/appStore';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const WELCOME_MSG: ChatMessage = {
   id: 'welcome',
@@ -14,120 +16,13 @@ const WELCOME_MSG: ChatMessage = {
   timestamp: new Date().toISOString(),
 };
 
-/**
- * Simulates Handshake brain interpreting the user's message.
- * In production this calls the backend which routes to the AI brain.
- */
-const simulateHandshakeResponse = (
-  userContent: string,
-  turnIndex: number
-): ChatMessage => {
-  const now = new Date().toISOString();
-  const id = (Date.now() + 1).toString();
-
-  // First message: ask for clarification
-  if (turnIndex === 0) {
-    const hasParty = /\b(john|alice|bob|mike|sarah)\b/i.test(userContent);
-    const hasAmount = /\$[\d,]+|\d+\s*(usd|ton|usdt)/i.test(userContent);
-    const hasDeadline = /\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday|tomorrow|next week|by \w+)\b/i.test(userContent);
-
-    const missing: string[] = [];
-    if (!hasParty) missing.push('Counterparty name');
-    if (!hasAmount) missing.push('Payment amount');
-    if (!hasDeadline) missing.push('Deadline');
-
-    if (missing.length >= 2) {
-      return {
-        id,
-        role: 'agent',
-        content: "I need a few more details to structure this properly. Could you clarify the following?",
-        timestamp: now,
-        handshakeStatus: 'needs_clarification',
-        agreement: {
-          id: `draft-${Date.now()}`,
-          title: 'New Agreement',
-          summary: extractSummary(userContent),
-          parties: hasParty ? [extractParty(userContent), 'You'] : ['You'],
-          keyTerms: {
-            ...(hasAmount ? { Payment: extractAmount(userContent) } : {}),
-            ...(hasDeadline ? { Deadline: extractDeadline(userContent) } : {}),
-          },
-          missingFields: missing,
-          status: 'needs_clarification',
-        },
-      };
-    }
-
-    // Enough info → draft ready
-    return {
-      id,
-      role: 'agent',
-      content: "I've structured your agreement. Review the details below and let me know if you'd like to edit anything.",
-      timestamp: now,
-      handshakeStatus: 'draft_ready',
-      agreementId: `draft-${Date.now()}`,
-      agreement: {
-        id: `draft-${Date.now()}`,
-        title: buildTitle(userContent),
-        summary: extractSummary(userContent),
-        parties: [extractParty(userContent) || 'Counterparty', 'You'],
-        keyTerms: {
-          Task: extractTask(userContent),
-          Payment: extractAmount(userContent) || 'TBD',
-          Deadline: extractDeadline(userContent) || 'TBD',
-        },
-        status: 'draft_ready',
-      },
-    };
+const getSessionId = (): string => {
+  let sid = sessionStorage.getItem('handshake_session_id');
+  if (!sid) {
+    sid = crypto.randomUUID();
+    sessionStorage.setItem('handshake_session_id', sid);
   }
-
-  // Second+ message: ready to sign
-  return {
-    id,
-    role: 'agent',
-    content: "Your agreement is finalized and ready for on-chain signing. Open it below to review and sign.",
-    timestamp: now,
-    handshakeStatus: 'sign_ready',
-    agreementId: `agreement-${Date.now()}`,
-    agreement: {
-      id: `agreement-${Date.now()}`,
-      title: 'Service Agreement',
-      summary: 'Agreement structured from your conversation with Handshake.',
-      parties: ['You', 'Counterparty'],
-      keyTerms: {
-        Task: 'As discussed',
-        Payment: 'As agreed',
-        Deadline: 'As agreed',
-      },
-      status: 'sign_ready',
-      openAgreementUrl: '/sign',
-    },
-  };
-};
-
-// Simple extraction helpers (Handshake brain handles this server-side in production)
-const extractParty = (s: string) => {
-  const match = s.match(/\b([A-Z][a-z]+)\b/);
-  return match?.[1] || '';
-};
-const extractAmount = (s: string) => {
-  const match = s.match(/\$[\d,]+|\d+\s*(usd|ton|usdt)/i);
-  return match?.[0] || '';
-};
-const extractDeadline = (s: string) => {
-  const match = s.match(/\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday|tomorrow|next week|by \w+)\b/i);
-  return match?.[0] || '';
-};
-const extractTask = (s: string) => {
-  const cleaned = s.replace(/\$[\d,]+/g, '').replace(/\b(by|for|until)\s+\w+$/i, '').trim();
-  return cleaned.length > 60 ? cleaned.slice(0, 60) + '...' : cleaned;
-};
-const extractSummary = (s: string) => {
-  return s.length > 100 ? s.slice(0, 100) + '...' : s;
-};
-const buildTitle = (s: string) => {
-  const party = extractParty(s);
-  return party ? `Agreement with ${party}` : 'New Agreement';
+  return sid;
 };
 
 const AgentChatPage = () => {
@@ -137,8 +32,8 @@ const AgentChatPage = () => {
   const messages: ChatMessage[] = chatConversation?.messages ?? [WELCOME_MSG];
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
-  const [userTurns, setUserTurns] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const sessionId = useRef(getSessionId());
 
   // Initialize conversation with welcome message if empty
   useEffect(() => {
@@ -151,7 +46,7 @@ const AgentChatPage = () => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, isThinking]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim() || isThinking) return;
 
     const userMsg: ChatMessage = {
@@ -161,18 +56,76 @@ const AgentChatPage = () => {
       timestamp: new Date().toISOString(),
     };
     addChatMessage(userMsg);
+    const messageText = input.trim();
     setInput('');
     setIsThinking(true);
 
-    const currentTurn = userTurns;
-    setUserTurns((t) => t + 1);
+    try {
+      // Build history from stored messages (exclude welcome)
+      const history = messages
+        .filter((m) => m.id !== 'welcome')
+        .map((m) => ({ role: m.role, content: m.content }));
 
-    // Simulate Handshake brain response
-    setTimeout(() => {
-      const response = simulateHandshakeResponse(userMsg.content, currentTurn);
-      addChatMessage(response);
+      const { data, error } = await supabase.functions.invoke('chat', {
+        body: {
+          sessionId: sessionId.current,
+          userId: null,
+          message: messageText,
+          history,
+        },
+      });
+
+      if (error) throw error;
+
+      // Map backend response to ChatMessage
+      const agreement: AgreementPreview | undefined = data.agreement
+        ? {
+            id: data.agreement.id || `draft-${Date.now()}`,
+            title: data.agreement.title,
+            summary: data.agreement.summary,
+            parties: (data.agreement.parties || []).map((p: any) => p.name || p),
+            keyTerms: Object.fromEntries(
+              (data.agreement.terms || []).map((t: string, i: number) => [`Term ${i + 1}`, t])
+            ),
+            missingFields: data.agreement.missingFields,
+            status: data.status as HandshakeStatus,
+            openAgreementUrl: data.actions?.openAgreementUrl || undefined,
+          }
+        : undefined;
+
+      const agentMsg: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        role: 'agent',
+        content: data.reply,
+        timestamp: new Date().toISOString(),
+        handshakeStatus: data.status as HandshakeStatus,
+        agreement,
+        agreementId: data.agreement?.id,
+      };
+
+      addChatMessage(agentMsg);
+    } catch (err: any) {
+      console.error('Chat error:', err);
+
+      // Handle rate limit / payment errors
+      if (err?.status === 429) {
+        toast.error('Rate limited. Please wait a moment and try again.');
+      } else if (err?.status === 402) {
+        toast.error('AI credits exhausted. Please add funds.');
+      } else {
+        toast.error('Failed to get response. Please try again.');
+      }
+
+      // Add fallback error message in chat
+      addChatMessage({
+        id: (Date.now() + 1).toString(),
+        role: 'agent',
+        content: "I'm having trouble connecting right now. Please try again in a moment.",
+        timestamp: new Date().toISOString(),
+      });
+    } finally {
       setIsThinking(false);
-    }, 1500 + Math.random() * 1000);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -226,7 +179,7 @@ const AgentChatPage = () => {
               transition={{ duration: 0.3, ease: 'easeOut' }}
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              <div className={`max-w-[85%] ${msg.role === 'user' ? '' : ''}`}>
+              <div className="max-w-[85%]">
                 {/* Message bubble */}
                 <div
                   className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
