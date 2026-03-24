@@ -18,7 +18,7 @@ const ORB_COLORS = ['hsla(45, 95%, 55%, 0.15)', 'hsla(35, 90%, 50%, 0.1)', 'hsla
 const PACT_TEMPLATES = [
   {
     label: 'Freelance',
-    colors: ['hsla(218, 90%, 60%, 0.15)', 'hsla(240, 70%, 50%, 0.1)', 'hsla(200, 80%, 45%, 0.08)'] as [string, string, string],
+    colors: ['hsla(45, 95%, 55%, 0.15)', 'hsla(40, 85%, 50%, 0.1)', 'hsla(50, 80%, 55%, 0.08)'] as [string, string, string],
     title: 'Freelance Agreement',
     description:
       'A simple pact for freelance work. Covers task scope, payment terms, deadline, and deliverables between a client and freelancer.',
