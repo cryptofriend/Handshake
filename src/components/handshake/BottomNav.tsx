@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Sparkles, User, PenTool } from 'lucide-react';
+import { Sparkles, User, Handshake } from 'lucide-react';
 import { useTonAddress, useTonConnectModal } from '@tonconnect/ui-react';
 import { cn } from '@/lib/utils';
 import logoImg from '@/assets/logo.png';
@@ -7,7 +7,7 @@ import logoImg from '@/assets/logo.png';
 const NAV_ITEMS = [
   { icon: null as any, label: 'Home', path: '/', requiresAuth: false, isLogo: true },
   { icon: Sparkles, label: 'Agent', path: '/agent', requiresAuth: false, isLogo: false },
-  { icon: PenTool, label: 'To Sign', path: '/sign', requiresAuth: false, isLogo: false },
+  { icon: Handshake, label: 'To Sign', path: '/sign', requiresAuth: false, isLogo: false },
   { icon: User, label: 'Profile', path: '/profile', requiresAuth: false, isLogo: false },
 ];
 
