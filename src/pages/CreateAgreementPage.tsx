@@ -15,11 +15,21 @@ import { Button } from '@/components/ui/button';
 type FlowState = 'idle' | 'recording' | 'processing' | 'result';
 
 const MOCK_AGREEMENT: Omit<Agreement, 'id' | 'creatorName' | 'createdAt' | 'creatorSigned' | 'counterpartySigned' | 'status'> = {
+  version: '1.0',
+  title: 'Design Agreement',
+  summary: 'Landing page design project',
   counterpartyName: 'John',
   task: 'Design landing page with responsive layout',
   payment: '$500',
   deadline: 'Friday',
   notes: 'Deliver Figma file and mobile version',
+  parties: [{ name: 'You' }, { name: 'John' }],
+  allocations: [],
+  fullText: '',
+  shortHash: '',
+  fullHash: '',
+  signatures: [],
+  receiptStatus: 'none',
 };
 
 const CreateAgreementPage = () => {
