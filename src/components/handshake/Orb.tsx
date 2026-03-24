@@ -79,13 +79,13 @@ export const Orb = ({ state, onClick }: OrbProps) => {
       <motion.div
         className="relative w-40 h-40 rounded-full overflow-hidden"
         style={{
-          background: 'radial-gradient(circle at 30% 30%, hsla(218, 86%, 65%, 0.15), hsla(260, 70%, 50%, 0.1), hsla(200, 80%, 40%, 0.08))',
+          background: 'radial-gradient(circle at 30% 30%, hsla(45, 95%, 65%, 0.15), hsla(35, 80%, 50%, 0.1), hsla(55, 80%, 50%, 0.08))',
           backdropFilter: 'blur(40px)',
-          border: '1px solid hsla(218, 86%, 55%, 0.15)',
+          border: '1px solid hsla(45, 95%, 55%, 0.15)',
           boxShadow: `
-            0 0 60px hsla(218, 86%, 55%, ${isActive ? 0.35 : 0.15}),
-            0 0 120px hsla(260, 70%, 50%, ${isActive ? 0.2 : 0.08}),
-            inset 0 0 60px hsla(218, 86%, 55%, 0.05)
+            0 0 60px hsla(45, 95%, 55%, ${isActive ? 0.35 : 0.15}),
+            0 0 120px hsla(35, 80%, 50%, ${isActive ? 0.2 : 0.08}),
+            inset 0 0 60px hsla(45, 95%, 55%, 0.05)
           `,
         }}
         animate={
