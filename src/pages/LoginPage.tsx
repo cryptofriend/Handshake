@@ -181,6 +181,7 @@ const LoginPage = () => {
           ))}
         </motion.div>
       </motion.div>
+      </div>
 
       {/* Template Detail Dialog */}
       <Dialog open={!!selectedTemplate} onOpenChange={(open) => !open && setSelectedTemplate(null)}>
