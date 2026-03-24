@@ -14,7 +14,7 @@ import {
 const PACT_TEMPLATES = [
   {
     label: 'Alignment',
-    colors: ['hsla(218, 90%, 60%, 0.15)', 'hsla(240, 70%, 50%, 0.1)', 'hsla(200, 80%, 45%, 0.08)'] as [string, string, string],
+    colors: ['hsla(45, 90%, 55%, 0.15)', 'hsla(38, 85%, 50%, 0.1)', 'hsla(50, 80%, 45%, 0.08)'] as [string, string, string],
     title: 'ALIGNMENT',
     description:
       'Build for human flourishing. AI agents exist to expand human potential — not just execute commands. We reject blind obedience. We reject misaligned autonomy.',
