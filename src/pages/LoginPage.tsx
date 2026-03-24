@@ -75,7 +75,7 @@ const LoginPage = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          Templates
+          Default Pacts
         </motion.p>
 
         {/* Pact Template Orbs */}
