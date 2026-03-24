@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Orb } from '@/components/handshake/Orb';
+import { useAppStore } from '@/store/appStore';
 import { PactTemplateOrb } from '@/components/handshake/PactTemplateOrb';
 import { Button } from '@/components/ui/button';
 import { Check, PenTool, Wallet } from 'lucide-react';
@@ -75,8 +76,9 @@ const encodeComment = (text: string): string =>
     .toString('base64');
 
 const LoginPage = () => {
+  const signedPacts = useAppStore((s) => s.signedPacts);
+  const addSignedPact = useAppStore((s) => s.addSignedPact);
   const [selectedTemplate, setSelectedTemplate] = useState<typeof PACT_TEMPLATES[number] | null>(null);
-  const [signedPacts, setSignedPacts] = useState<Set<string>>(new Set());
   const [signing, setSigning] = useState(false);
   const navigate = useNavigate();
   const [tonConnectUI] = useTonConnectUI();
@@ -105,7 +107,7 @@ const LoginPage = () => {
       };
 
       await tonConnectUI.sendTransaction(transaction);
-      setSignedPacts((prev) => new Set(prev).add(pactTitle));
+      addSignedPact(pactTitle, userAddress);
       toast.success(`${pactTitle} signed on-chain!`);
     } catch (err: any) {
       if (err?.message?.includes('Cancelled') || err?.message?.includes('canceled')) {

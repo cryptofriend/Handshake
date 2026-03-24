@@ -7,12 +7,14 @@ interface AppState {
   user: User | null;
   currentAgreement: Agreement | null;
   agreements: Agreement[];
+  signedPacts: Set<string>;
   mode: AppMode;
   setUser: (user: User | null) => void;
   setMode: (mode: AppMode) => void;
   setCurrentAgreement: (agreement: Agreement | null) => void;
   updateAgreement: (updates: Partial<Agreement>) => void;
   addAgreement: (agreement: Agreement) => void;
+  addSignedPact: (pactTitle: string, walletAddress: string, txHash?: string) => void;
   signAsCreator: () => void;
   signAsCounterparty: () => void;
 }
@@ -21,6 +23,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   user: null,
   currentAgreement: null,
   agreements: [],
+  signedPacts: new Set<string>(),
   mode: 'human',
   setUser: (user) => set({ user }),
   setMode: (mode) => set({ mode }),
@@ -33,6 +36,49 @@ export const useAppStore = create<AppState>((set, get) => ({
   addAgreement: (agreement) => set((state) => ({
     agreements: [agreement, ...state.agreements],
   })),
+  addSignedPact: (pactTitle, walletAddress, txHash) => set((state) => {
+    const newSignedPacts = new Set(state.signedPacts);
+    newSignedPacts.add(pactTitle);
+
+    // Create an agreement entry for the signed manifesto
+    const manifestoAgreement: Agreement = {
+      id: `manifesto-${pactTitle.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
+      version: '1.0',
+      createdAt: new Date().toISOString(),
+      title: `Manifesto: ${pactTitle}`,
+      summary: `Signed the ${pactTitle} manifesto pact on-chain.`,
+      status: 'fully_signed',
+      parties: [{ name: walletAddress.slice(0, 6) + '...' + walletAddress.slice(-4), role: 'Signer', walletAddress }],
+      allocations: [],
+      fullText: `Handshake Manifesto – ${pactTitle}`,
+      shortHash: txHash ? txHash.slice(0, 10) : '0x...',
+      fullHash: txHash || '',
+      signatures: [{
+        party: walletAddress.slice(0, 6) + '...' + walletAddress.slice(-4),
+        walletAddress,
+        signedAt: new Date().toISOString(),
+        txHash: txHash || '',
+        blockchainStatus: 'confirmed',
+      }],
+      receiptStatus: 'minted',
+      txHash,
+      creatorName: walletAddress.slice(0, 6) + '...' + walletAddress.slice(-4),
+      counterpartyName: 'Handshake Protocol',
+      task: `Sign ${pactTitle} manifesto`,
+      payment: '0.01 TON',
+      deadline: '',
+      notes: '',
+      creatorSigned: true,
+      counterpartySigned: true,
+      creatorSignedAt: new Date().toISOString(),
+      counterpartySignedAt: new Date().toISOString(),
+    };
+
+    return {
+      signedPacts: newSignedPacts,
+      agreements: [manifestoAgreement, ...state.agreements],
+    };
+  }),
   signAsCreator: () => set((state) => {
     if (!state.currentAgreement) return state;
     const updated = {
