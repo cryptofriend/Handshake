@@ -11,6 +11,13 @@ interface Props {
 export const AgreementCardFlip = ({ agreement }: Props) => {
   const [flipped, setFlipped] = useState(false);
 
+  const handleCopyLink = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const link = `${window.location.origin}/sign/${agreement.id}`;
+    navigator.clipboard.writeText(link);
+    toast.success('Agreement link copied');
+  };
+
   return (
     <div className="perspective-[1200px] w-full">
       <motion.div
