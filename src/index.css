@@ -60,11 +60,11 @@
     --sidebar-ring: 45 95% 55%;
 
     --shadow-soft: 0 4px 24px -4px hsl(230 50% 10% / 0.08);
-    --shadow-card: 0 8px 32px -8px hsl(218 90% 60% / 0.08);
-    --shadow-elevated: 0 16px 48px -12px hsl(218 90% 60% / 0.12);
+    --shadow-card: 0 8px 32px -8px hsl(45 95% 55% / 0.08);
+    --shadow-elevated: 0 16px 48px -12px hsl(45 95% 55% / 0.12);
 
-    --gradient-orb: radial-gradient(circle, hsl(218 90% 60% / 0.6), hsl(260 80% 55% / 0.4), hsl(190 90% 50% / 0.2));
-    --gradient-glow: radial-gradient(circle, hsl(218 90% 60% / 0.25), hsl(260 80% 55% / 0.1), transparent 70%);
+    --gradient-orb: radial-gradient(circle, hsl(45 95% 55% / 0.6), hsl(35 90% 50% / 0.4), hsl(55 85% 60% / 0.2));
+    --gradient-glow: radial-gradient(circle, hsl(45 95% 55% / 0.25), hsl(35 90% 50% / 0.1), transparent 70%);
   }
 
   .dark {
