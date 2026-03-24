@@ -126,8 +126,8 @@ export const Orb = ({ state, onClick }: OrbProps) => {
             className="absolute inset-2 rounded-full"
             style={{
               border: '1.5px solid transparent',
-              borderTopColor: 'hsla(218, 86%, 55%, 0.5)',
-              borderBottomColor: 'hsla(260, 70%, 50%, 0.2)',
+              borderTopColor: 'hsla(45, 95%, 55%, 0.5)',
+              borderBottomColor: 'hsla(35, 80%, 50%, 0.2)',
             }}
             initial={{ opacity: 0, rotate: 0 }}
             animate={{ opacity: 1, rotate: 360 }}

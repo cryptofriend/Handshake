@@ -146,7 +146,7 @@ const LoginPage = () => {
               style={{
                 background: 'hsla(0, 0%, 100%, 0.06)',
                 color: 'hsla(0, 0%, 100%, 0.9)',
-                caretColor: 'hsl(218, 90%, 60%)',
+                caretColor: 'hsl(45, 95%, 55%)',
               }}
             />
             <Button
