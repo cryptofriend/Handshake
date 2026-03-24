@@ -197,6 +197,8 @@ serve(async (req) => {
           missing_fields: agreement.missingFields || [],
           status,
           full_response: parsed,
+          full_text: agreement.fullText || "",
+          allocations: agreement.allocations || [],
         })
         .select("id")
         .single();
