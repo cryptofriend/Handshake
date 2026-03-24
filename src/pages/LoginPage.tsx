@@ -97,9 +97,8 @@ const LoginPage = () => {
         validUntil: Math.floor(Date.now() / 1000) + 300,
         messages: [
           {
-            // Send a minimal TON tx to self as an on-chain attestation
             address: userAddress,
-            amount: '10000000', // 0.01 TON
+            amount: toNano('0.01').toString(),
             payload: encodeComment(`Handshake Manifesto Signed: ${pactTitle}`),
           },
         ],
