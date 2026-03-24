@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Orb } from '@/components/handshake/Orb';
 import { PactTemplateOrb } from '@/components/handshake/PactTemplateOrb';
 import { Button } from '@/components/ui/button';
-import { Check, PenTool } from 'lucide-react';
+import { Check, PenTool, Wallet } from 'lucide-react';
 import { useTonConnectUI, useTonConnectModal, useTonAddress } from '@tonconnect/ui-react';
 import { toast } from 'sonner';
 import {
