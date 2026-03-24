@@ -149,23 +149,31 @@ const LoginPage = () => {
 
           <DialogHeader>
             <DialogTitle className="text-foreground text-center">{selectedTemplate?.title}</DialogTitle>
-            <DialogDescription className="pt-2 text-center text-muted-foreground">
-              {selectedTemplate?.description}
-            </DialogDescription>
           </DialogHeader>
-          <div className="space-y-2 pt-2">
-            <p className="text-sm font-medium text-foreground/80">Fields covered:</p>
-            <ul className="space-y-1.5">
-              {selectedTemplate?.fields.map((f) => (
-                <li key={f} className="text-sm flex items-center gap-2.5 text-muted-foreground">
-                  <span
-                    className="w-1.5 h-1.5 rounded-full inline-block flex-shrink-0"
-                    style={{ background: selectedTemplate.colors[0].replace(/[\d.]+\)$/, '0.8)') }}
-                  />
-                  {f}
-                </li>
-              ))}
-            </ul>
+          <div className="space-y-3 pt-2 max-h-[60vh] overflow-y-auto">
+            {selectedTemplate?.sections.map((section, i) => {
+              if (section.type === 'subtitle')
+                return <p key={i} className="text-sm font-semibold text-foreground/90 text-center italic">{section.text}</p>;
+              if (section.type === 'body')
+                return <p key={i} className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{section.text}</p>;
+              if (section.type === 'heading')
+                return <p key={i} className="text-sm font-semibold text-foreground/80 pt-1">{section.text}</p>;
+              if (section.type === 'list')
+                return (
+                  <ul key={i} className="space-y-1.5 pl-1">
+                    {section.items?.map((item) => (
+                      <li key={item} className="text-sm flex items-center gap-2.5 text-muted-foreground">
+                        <span
+                          className="w-1.5 h-1.5 rounded-full inline-block flex-shrink-0"
+                          style={{ background: selectedTemplate.colors[0].replace(/[\d.]+\)$/, '0.8)') }}
+                        />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                );
+              return null;
+            })}
           </div>
         </DialogContent>
       </Dialog>
