@@ -44,9 +44,10 @@ const WaveRing = ({ delay, duration }: { delay: number; duration: number }) => (
   />
 );
 
-const OrbHalf = ({ side, colors }: { side: 'left' | 'right'; colors: { blob1: string; blob2: string } }) => (
+/** A complete mini-orb used as each "daughter cell" during the mitosis animation */
+const MiniOrb = ({ blobs }: { blobs: { color: string; size: number; dur: number; x: number; y: number }[] }) => (
   <div
-    className="absolute w-40 h-40 rounded-full overflow-hidden"
+    className="w-full h-full rounded-full overflow-hidden"
     style={{
       background: 'radial-gradient(circle at 30% 30%, hsla(218, 86%, 65%, 0.15), hsla(260, 70%, 50%, 0.1), hsla(200, 80%, 40%, 0.08))',
       backdropFilter: 'blur(40px)',
@@ -56,37 +57,139 @@ const OrbHalf = ({ side, colors }: { side: 'left' | 'right'; colors: { blob1: st
         0 0 120px hsla(260, 70%, 50%, 0.08),
         inset 0 0 60px hsla(218, 86%, 55%, 0.05)
       `,
-      clipPath: side === 'left' ? 'inset(0 50% 0 0)' : 'inset(0 0 0 50%)',
     }}
   >
-    <FloatingBlob color={colors.blob1} size={60} duration={5} delay={0} x={side === 'left' ? -10 : 10} y={10} />
-    <FloatingBlob color={colors.blob2} size={50} duration={6} delay={0.5} x={side === 'left' ? -15 : 15} y={-10} />
+    {blobs.map((b, i) => (
+      <FloatingBlob key={i} color={b.color} size={b.size} duration={b.dur} delay={i * 0.4} x={b.x} y={b.y} />
+    ))}
     <div
       className="absolute top-3 left-6 w-16 h-8 rounded-full"
-      style={{
-        background: 'linear-gradient(135deg, hsla(0, 0%, 100%, 0.2), transparent)',
-        filter: 'blur(8px)',
-      }}
+      style={{ background: 'linear-gradient(135deg, hsla(0, 0%, 100%, 0.2), transparent)', filter: 'blur(8px)' }}
     />
   </div>
 );
+
+/**
+ * Mitosis-style idle animation.
+ * 
+ * Timeline (10s loop):
+ *   0-20%   single orb breathes
+ *   20-40%  orb elongates horizontally (cell stretching)
+ *   40-55%  two daughter orbs emerge, connected by a thinning bridge
+ *   55-70%  fully separated — two smaller orbs drift apart, bridge snaps
+ *   70-85%  daughters drift back together
+ *   85-100% merge back into one orb
+ */
+const MITOSIS_DURATION = 10;
+const MITOSIS_TIMES = [0, 0.2, 0.4, 0.55, 0.7, 0.85, 1];
+
+const MitosisIdleOrb = () => {
+  // Main container stretches into an ellipse then back
+  const containerScaleX = [1, 1, 1.35, 1, 1, 1.35, 1];
+  const containerScaleY = [1, 1, 0.75, 1, 1, 0.75, 1];
+  const containerOpacity = [1, 1, 0.6, 0, 0, 0.6, 1];
+
+  // Daughter orbs: start hidden inside, emerge, drift out, come back, hide
+  const daughterOpacity = [0, 0, 0.3, 1, 1, 0.3, 0];
+  const daughterScale = [0.3, 0.3, 0.55, 0.7, 0.7, 0.55, 0.3];
+  const leftX = [0, 0, -15, -50, -50, -15, 0];
+  const rightX = [0, 0, 15, 50, 50, 15, 0];
+
+  // Bridge connecting the two daughters — stretches and thins
+  const bridgeScaleX = [0, 0, 0.6, 1, 1, 0.6, 0];
+  const bridgeOpacity = [0, 0, 0.5, 0.3, 0.3, 0.5, 0];
+  const bridgeScaleY = [1, 1, 0.8, 0.15, 0.15, 0.8, 1];
+
+  const timing = {
+    duration: MITOSIS_DURATION,
+    repeat: Infinity,
+    ease: 'easeInOut' as const,
+    times: MITOSIS_TIMES,
+  };
+
+  return (
+    <div className="relative w-40 h-40 flex items-center justify-center">
+      {/* Main single orb — visible when merged */}
+      <motion.div
+        className="absolute w-40 h-40 rounded-full overflow-hidden"
+        style={{
+          background: 'radial-gradient(circle at 30% 30%, hsla(218, 86%, 65%, 0.15), hsla(260, 70%, 50%, 0.1), hsla(200, 80%, 40%, 0.08))',
+          backdropFilter: 'blur(40px)',
+          border: '1px solid hsla(218, 86%, 55%, 0.15)',
+          boxShadow: `
+            0 0 60px hsla(218, 86%, 55%, 0.15),
+            0 0 120px hsla(260, 70%, 50%, 0.08),
+            inset 0 0 60px hsla(218, 86%, 55%, 0.05)
+          `,
+        }}
+        animate={{
+          scaleX: containerScaleX,
+          scaleY: containerScaleY,
+          opacity: containerOpacity,
+        }}
+        transition={timing}
+      >
+        <FloatingBlob color="hsla(218, 90%, 60%, 0.5)" size={80} duration={5} delay={0} x={20} y={15} />
+        <FloatingBlob color="hsla(260, 80%, 55%, 0.4)" size={70} duration={6.5} delay={0.5} x={-25} y={20} />
+        <FloatingBlob color="hsla(190, 90%, 50%, 0.35)" size={60} duration={4.5} delay={1} x={15} y={-20} />
+        <FloatingBlob color="hsla(300, 60%, 55%, 0.25)" size={50} duration={7} delay={1.5} x={-18} y={-15} />
+        <div
+          className="absolute top-3 left-6 w-16 h-8 rounded-full"
+          style={{ background: 'linear-gradient(135deg, hsla(0, 0%, 100%, 0.2), transparent)', filter: 'blur(8px)' }}
+        />
+      </motion.div>
+
+      {/* Left daughter orb */}
+      <motion.div
+        className="absolute"
+        style={{ width: 100, height: 100 }}
+        animate={{ x: leftX, opacity: daughterOpacity, scale: daughterScale }}
+        transition={timing}
+      >
+        <MiniOrb blobs={[
+          { color: 'hsla(218, 90%, 60%, 0.5)', size: 50, dur: 4, x: -8, y: 8 },
+          { color: 'hsla(260, 80%, 55%, 0.4)', size: 40, dur: 5, x: -12, y: -6 },
+        ]} />
+      </motion.div>
+
+      {/* Right daughter orb */}
+      <motion.div
+        className="absolute"
+        style={{ width: 100, height: 100 }}
+        animate={{ x: rightX, opacity: daughterOpacity, scale: daughterScale }}
+        transition={timing}
+      >
+        <MiniOrb blobs={[
+          { color: 'hsla(190, 90%, 50%, 0.45)', size: 50, dur: 4.5, x: 8, y: 8 },
+          { color: 'hsla(300, 60%, 55%, 0.35)', size: 40, dur: 5.5, x: 12, y: -6 },
+        ]} />
+      </motion.div>
+
+      {/* Connecting bridge — the "neck" that thins and snaps */}
+      <motion.div
+        className="absolute pointer-events-none"
+        style={{
+          width: 100,
+          height: 40,
+          borderRadius: '50%',
+          background: 'radial-gradient(ellipse, hsla(218, 86%, 55%, 0.25), hsla(260, 70%, 50%, 0.1), transparent 80%)',
+          filter: 'blur(10px)',
+        }}
+        animate={{
+          scaleX: bridgeScaleX,
+          scaleY: bridgeScaleY,
+          opacity: bridgeOpacity,
+        }}
+        transition={timing}
+      />
+    </div>
+  );
+};
 
 export const Orb = ({ state, onClick }: OrbProps) => {
   const isActive = state === 'recording';
   const isProcessing = state === 'processing';
   const isIdle = state === 'idle';
-
-  // Split-merge cycle: 6s total — hold together, split apart, hold apart, merge back
-  const splitKeyframes = {
-    x: [0, 0, 45, 45, 0, 0],
-    scale: [1, 1, 0.85, 0.85, 1, 1],
-  };
-  const splitTiming = {
-    duration: 6,
-    repeat: Infinity,
-    ease: 'easeInOut' as const,
-    times: [0, 0.15, 0.4, 0.6, 0.85, 1],
-  };
 
   return (
     <div className="relative flex items-center justify-center w-56 h-56 mx-auto cursor-pointer" onClick={onClick}>
@@ -116,40 +219,7 @@ export const Orb = ({ state, onClick }: OrbProps) => {
       </AnimatePresence>
 
       {isIdle ? (
-        /* Split-merge idle animation */
-        <div className="relative w-40 h-40">
-          {/* Left half */}
-          <motion.div
-            className="absolute inset-0"
-            animate={{ x: splitKeyframes.x.map((v) => -v), scale: splitKeyframes.scale }}
-            transition={splitTiming}
-          >
-            <OrbHalf side="left" colors={{ blob1: 'hsla(218, 90%, 60%, 0.5)', blob2: 'hsla(260, 80%, 55%, 0.4)' }} />
-          </motion.div>
-
-          {/* Right half */}
-          <motion.div
-            className="absolute inset-0"
-            animate={{ x: splitKeyframes.x, scale: splitKeyframes.scale }}
-            transition={splitTiming}
-          >
-            <OrbHalf side="right" colors={{ blob1: 'hsla(190, 90%, 50%, 0.45)', blob2: 'hsla(300, 60%, 55%, 0.35)' }} />
-          </motion.div>
-
-          {/* Center glow bridge that fades during split */}
-          <motion.div
-            className="absolute inset-0 rounded-full pointer-events-none"
-            style={{
-              background: 'radial-gradient(circle, hsla(218, 86%, 55%, 0.2), transparent 70%)',
-              filter: 'blur(15px)',
-            }}
-            animate={{
-              opacity: [0.6, 0.6, 0, 0, 0.6, 0.6],
-              scale: [1, 1, 1.3, 1.3, 1, 1],
-            }}
-            transition={splitTiming}
-          />
-        </div>
+        <MitosisIdleOrb />
       ) : (
         /* Non-idle: original single orb */
         <motion.div
