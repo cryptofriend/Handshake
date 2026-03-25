@@ -221,6 +221,25 @@ const AdminPage = () => {
             </pre>
           </Card>
         )}
+
+        {/* System Prompt Editor */}
+        <Card className="p-4 space-y-3">
+          <label className="text-sm font-medium text-foreground">Handshake System Prompt</label>
+          <p className="text-xs text-muted-foreground">Edit the AI system prompt used by the agent. Changes apply immediately to new conversations.</p>
+          {promptLoading ? (
+            <div className="h-40 bg-muted/50 rounded-lg animate-pulse" />
+          ) : (
+            <Textarea
+              value={systemPrompt}
+              onChange={e => setSystemPrompt(e.target.value)}
+              rows={16}
+              className="resize-y font-mono text-xs"
+            />
+          )}
+          <Button onClick={savePrompt} disabled={promptSaving || promptLoading} className="w-full">
+            {promptSaving ? 'Saving...' : 'Save Prompt'}
+          </Button>
+        </Card>
       </div>
     </div>
   );

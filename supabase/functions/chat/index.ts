@@ -131,8 +131,9 @@ serve(async (req) => {
     });
 
     // Build conversation context
+    const systemPrompt = await getSystemPrompt(supabase);
     const conversationMessages = [
-      { role: "system", content: HANDSHAKE_SYSTEM_PROMPT },
+      { role: "system", content: systemPrompt },
     ];
 
     // Add history if provided
