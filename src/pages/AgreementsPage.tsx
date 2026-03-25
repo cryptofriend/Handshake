@@ -20,7 +20,7 @@ interface ProfileAgreement {
   signatureCount: number;
 }
 
-const ProfilePage = () => {
+const AgreementsPage = () => {
   const userAddress = useTonAddress();
   const [tonConnectUI] = useTonConnectUI();
   const navigate = useNavigate();
@@ -36,7 +36,6 @@ const ProfilePage = () => {
     const fetchAgreements = async () => {
       setLoading(true);
 
-      // Get all agreements this wallet has signed
       const { data: sigData } = await supabase
         .from('agreement_signatures')
         .select('agreement_id')
@@ -44,7 +43,6 @@ const ProfilePage = () => {
 
       const signedIds = (sigData || []).map((s: any) => s.agreement_id);
 
-      // Get all agreements (we'll filter by participation)
       const { data: drafts } = await supabase
         .from('agreement_drafts')
         .select('*')
@@ -55,7 +53,6 @@ const ProfilePage = () => {
         return;
       }
 
-      // Get all signatures for these agreements
       const allIds = drafts.map(d => d.id);
       const { data: allSigs } = await supabase
         .from('agreement_signatures')
@@ -255,4 +252,4 @@ const AgreementListItem = ({
   );
 };
 
-export default ProfilePage;
+export default AgreementsPage;
