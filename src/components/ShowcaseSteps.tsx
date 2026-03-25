@@ -71,7 +71,18 @@ export default function ShowcaseSteps() {
         transition={{ duration: 0.6 }}
       >
         <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-2">How it works</p>
-        <h2 className="text-2xl font-semibold text-foreground">Digital Handshake in 3 Steps</h2>
+        <AnimatePresence mode="wait">
+          <motion.h2
+            key={active}
+            className="text-2xl font-semibold text-foreground"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            {steps[active].headline}
+          </motion.h2>
+        </AnimatePresence>
       </motion.div>
 
       {/* Slide card with nav arrows */}
