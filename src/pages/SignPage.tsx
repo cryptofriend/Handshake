@@ -126,13 +126,27 @@ const SignPage = () => {
 
       await tonConnectUI.sendTransaction(transaction);
 
+      const txHash = '0x' + Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+
       const newSig: AgreementSignature = {
         party: agreement?.parties[0]?.name || 'Signer',
         walletAddress: userAddress,
         signedAt: new Date().toISOString(),
-        txHash: '0x' + Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
+        txHash,
         blockchainStatus: 'pending',
       };
+
+      // Persist signature to database
+      if (id) {
+        await supabase.from('agreement_signatures').upsert({
+          agreement_id: id,
+          wallet_address: userAddress,
+          party_name: newSig.party,
+          tx_hash: txHash,
+          blockchain_status: 'pending',
+          signed_at: new Date().toISOString(),
+        }, { onConflict: 'agreement_id,wallet_address' });
+      }
 
       setAgreement((prev) => prev ? ({
         ...prev,
@@ -144,7 +158,13 @@ const SignPage = () => {
       toast.success('Agreement signed on-chain!');
 
       // Simulate confirmation
-      setTimeout(() => {
+      setTimeout(async () => {
+        if (id) {
+          await supabase.from('agreement_signatures')
+            .update({ blockchain_status: 'confirmed' })
+            .eq('agreement_id', id)
+            .eq('wallet_address', userAddress);
+        }
         setAgreement((prev) => prev ? ({
           ...prev,
           signatures: prev.signatures.map((s) =>
