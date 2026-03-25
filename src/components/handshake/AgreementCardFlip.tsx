@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Agreement } from '@/types/agreement';
-import { RotateCw, Copy } from 'lucide-react';
+import { RotateCw, Copy, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Props {
@@ -93,10 +93,20 @@ export const AgreementCardFlip = ({ agreement }: Props) => {
           <div className="flex gap-3 mb-3">
             {agreement.parties.map((party) => {
               const sig = agreement.signatures.find(s => s.party === party.name);
+              const handleShare = (e: React.MouseEvent) => {
+                e.stopPropagation();
+                const link = `${window.location.origin}/sign/${agreement.id}`;
+                if (navigator.share) {
+                  navigator.share({ title: agreement.title, text: `Sign: ${agreement.title}`, url: link });
+                } else {
+                  navigator.clipboard.writeText(link);
+                  toast.success('Signing link copied');
+                }
+              };
               return (
                 <div
                   key={party.name}
-                  className="flex-1 rounded-xl border border-border/50 p-2.5 text-center"
+                  className="flex-1 rounded-xl border border-border/50 p-2.5 text-center relative"
                   style={{
                     background: sig
                       ? 'hsl(var(--success) / 0.06)'
@@ -109,7 +119,15 @@ export const AgreementCardFlip = ({ agreement }: Props) => {
                   {sig ? (
                     <p className="text-[10px] font-medium text-success">✓ Signed</p>
                   ) : (
-                    <p className="text-[10px] text-muted-foreground/50">Pending</p>
+                    <div className="flex items-center justify-center gap-1">
+                      <p className="text-[10px] text-muted-foreground/50">Pending</p>
+                      <button
+                        onClick={handleShare}
+                        className="p-0.5 rounded hover:bg-muted/50 transition-colors"
+                      >
+                        <Share2 className="w-3 h-3 text-primary" />
+                      </button>
+                    </div>
                   )}
                 </div>
               );
