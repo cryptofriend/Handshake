@@ -184,6 +184,24 @@ const AdminPage = () => {
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3">
           <Card className="p-4 flex items-center gap-3">
+            <Users className="w-5 h-5 text-primary" />
+            <div>
+              <p className="text-2xl font-bold text-foreground">
+                {statsLoading ? '...' : stats?.uniqueUsers ?? '–'}
+              </p>
+              <p className="text-xs text-muted-foreground">Unique Users</p>
+            </div>
+          </Card>
+          <Card className="p-4 flex items-center gap-3">
+            <Flame className="w-5 h-5 text-primary" />
+            <div>
+              <p className="text-2xl font-bold text-foreground">
+                {statsLoading ? '...' : stats?.aiCalls ?? '–'}
+              </p>
+              <p className="text-xs text-muted-foreground">AI Credits Burned</p>
+            </div>
+          </Card>
+          <Card className="p-4 flex items-center gap-3">
             <MessageSquare className="w-5 h-5 text-primary" />
             <div>
               <p className="text-2xl font-bold text-foreground">
