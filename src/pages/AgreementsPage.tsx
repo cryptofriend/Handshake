@@ -92,7 +92,44 @@ interface ProfileAgreement {
 const AgreementsPage = () => {
   const userAddress = useTonAddress();
   const [tonConnectUI] = useTonConnectUI();
+  const { open: openTonModal } = useTonConnectModal();
   const navigate = useNavigate();
+  const [agreements, setAgreements] = useState<ProfileAgreement[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedTemplate, setSelectedTemplate] = useState<typeof PACT_TEMPLATES[number] | null>(null);
+  const [signing, setSigning] = useState(false);
+  const signedPacts = useAppStore((s) => s.signedPacts);
+  const addSignedPact = useAppStore((s) => s.addSignedPact);
+
+  const handleSignPact = async (pactTitle: string) => {
+    if (!userAddress) {
+      setSelectedTemplate(null);
+      setTimeout(() => openTonModal(), 150);
+      return;
+    }
+    setSigning(true);
+    try {
+      const transaction = {
+        validUntil: Math.floor(Date.now() / 1000) + 300,
+        messages: [{
+          address: userAddress,
+          amount: toNano('0.01').toString(),
+          payload: encodeComment(`Handshake Manifesto Signed: ${pactTitle}`),
+        }],
+      };
+      await tonConnectUI.sendTransaction(transaction);
+      addSignedPact(pactTitle, userAddress);
+      toast.success(`${pactTitle} signed on-chain!`);
+    } catch (err: any) {
+      if (err?.message?.includes('Cancelled') || err?.message?.includes('canceled')) {
+        toast.info('Transaction cancelled');
+      } else {
+        toast.error(err?.message || 'Transaction failed.');
+      }
+    } finally {
+      setSigning(false);
+    }
+  };
   const [agreements, setAgreements] = useState<ProfileAgreement[]>([]);
   const [loading, setLoading] = useState(true);
 
