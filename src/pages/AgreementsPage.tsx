@@ -216,8 +216,21 @@ const AgreementsPage = () => {
           <h2 className="text-lg font-semibold text-foreground font-mono">{shortAddress}</h2>
           <p className="text-muted-foreground text-xs mt-1">TON Wallet</p>
         </div>
+        {/* Manifesto Orbs */}
+        <div className="mb-8">
+          <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-4 text-center">Manifesto</p>
+          <div className="flex items-center justify-center gap-8">
+            {PACT_TEMPLATES.map((t) => (
+              <PactTemplateOrb
+                key={t.label}
+                label={t.label}
+                colors={t.colors}
+                onClick={() => setSelectedTemplate(t)}
+              />
+            ))}
+          </div>
+        </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-3 gap-3 mb-8">
           <div className="bg-card rounded-2xl p-4 text-center shadow-sm border border-border">
             <FileCheck className="w-5 h-5 mx-auto mb-1 text-primary" />
@@ -324,6 +337,85 @@ const AgreementsPage = () => {
           Disconnect Wallet
         </Button>
       </motion.div>
+
+      {/* Manifesto Detail Dialog */}
+      <Dialog open={!!selectedTemplate} onOpenChange={(open) => !open && setSelectedTemplate(null)}>
+        <DialogContent
+          className="rounded-3xl max-w-sm mx-auto border-0 overflow-hidden"
+          style={{
+            background: 'hsla(230, 25%, 97%, 0.8)',
+            backdropFilter: 'blur(40px)',
+            boxShadow: selectedTemplate
+              ? `0 0 60px ${selectedTemplate.colors[0]}, 0 0 120px ${selectedTemplate.colors[1]}, 0 20px 60px hsla(230, 25%, 10%, 0.08)`
+              : undefined,
+            border: '1px solid hsla(218, 90%, 60%, 0.12)',
+          }}
+        >
+          {selectedTemplate && (
+            <div className="flex justify-center -mt-2 mb-2">
+              <div
+                className="relative w-16 h-16 rounded-full overflow-hidden"
+                style={{
+                  background: `radial-gradient(circle at 35% 35%, ${selectedTemplate.colors[0]}, ${selectedTemplate.colors[1]}, ${selectedTemplate.colors[2]})`,
+                  boxShadow: `0 0 40px ${selectedTemplate.colors[0]}, 0 0 80px ${selectedTemplate.colors[1]}`,
+                }}
+              >
+                <motion.div
+                  className="absolute rounded-full blur-xl"
+                  style={{
+                    width: 30, height: 30,
+                    background: selectedTemplate.colors[0].replace(/[\d.]+\)$/, '0.6)'),
+                    left: '50%', top: '50%',
+                    marginLeft: -15, marginTop: -15,
+                  }}
+                  animate={{ x: [5, -8, 5], y: [3, -5, 3], scale: [1, 1.4, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                />
+              </div>
+            </div>
+          )}
+          <DialogHeader>
+            <DialogTitle className="text-foreground text-center">{selectedTemplate?.title}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 pt-2 max-h-[50vh] overflow-y-auto">
+            {selectedTemplate?.sections?.map((section, i) => {
+              if (section.type === 'subtitle')
+                return <p key={i} className="text-sm font-semibold text-foreground/90 text-center italic">{section.text}</p>;
+              if (section.type === 'body')
+                return <p key={i} className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{section.text}</p>;
+              if (section.type === 'heading')
+                return <p key={i} className="text-sm font-semibold text-foreground/80 pt-1">{section.text}</p>;
+              if (section.type === 'list')
+                return (
+                  <ul key={i} className="space-y-1.5 pl-1">
+                    {section.items?.map((item) => (
+                      <li key={item} className="text-sm flex items-center gap-2.5 text-muted-foreground">
+                        <span className="w-1.5 h-1.5 rounded-full inline-block flex-shrink-0" style={{ background: selectedTemplate.colors[0].replace(/[\d.]+\)$/, '0.8)') }} />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                );
+              return null;
+            })}
+          </div>
+          {selectedTemplate && (
+            <div className="pt-4">
+              {signedPacts.has(selectedTemplate.title) ? (
+                <Button className="w-full rounded-2xl h-12 text-base font-semibold gap-2 bg-[hsl(var(--success))] hover:bg-[hsl(var(--success))]/90 text-[hsl(var(--success-foreground))]" disabled>
+                  <Check className="w-4 h-4" />
+                  Signed
+                </Button>
+              ) : (
+                <Button className="w-full rounded-2xl h-12 text-base font-semibold gap-2" disabled={signing} onClick={() => handleSignPact(selectedTemplate.title)}>
+                  <PenTool className="w-4 h-4" />
+                  {signing ? 'Signing...' : !userAddress ? 'Connect Wallet to Sign' : 'Sign with TON'}
+                </Button>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
