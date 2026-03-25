@@ -130,8 +130,6 @@ const AgreementsPage = () => {
       setSigning(false);
     }
   };
-  const [agreements, setAgreements] = useState<ProfileAgreement[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!userAddress) {
