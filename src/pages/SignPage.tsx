@@ -5,6 +5,7 @@ import { useTonAddress, useTonConnectModal, useTonConnectUI } from '@tonconnect/
 import { toNano } from '@ton/ton';
 import { toast } from 'sonner';
 import { ArrowLeft, Wallet, PenTool, Copy, AlertTriangle, Pencil, Check } from 'lucide-react';
+import { SignCelebration } from '@/components/handshake/SignCelebration';
 import { Button } from '@/components/ui/button';
 import { StatusBadge } from '@/components/handshake/StatusBadge';
 import { AgreementCardFlip } from '@/components/handshake/AgreementCardFlip';
