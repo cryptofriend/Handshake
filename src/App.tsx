@@ -12,6 +12,7 @@ import AgreementsPage from "./pages/AgreementsPage";
 import NotFound from "./pages/NotFound";
 import AdminPage from "./pages/AdminPage";
 import { BottomNav } from "./components/handshake/BottomNav";
+import RequireWallet from "./components/handshake/RequireWallet";
 
 const queryClient = new QueryClient();
 
@@ -25,9 +26,9 @@ const App = () => (
           <div className="pb-16">
             <Routes>
               <Route path="/" element={<LoginPage />} />
-              <Route path="/agent" element={<AgentChatPage />} />
-              <Route path="/sign" element={<AgreementsPage />} />
-              <Route path="/sign/:id" element={<SignPage />} />
+              <Route path="/agent" element={<RequireWallet><AgentChatPage /></RequireWallet>} />
+              <Route path="/sign" element={<RequireWallet><AgreementsPage /></RequireWallet>} />
+              <Route path="/sign/:id" element={<RequireWallet><SignPage /></RequireWallet>} />
               <Route path="/agreement/:id" element={<CounterpartyPage />} />
               <Route path="/admin" element={<AdminPage />} />
               <Route path="*" element={<NotFound />} />
