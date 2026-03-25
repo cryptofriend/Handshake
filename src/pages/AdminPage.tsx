@@ -58,7 +58,32 @@ const AdminPage = () => {
     }
   };
 
-  useEffect(() => { if (unlocked) fetchStats(); }, [unlocked]);
+  const fetchPrompt = async () => {
+    setPromptLoading(true);
+    try {
+      const { data } = await supabase.from('system_config').select('value').eq('key', 'handshake_system_prompt').single();
+      if (data) setSystemPrompt(data.value);
+    } catch {
+      toast.error('Failed to load prompt');
+    } finally {
+      setPromptLoading(false);
+    }
+  };
+
+  const savePrompt = async () => {
+    setPromptSaving(true);
+    try {
+      const { error } = await supabase.from('system_config').update({ value: systemPrompt, updated_at: new Date().toISOString() }).eq('key', 'handshake_system_prompt');
+      if (error) throw error;
+      toast.success('System prompt saved!');
+    } catch {
+      toast.error('Failed to save prompt');
+    } finally {
+      setPromptSaving(false);
+    }
+  };
+
+  useEffect(() => { if (unlocked) { fetchStats(); fetchPrompt(); } }, [unlocked]);
 
   if (!unlocked) {
     return (
