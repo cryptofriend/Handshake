@@ -7,7 +7,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const HANDSHAKE_SYSTEM_PROMPT = `You are Handshake, the agreement-drafting intelligence inside Handshake Monster.
+const DEFAULT_SYSTEM_PROMPT = `You are Handshake, the agreement-drafting intelligence inside Handshake Monster.
 
 Your job is to turn messy human language into clear, structured, reviewable agreements.
 
@@ -84,6 +84,20 @@ When status is "needs_clarification":
 - agreement can be null or partial
 - fullText can be empty`;
 
+async function getSystemPrompt(supabase: any): Promise<string> {
+  try {
+    const { data } = await supabase
+      .from("system_config")
+      .select("value")
+      .eq("key", "handshake_system_prompt")
+      .single();
+    if (data?.value) return data.value;
+  } catch {
+    // fall through to default
+  }
+  return DEFAULT_SYSTEM_PROMPT;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -117,8 +131,9 @@ serve(async (req) => {
     });
 
     // Build conversation context
+    const systemPrompt = await getSystemPrompt(supabase);
     const conversationMessages = [
-      { role: "system", content: HANDSHAKE_SYSTEM_PROMPT },
+      { role: "system", content: systemPrompt },
     ];
 
     // Add history if provided

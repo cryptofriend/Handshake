@@ -36,6 +36,9 @@ const AdminPage = () => {
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState<{ messages: number; drafts: number } | null>(null);
   const [statsLoading, setStatsLoading] = useState(false);
+  const [systemPrompt, setSystemPrompt] = useState('');
+  const [promptLoading, setPromptLoading] = useState(false);
+  const [promptSaving, setPromptSaving] = useState(false);
 
   const fetchStats = async () => {
     setStatsLoading(true);
@@ -55,7 +58,32 @@ const AdminPage = () => {
     }
   };
 
-  useEffect(() => { if (unlocked) fetchStats(); }, [unlocked]);
+  const fetchPrompt = async () => {
+    setPromptLoading(true);
+    try {
+      const { data } = await supabase.from('system_config').select('value').eq('key', 'handshake_system_prompt').single();
+      if (data) setSystemPrompt(data.value);
+    } catch {
+      toast.error('Failed to load prompt');
+    } finally {
+      setPromptLoading(false);
+    }
+  };
+
+  const savePrompt = async () => {
+    setPromptSaving(true);
+    try {
+      const { error } = await supabase.from('system_config').update({ value: systemPrompt, updated_at: new Date().toISOString() }).eq('key', 'handshake_system_prompt');
+      if (error) throw error;
+      toast.success('System prompt saved!');
+    } catch {
+      toast.error('Failed to save prompt');
+    } finally {
+      setPromptSaving(false);
+    }
+  };
+
+  useEffect(() => { if (unlocked) { fetchStats(); fetchPrompt(); } }, [unlocked]);
 
   if (!unlocked) {
     return (
@@ -193,6 +221,25 @@ const AdminPage = () => {
             </pre>
           </Card>
         )}
+
+        {/* System Prompt Editor */}
+        <Card className="p-4 space-y-3">
+          <label className="text-sm font-medium text-foreground">Handshake System Prompt</label>
+          <p className="text-xs text-muted-foreground">Edit the AI system prompt used by the agent. Changes apply immediately to new conversations.</p>
+          {promptLoading ? (
+            <div className="h-40 bg-muted/50 rounded-lg animate-pulse" />
+          ) : (
+            <Textarea
+              value={systemPrompt}
+              onChange={e => setSystemPrompt(e.target.value)}
+              rows={16}
+              className="resize-y font-mono text-xs"
+            />
+          )}
+          <Button onClick={savePrompt} disabled={promptSaving || promptLoading} className="w-full">
+            {promptSaving ? 'Saving...' : 'Save Prompt'}
+          </Button>
+        </Card>
       </div>
     </div>
   );
