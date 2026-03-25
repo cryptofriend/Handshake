@@ -132,52 +132,16 @@ const AgreementsPage = () => {
           </div>
         </div>
 
-        {/* To Sign Section */}
-        <div className="mb-8">
-          <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
-            <Handshake className="w-4 h-4 text-warning" />
-            To Sign
-          </h3>
-          {loading ? (
-            <div className="space-y-3">
-              <Skeleton className="h-24 rounded-2xl" />
-              <Skeleton className="h-24 rounded-2xl" />
-            </div>
-          ) : toSign.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
-                <CheckCircle className="w-6 h-6 text-muted-foreground" />
-              </div>
-              <p className="text-sm text-muted-foreground">All caught up!</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {toSign.map((a, i) => (
-                <motion.div
-                  key={a.id}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.08 }}
-                >
-                  <AgreementListItem agreement={a} onClick={() => navigate(`/sign/${a.id}`)} />
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
-
         {/* Signed Documents */}
         <div className="mb-8">
           <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-success" />
-            Signed Documents
+            Signed
           </h3>
           {loading ? (
-            <div className="space-y-3">
-              <Skeleton className="h-24 rounded-2xl" />
-            </div>
+            <div className="space-y-3"><Skeleton className="h-24 rounded-2xl" /></div>
           ) : signed.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 text-center">
+            <div className="flex flex-col items-center justify-center py-6 text-center">
               <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
                 <Inbox className="w-6 h-6 text-muted-foreground" />
               </div>
@@ -186,13 +150,60 @@ const AgreementsPage = () => {
           ) : (
             <div className="space-y-3">
               {signed.map((a, i) => (
-                <motion.div
-                  key={a.id}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.08 }}
-                >
+                <motion.div key={a.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
                   <AgreementListItem agreement={a} onClick={() => navigate(`/sign/${a.id}`)} signed />
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Pending Signature */}
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+            <Handshake className="w-4 h-4 text-warning" />
+            Pending Signature
+          </h3>
+          {loading ? (
+            <div className="space-y-3"><Skeleton className="h-24 rounded-2xl" /></div>
+          ) : pending.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-6 text-center">
+              <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
+                <CheckCircle className="w-6 h-6 text-muted-foreground" />
+              </div>
+              <p className="text-sm text-muted-foreground">All caught up!</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {pending.map((a, i) => (
+                <motion.div key={a.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
+                  <AgreementListItem agreement={a} onClick={() => navigate(`/sign/${a.id}`)} />
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Drafts */}
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+            <FileCheck className="w-4 h-4 text-muted-foreground" />
+            Drafts
+          </h3>
+          {loading ? (
+            <div className="space-y-3"><Skeleton className="h-24 rounded-2xl" /></div>
+          ) : drafts.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-6 text-center">
+              <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
+                <Inbox className="w-6 h-6 text-muted-foreground" />
+              </div>
+              <p className="text-sm text-muted-foreground">No drafts</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {drafts.map((a, i) => (
+                <motion.div key={a.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
+                  <AgreementListItem agreement={a} onClick={() => navigate(`/sign/${a.id}`)} />
                 </motion.div>
               ))}
             </div>
