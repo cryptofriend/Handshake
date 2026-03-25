@@ -70,111 +70,143 @@ const MiniOrb = ({ blobs }: { blobs: { color: string; size: number; dur: number;
 );
 
 /**
- * Liquid collision idle animation.
- * 
- * Two daughter orbs start far apart, accelerate toward each other,
- * collide in the center with a flash/ripple, merge into a single
- * orb that breathes, then split apart again to repeat.
- * 
- * Timeline (8s):
- *   0-10%   daughters far apart, breathing
- *   10-40%  accelerate inward
- *   40-55%  collision — flash, merge into main orb
- *   55-75%  merged orb breathes/pulses
- *   75-90%  main orb elongates, daughters re-emerge outward
- *   90-100% daughters drift to starting positions
+ * Atomic orbital animation — a nucleus orb with two particles
+ * (photon & electron) orbiting around it in elliptical paths,
+ * like a miniature atom.
  */
-const COLLISION_DURATION = 8;
-const T = [0, 0.10, 0.40, 0.50, 0.55, 0.75, 0.90, 1];
+const ORBIT_DURATION = 6;
 
-const CollisionIdleOrb = () => {
-  const timing = {
-    duration: COLLISION_DURATION,
-    repeat: Infinity,
-    ease: 'easeInOut' as const,
-    times: T,
+const OrbitalIdleOrb = () => {
+  // Nucleus gentle breathing
+  const nucleusBreath = {
+    scale: [1, 1.06, 1],
+    opacity: [0.9, 1, 0.9],
   };
 
-  // Daughters: start apart → rush inward → disappear at collision
-  const dOpacity =  [1,    1,    0.9,  0,    0,    0,    0.8,  1];
-  const dScale =    [0.55, 0.55, 0.6,  0.3,  0,    0,    0.5,  0.55];
-  const leftX =     [-55,  -55,  -8,   0,    0,    0,    -30,  -55];
-  const rightX =    [55,   55,   8,    0,    0,    0,    30,   55];
-
-  // Main merged orb: hidden → appears at collision → breathes → fades as daughters re-emerge
-  const mainOpacity = [0,   0,    0.5,  1,    1,    1,    0.3,  0];
-  const mainScale =   [0.3, 0.3,  0.6,  1.15, 1.0,  1.05, 0.8,  0.3];
-
-  // Collision flash/ripple
-  const flashOpacity = [0, 0, 0, 0.8, 0.3, 0, 0, 0];
-  const flashScale =   [0, 0, 0, 1.0, 2.0, 2.5, 0, 0];
+  // Orbital trail ring styling
+  const trailStyle = (tilt: number) => ({
+    width: 140,
+    height: 140,
+    border: '1px solid hsla(218, 86%, 55%, 0.08)',
+    borderRadius: '50%',
+    transform: `rotateX(${tilt}deg) rotateZ(20deg)`,
+  });
 
   return (
-    <div className="relative w-40 h-40 flex items-center justify-center">
-      {/* Collision flash ripple */}
-      <motion.div
-        className="absolute rounded-full pointer-events-none"
-        style={{
-          width: 160,
-          height: 160,
-          background: 'radial-gradient(circle, hsla(218, 90%, 70%, 0.4), hsla(260, 80%, 60%, 0.2), transparent 70%)',
-          filter: 'blur(10px)',
-        }}
-        animate={{ opacity: flashOpacity, scale: flashScale }}
-        transition={timing}
+    <div className="relative w-40 h-40 flex items-center justify-center" style={{ perspective: 400 }}>
+      {/* Orbital trail rings (decorative) */}
+      <div
+        className="absolute pointer-events-none"
+        style={{ ...trailStyle(65), transformStyle: 'preserve-3d' }}
+      />
+      <div
+        className="absolute pointer-events-none"
+        style={{ ...trailStyle(-65), transformStyle: 'preserve-3d', transform: 'rotateX(-65deg) rotateZ(-20deg)' }}
       />
 
-      {/* Main merged orb — appears on collision */}
+      {/* Nucleus — central glowing orb */}
       <motion.div
-        className="absolute w-40 h-40 rounded-full overflow-hidden"
+        className="absolute w-24 h-24 rounded-full overflow-hidden"
         style={{
-          background: 'radial-gradient(circle at 30% 30%, hsla(218, 86%, 65%, 0.15), hsla(260, 70%, 50%, 0.1), hsla(200, 80%, 40%, 0.08))',
+          background: 'radial-gradient(circle at 35% 35%, hsla(218, 86%, 65%, 0.2), hsla(260, 70%, 50%, 0.12), hsla(200, 80%, 40%, 0.08))',
           backdropFilter: 'blur(40px)',
           border: '1px solid hsla(218, 86%, 55%, 0.15)',
           boxShadow: `
-            0 0 60px hsla(218, 86%, 55%, 0.15),
-            0 0 120px hsla(260, 70%, 50%, 0.08),
-            inset 0 0 60px hsla(218, 86%, 55%, 0.05)
+            0 0 40px hsla(218, 86%, 55%, 0.2),
+            0 0 80px hsla(260, 70%, 50%, 0.1),
+            inset 0 0 40px hsla(218, 86%, 55%, 0.05)
           `,
         }}
-        animate={{ opacity: mainOpacity, scale: mainScale }}
-        transition={timing}
+        animate={nucleusBreath}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <FloatingBlob color="hsla(218, 90%, 60%, 0.5)" size={80} duration={5} delay={0} x={20} y={15} />
-        <FloatingBlob color="hsla(260, 80%, 55%, 0.4)" size={70} duration={6.5} delay={0.5} x={-25} y={20} />
-        <FloatingBlob color="hsla(190, 90%, 50%, 0.35)" size={60} duration={4.5} delay={1} x={15} y={-20} />
-        <FloatingBlob color="hsla(300, 60%, 55%, 0.25)" size={50} duration={7} delay={1.5} x={-18} y={-15} />
+        <FloatingBlob color="hsla(218, 90%, 60%, 0.5)" size={50} duration={4} delay={0} x={10} y={8} />
+        <FloatingBlob color="hsla(260, 80%, 55%, 0.4)" size={40} duration={5} delay={0.3} x={-12} y={10} />
+        <FloatingBlob color="hsla(190, 90%, 50%, 0.3)" size={35} duration={3.5} delay={0.6} x={8} y={-10} />
         <div
-          className="absolute top-3 left-6 w-16 h-8 rounded-full"
-          style={{ background: 'linear-gradient(135deg, hsla(0, 0%, 100%, 0.2), transparent)', filter: 'blur(8px)' }}
+          className="absolute top-2 left-4 w-10 h-5 rounded-full"
+          style={{ background: 'linear-gradient(135deg, hsla(0, 0%, 100%, 0.25), transparent)', filter: 'blur(6px)' }}
         />
       </motion.div>
 
-      {/* Left orb */}
+      {/* Electron — blue particle orbiting on one ellipse */}
       <motion.div
         className="absolute"
-        style={{ width: 100, height: 100 }}
-        animate={{ x: leftX, opacity: dOpacity, scale: dScale }}
-        transition={timing}
+        style={{ width: 16, height: 16 }}
+        animate={{
+          x: [70, 0, -70, 0, 70],
+          y: [0, -35, 0, 35, 0],
+        }}
+        transition={{
+          duration: ORBIT_DURATION,
+          repeat: Infinity,
+          ease: 'linear',
+        }}
       >
-        <MiniOrb blobs={[
-          { color: 'hsla(218, 90%, 60%, 0.5)', size: 50, dur: 4, x: -8, y: 8 },
-          { color: 'hsla(260, 80%, 55%, 0.4)', size: 40, dur: 5, x: -12, y: -6 },
-        ]} />
+        <div
+          className="w-full h-full rounded-full"
+          style={{
+            background: 'radial-gradient(circle, hsla(218, 90%, 70%, 0.9), hsla(218, 86%, 55%, 0.6))',
+            boxShadow: '0 0 12px hsla(218, 90%, 60%, 0.6), 0 0 24px hsla(218, 86%, 55%, 0.3)',
+          }}
+        />
+        {/* Electron trail */}
+        <motion.div
+          className="absolute top-0 left-0 w-full h-full rounded-full"
+          style={{
+            background: 'radial-gradient(circle, hsla(218, 90%, 70%, 0.4), transparent)',
+            filter: 'blur(4px)',
+          }}
+          animate={{ scale: [1, 1.8, 1], opacity: [0.5, 0.2, 0.5] }}
+          transition={{ duration: 0.8, repeat: Infinity, ease: 'easeInOut' }}
+        />
       </motion.div>
 
-      {/* Right orb */}
+      {/* Photon — warm gold particle orbiting on opposite ellipse */}
       <motion.div
         className="absolute"
-        style={{ width: 100, height: 100 }}
-        animate={{ x: rightX, opacity: dOpacity, scale: dScale }}
-        transition={timing}
+        style={{ width: 12, height: 12 }}
+        animate={{
+          x: [-60, 0, 60, 0, -60],
+          y: [0, 40, 0, -40, 0],
+        }}
+        transition={{
+          duration: ORBIT_DURATION * 0.75,
+          repeat: Infinity,
+          ease: 'linear',
+        }}
       >
-        <MiniOrb blobs={[
-          { color: 'hsla(190, 90%, 50%, 0.45)', size: 50, dur: 4.5, x: 8, y: 8 },
-          { color: 'hsla(300, 60%, 55%, 0.35)', size: 40, dur: 5.5, x: 12, y: -6 },
-        ]} />
+        <div
+          className="w-full h-full rounded-full"
+          style={{
+            background: 'radial-gradient(circle, hsla(45, 95%, 70%, 0.9), hsla(30, 90%, 55%, 0.6))',
+            boxShadow: '0 0 10px hsla(45, 95%, 65%, 0.6), 0 0 20px hsla(30, 90%, 50%, 0.3)',
+          }}
+        />
+        {/* Photon trail */}
+        <motion.div
+          className="absolute top-0 left-0 w-full h-full rounded-full"
+          style={{
+            background: 'radial-gradient(circle, hsla(45, 95%, 70%, 0.4), transparent)',
+            filter: 'blur(3px)',
+          }}
+          animate={{ scale: [1, 2, 1], opacity: [0.6, 0.15, 0.6] }}
+          transition={{ duration: 0.6, repeat: Infinity, ease: 'easeInOut' }}
+        />
       </motion.div>
+
+      {/* Ambient glow behind everything */}
+      <motion.div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 180,
+          height: 180,
+          background: 'radial-gradient(circle, hsla(218, 86%, 55%, 0.06), transparent 70%)',
+          filter: 'blur(15px)',
+        }}
+        animate={{ scale: [1, 1.1, 1], opacity: [0.4, 0.6, 0.4] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+      />
     </div>
   );
 };
@@ -212,7 +244,7 @@ export const Orb = ({ state, onClick }: OrbProps) => {
       </AnimatePresence>
 
       {isIdle ? (
-        <CollisionIdleOrb />
+        <OrbitalIdleOrb />
       ) : (
         /* Non-idle: original single orb */
         <motion.div
