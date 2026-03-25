@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import YinYangSimulation from '@/components/YinYangSimulation';
+import ShowcaseSteps from '@/components/ShowcaseSteps';
 
 const SLIDERS = [
   { key: 'particleCount' as const, label: 'Particles', min: 500, max: 8000, step: 100 },
@@ -128,6 +129,11 @@ const Index = () => {
           </div>
         </div>
       )}
+
+      {/* Showcase steps */}
+      <div className="mt-20 w-full">
+        <ShowcaseSteps />
+      </div>
     </div>
   );
 };
