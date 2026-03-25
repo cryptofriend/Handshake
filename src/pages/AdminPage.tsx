@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card } from '@/components/ui/card';
@@ -27,6 +28,8 @@ const TIER_COLORS: Record<string, string> = {
 };
 
 const AdminPage = () => {
+  const [unlocked, setUnlocked] = useState(false);
+  const [passInput, setPassInput] = useState('');
   const [model, setModel] = useState(MODELS[0].id);
   const [prompt, setPrompt] = useState('');
   const [response, setResponse] = useState('');
@@ -52,8 +55,28 @@ const AdminPage = () => {
     }
   };
 
-  // Fetch on mount
-  useState(() => { fetchStats(); });
+  useEffect(() => { if (unlocked) fetchStats(); }, [unlocked]);
+
+  if (!unlocked) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-5">
+        <Card className="p-6 w-full max-w-sm space-y-4 text-center">
+          <Sparkles className="w-8 h-8 text-primary mx-auto" />
+          <h2 className="text-lg font-semibold text-foreground">Admin Access</h2>
+          <Input
+            type="password"
+            placeholder="Enter password"
+            value={passInput}
+            onChange={e => setPassInput(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter' && passInput === 'BOOGA') setUnlocked(true); else if (e.key === 'Enter') toast.error('Wrong password'); }}
+          />
+          <Button className="w-full" onClick={() => passInput === 'BOOGA' ? setUnlocked(true) : toast.error('Wrong password')}>
+            Unlock
+          </Button>
+        </Card>
+      </div>
+    );
+  }
 
   const handleTest = async () => {
     if (!prompt.trim()) return;
