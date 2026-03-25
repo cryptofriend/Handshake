@@ -31,6 +31,8 @@ const AdminPage = () => {
   const [unlocked, setUnlocked] = useState(false);
   const [passInput, setPassInput] = useState('');
   const [model, setModel] = useState(MODELS[0].id);
+  const [modelSaving, setModelSaving] = useState(false);
+  const [modelSaved, setModelSaved] = useState(false);
   const [prompt, setPrompt] = useState('');
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
@@ -72,6 +74,28 @@ const AdminPage = () => {
     }
   };
 
+  const fetchModel = async () => {
+    try {
+      const { data } = await supabase.from('system_config').select('value').eq('key', 'ai_model').single();
+      if (data?.value) setModel(data.value);
+    } catch { /* use default */ }
+  };
+
+  const saveModel = async (newModel: string) => {
+    setModel(newModel);
+    setModelSaving(true);
+    try {
+      const { error } = await supabase.from('system_config').update({ value: newModel, updated_at: new Date().toISOString() }).eq('key', 'ai_model');
+      if (error) throw error;
+      setModelSaved(true);
+      setTimeout(() => setModelSaved(false), 2000);
+    } catch {
+      toast.error('Failed to save model');
+    } finally {
+      setModelSaving(false);
+    }
+  };
+
   const savePrompt = async () => {
     setPromptSaving(true);
     try {
@@ -87,7 +111,7 @@ const AdminPage = () => {
     }
   };
 
-  useEffect(() => { if (unlocked) { fetchStats(); fetchPrompt(); } }, [unlocked]);
+  useEffect(() => { if (unlocked) { fetchStats(); fetchPrompt(); fetchModel(); } }, [unlocked]);
 
   if (!unlocked) {
     return (
@@ -177,7 +201,7 @@ const AdminPage = () => {
         {/* Model Selector */}
         <Card className="p-4 space-y-3">
           <label className="text-sm font-medium text-foreground">AI Model</label>
-          <Select value={model} onValueChange={setModel}>
+          <Select value={model} onValueChange={saveModel}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -195,9 +219,9 @@ const AdminPage = () => {
             </SelectContent>
           </Select>
           {selectedModel && (
-            <p className="text-xs text-muted-foreground">
-              <Zap className="w-3 h-3 inline mr-1" />
-              {selectedModel.id}
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              {modelSaved ? <CheckCircle className="w-3 h-3 text-green-500" /> : <Zap className="w-3 h-3" />}
+              {modelSaved ? <span className="text-green-500">Saved</span> : selectedModel.id}
             </p>
           )}
         </Card>
