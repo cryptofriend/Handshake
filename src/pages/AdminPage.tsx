@@ -39,6 +39,8 @@ const AdminPage = () => {
   const [systemPrompt, setSystemPrompt] = useState('');
   const [promptLoading, setPromptLoading] = useState(false);
   const [promptSaving, setPromptSaving] = useState(false);
+  const [promptSaved, setPromptSaved] = useState(false);
+  const [testSaved, setTestSaved] = useState(false);
 
   const fetchStats = async () => {
     setStatsLoading(true);
