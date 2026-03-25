@@ -118,6 +118,8 @@ const AdminPage = () => {
       });
       if (error) throw error;
       setResponse(data.reply || JSON.stringify(data, null, 2));
+      setTestSaved(true);
+      setTimeout(() => setTestSaved(false), 2000);
     } catch (err: any) {
       if (err?.status === 429) {
         toast.error('Rate limited — wait a moment');
