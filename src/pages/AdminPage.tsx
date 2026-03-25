@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { ArrowUp, Sparkles, Zap, MessageSquare, DollarSign } from 'lucide-react';
+import { ArrowUp, Sparkles, Zap, MessageSquare, DollarSign, CheckCircle } from 'lucide-react';
 
 const MODELS = [
   { id: 'google/gemini-3-flash-preview', label: 'Gemini 3 Flash (default)', tier: 'fast' },
