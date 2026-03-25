@@ -168,9 +168,18 @@ const SignPage = () => {
   };
 
   const handleCopyHash = () => {
-    navigator.clipboard.writeText(agreement.fullHash);
+    navigator.clipboard.writeText(agreement?.fullHash || '');
     toast.success('Agreement hash copied');
   };
+
+  if (notFound) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: 'hsl(var(--background))' }}>
+        <p className="text-muted-foreground text-sm">Agreement not found</p>
+        <Button variant="outline" onClick={() => navigate('/agent')}>Go to Agent</Button>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
