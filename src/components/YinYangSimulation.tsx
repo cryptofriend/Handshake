@@ -60,18 +60,18 @@ interface Particle {
 // ── Color palettes ──────────────────────────────────────────────────
 const COLORS = {
   green: [
-    [180, 255, 80],
-    [120, 240, 60],
-    [200, 255, 120],
-    [160, 255, 40],
-    [220, 255, 60],
+    [190, 220, 130],  // cyan-teal (Sovereignty)
+    [170, 200, 115],
+    [45, 200, 140],   // gold-amber (Alignment)
+    [50, 220, 120],
+    [190, 240, 160],
   ],
   pink: [
-    [255, 60, 150],
-    [255, 80, 200],
-    [240, 40, 120],
+    [200, 120, 220],  // purple-magenta (Transparency)
+    [240, 100, 200],
+    [180, 80, 200],
+    [220, 130, 240],
     [255, 100, 180],
-    [220, 50, 160],
   ],
 };
 
@@ -236,8 +236,8 @@ export default function YinYangSimulation({
 
       // Outer glow
       const outerGrad = ctx.createRadialGradient(cx, cy, effectiveR * 0.6, cx, cy, effectiveR * 1.4);
-      outerGrad.addColorStop(0, `rgba(140, 255, 80, ${0.02 * P.glow})`);
-      outerGrad.addColorStop(0.5, `rgba(255, 60, 150, ${0.015 * P.glow})`);
+      outerGrad.addColorStop(0, `rgba(190, 220, 130, ${0.02 * P.glow})`);
+      outerGrad.addColorStop(0.5, `rgba(200, 120, 220, ${0.015 * P.glow})`);
       outerGrad.addColorStop(1, 'transparent');
       ctx.fillStyle = outerGrad;
       ctx.fillRect(0, 0, W, H);
