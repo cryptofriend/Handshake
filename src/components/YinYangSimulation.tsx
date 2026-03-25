@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback, useState } from 'react';
+import { useRef, useEffect } from 'react';
 
 // ── Tunable Parameters ──────────────────────────────────────────────
 interface SimParams {
@@ -103,16 +103,6 @@ export default function YinYangSimulation({
   const mouseRef = useRef({ x: 0, y: 0, active: false });
   const rippleRef = useRef<{ x: number; y: number; t: number; strength: number }[]>([]);
   const paramsRef = useRef<SimParams>({ ...DEFAULT_PARAMS, ...userParams });
-  const [showControls, setShowControls] = useState(false);
-  const [liveParams, setLiveParams] = useState<SimParams>({ ...DEFAULT_PARAMS, ...userParams });
-
-  useEffect(() => {
-    paramsRef.current = liveParams;
-  }, [liveParams]);
-
-  const handleParamChange = useCallback((key: keyof SimParams, value: number) => {
-    setLiveParams(prev => ({ ...prev, [key]: value }));
-  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
