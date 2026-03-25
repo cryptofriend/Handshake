@@ -81,8 +81,9 @@ const AgreementsPage = () => {
     fetchAgreements();
   }, [userAddress]);
 
-  const toSign = agreements.filter(a => !a.userSigned);
   const signed = agreements.filter(a => a.userSigned);
+  const pending = agreements.filter(a => !a.userSigned && a.status === 'sign_ready');
+  const drafts = agreements.filter(a => !a.userSigned && a.status !== 'sign_ready');
 
   const handleLogout = async () => {
     await tonConnectUI.disconnect();
