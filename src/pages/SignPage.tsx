@@ -145,7 +145,7 @@ const SignPage = () => {
 
       // Simulate confirmation
       setTimeout(() => {
-        setAgreement((prev) => ({
+        setAgreement((prev) => prev ? ({
           ...prev,
           signatures: prev.signatures.map((s) =>
             s.walletAddress === userAddress
@@ -153,7 +153,7 @@ const SignPage = () => {
               : s
           ),
           receiptStatus: 'minted',
-        }));
+        }) : prev);
         toast.success('Transaction confirmed');
       }, 5000);
     } catch (err: any) {
