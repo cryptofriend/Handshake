@@ -489,6 +489,3 @@ const SignPage = () => {
   );
 };
 
-export default SignPage;
-
-export default SignPage;
