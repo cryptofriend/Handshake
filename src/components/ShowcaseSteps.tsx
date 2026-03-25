@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, FileCheck, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import showcaseTalkAgent from '@/assets/showcase-talk-agent.jpg';
 import showcaseReviewSign from '@/assets/showcase-review-sign.jpg';
 import showcaseShareTelegram from '@/assets/showcase-share-telegram.png';
@@ -40,6 +41,7 @@ const INTERVAL = 6000;
 export default function ShowcaseSteps() {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const navigate = useNavigate();
 
   const next = useCallback(() => {
     setActive(prev => (prev + 1) % steps.length);
@@ -70,6 +72,12 @@ export default function ShowcaseSteps() {
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
       >
+        <button
+          onClick={() => navigate('/agent')}
+          className="mb-6 px-8 py-3 rounded-full bg-primary text-primary-foreground font-semibold text-sm tracking-wide hover:opacity-90 transition-opacity shadow-lg"
+        >
+          START
+        </button>
         <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-2">How it works</p>
         <AnimatePresence mode="wait">
           <motion.h2
