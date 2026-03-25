@@ -78,11 +78,11 @@ export default function ShowcaseSteps() {
         >
           START
         </button>
-        <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-2">How it works</p>
+        <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-2 font-serif">How it works</p>
         <AnimatePresence mode="wait">
           <motion.h2
             key={active}
-            className="text-2xl font-semibold text-foreground"
+            className="text-2xl font-semibold text-foreground font-serif"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
