@@ -213,8 +213,8 @@ const AdminPage = () => {
           </Select>
           {selectedModel && (
             <p className="text-xs text-muted-foreground flex items-center gap-1">
-              {modelSaved ? <CheckCircle className="w-3 h-3 text-green-500" /> : <Zap className="w-3 h-3" />}
-              {modelSaved ? <span className="text-green-500">Saved</span> : selectedModel.id}
+              {modelSaved ? <CheckCircle className="w-3 h-3 text-green-600" /> : <Zap className="w-3 h-3" />}
+              {modelSaved ? <span className="text-green-600 font-medium">Model saved ✓</span> : selectedModel.id}
             </p>
           )}
         </Card>
