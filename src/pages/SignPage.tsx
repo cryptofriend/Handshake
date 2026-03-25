@@ -33,9 +33,13 @@ const SignPage = () => {
   const [signing, setSigning] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  // Fetch agreement draft from database if id is provided
+  // Fetch agreement draft from database
   useEffect(() => {
-    if (!id) return;
+    if (!id) {
+      setNotFound(true);
+      setLoading(false);
+      return;
+    }
     const fetchDraft = async () => {
       setLoading(true);
       try {
@@ -43,10 +47,10 @@ const SignPage = () => {
           .from('agreement_drafts')
           .select('*')
           .eq('id', id)
-          .single();
+          .maybeSingle();
 
         if (error || !data) {
-          toast.error('Agreement not found');
+          setNotFound(true);
           setLoading(false);
           return;
         }
@@ -92,7 +96,7 @@ const SignPage = () => {
         setAgreement(mapped);
       } catch (err) {
         console.error('Error fetching agreement:', err);
-        toast.error('Failed to load agreement');
+        setNotFound(true);
       } finally {
         setLoading(false);
       }
@@ -100,9 +104,9 @@ const SignPage = () => {
     fetchDraft();
   }, [id]);
 
-  const userHasSigned = agreement.signatures.some(
+  const userHasSigned = agreement?.signatures.some(
     (s) => s.walletAddress === userAddress
-  );
+  ) ?? false;
 
   const handleSignConfirm = async () => {
     setConfirmOpen(false);
