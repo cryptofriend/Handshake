@@ -112,6 +112,17 @@ export default function YinYangSimulation({
   const mouseRef = useRef({ x: 0, y: 0, active: false });
   const rippleRef = useRef<{ x: number; y: number; t: number; strength: number }[]>([]);
   const paramsRef = useRef<SimParams>({ ...DEFAULT_PARAMS, ...userParams });
+  const colorsRef = useRef<{ green: number[][]; pink: number[][] }>({
+    green: colorScheme?.sideA || COLORS.green,
+    pink: colorScheme?.sideB || COLORS.pink,
+  });
+
+  useEffect(() => {
+    colorsRef.current = {
+      green: colorScheme?.sideA || COLORS.green,
+      pink: colorScheme?.sideB || COLORS.pink,
+    };
+  }, [colorScheme]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -328,7 +339,7 @@ export default function YinYangSimulation({
         // Draw
         const lifeRatio = Math.min(p.life / 30, 1) * Math.min((p.maxLife - p.life) / 60, 1);
         const alpha = lifeRatio * (0.4 + P.glow * 0.5);
-        const [r, g, b] = getColor(p.side, (Math.sin(time + i * 0.01) + 1) / 2);
+        const [r, g, b] = getColor(p.side, (Math.sin(time + i * 0.01) + 1) / 2, colorsRef.current);
 
         ctx.globalAlpha = alpha;
         ctx.fillStyle = `rgb(${r | 0},${g | 0},${b | 0})`;
@@ -354,7 +365,7 @@ export default function YinYangSimulation({
         const oy = cy + Math.sin(a) * or;
         const oAlpha = (0.15 + Math.sin(time * 2 + i * 0.5) * 0.1) * P.glow;
         const oSide = i % 2 === 0 ? 0 : 1;
-        const [r, g, b] = getColor(oSide as 0 | 1, 0.5);
+        const [r, g, b] = getColor(oSide as 0 | 1, 0.5, colorsRef.current);
         ctx.globalAlpha = oAlpha;
         ctx.fillStyle = `rgb(${r | 0},${g | 0},${b | 0})`;
         ctx.beginPath();
