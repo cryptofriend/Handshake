@@ -36,7 +36,7 @@ const AdminPage = () => {
   const [prompt, setPrompt] = useState('');
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
-  const [stats, setStats] = useState<{ messages: number; drafts: number } | null>(null);
+  const [stats, setStats] = useState<{ messages: number; drafts: number; uniqueUsers: number; aiCalls: number } | null>(null);
   const [statsLoading, setStatsLoading] = useState(false);
   const [systemPrompt, setSystemPrompt] = useState('');
   const [promptLoading, setPromptLoading] = useState(false);
