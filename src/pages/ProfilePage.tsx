@@ -77,19 +77,14 @@ const ProfilePage = () => {
         };
       });
 
-      // Show agreements the user signed OR all sign_ready ones they could sign
-      const relevant = mapped.filter(a =>
-        a.userSigned || a.status === 'sign_ready' || signedIds.includes(a.id)
-      );
-
-      setAgreements(relevant);
+      setAgreements(mapped);
       setLoading(false);
     };
 
     fetchAgreements();
   }, [userAddress]);
 
-  const toSign = agreements.filter(a => !a.userSigned && a.status === 'sign_ready');
+  const toSign = agreements.filter(a => !a.userSigned);
   const signed = agreements.filter(a => a.userSigned);
 
   const handleLogout = async () => {
