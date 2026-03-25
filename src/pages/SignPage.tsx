@@ -123,6 +123,48 @@ const SignPage = () => {
     fetchDraft();
   }, [id]);
 
+  // Realtime: listen for new/updated signatures so both parties see changes instantly
+  useEffect(() => {
+    if (!id) return;
+    const channel = supabase
+      .channel(`sigs-${id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'agreement_signatures',
+          filter: `agreement_id=eq.${id}`,
+        },
+        async () => {
+          const { data: sigData } = await supabase
+            .from('agreement_signatures')
+            .select('*')
+            .eq('agreement_id', id);
+
+          const sigs: AgreementSignature[] = (sigData || []).map((s: any) => ({
+            party: s.party_name || 'Signer',
+            walletAddress: s.wallet_address,
+            signedAt: s.signed_at,
+            txHash: s.tx_hash || '',
+            blockchainStatus: s.blockchain_status as 'pending' | 'confirmed' | 'failed',
+          }));
+
+          setAgreement((prev) => {
+            if (!prev) return prev;
+            const sigCount = sigs.length;
+            let status: Agreement['status'] = prev.status;
+            if (sigCount >= 2) status = 'fully_signed';
+            else if (sigCount === 1) status = 'signed_by_one';
+            return { ...prev, signatures: sigs, status, receiptStatus: sigCount > 0 ? 'minted' : 'none' };
+          });
+        }
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [id]);
+
   const userHasSigned = agreement?.signatures.some(
     (s) => s.walletAddress === userAddress
   ) ?? false;
