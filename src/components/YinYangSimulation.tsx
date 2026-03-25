@@ -186,13 +186,15 @@ export default function YinYangSimulation({
       const x = cx + Math.cos(angle) * r;
       const y = cy + Math.sin(angle) * r;
       const side = isInYinYangSide(x, y, time * paramsRef.current.speed * 0.15);
+      // Larger particles on small screens for better visibility
+      const sizeBoost = W < 500 ? 1.4 : 1;
       return {
         x, y,
         vx: 0, vy: 0,
         side,
         life: 0,
         maxLife: 200 + Math.random() * 400,
-        size: 0.8 + Math.random() * 1.8,
+        size: (0.8 + Math.random() * 1.8) * sizeBoost,
       };
     }
 
