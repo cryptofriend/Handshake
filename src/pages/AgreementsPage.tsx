@@ -127,8 +127,8 @@ const AgreementsPage = () => {
           </div>
           <div className="bg-card rounded-2xl p-4 text-center shadow-sm border border-border">
             <AlertTriangle className="w-5 h-5 mx-auto mb-1 text-warning" />
-            <p className="text-lg font-semibold text-foreground">{toSign.length}</p>
-            <p className="text-[11px] text-muted-foreground">To Sign</p>
+            <p className="text-lg font-semibold text-foreground">{pending.length}</p>
+            <p className="text-[11px] text-muted-foreground">Pending</p>
           </div>
         </div>
 
