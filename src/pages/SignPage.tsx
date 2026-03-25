@@ -127,7 +127,7 @@ const SignPage = () => {
       await tonConnectUI.sendTransaction(transaction);
 
       const newSig: AgreementSignature = {
-        party: agreement.parties[0]?.name || 'Signer',
+        party: agreement?.parties[0]?.name || 'Signer',
         walletAddress: userAddress,
         signedAt: new Date().toISOString(),
         txHash: '0x' + Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
