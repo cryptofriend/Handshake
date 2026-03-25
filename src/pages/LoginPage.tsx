@@ -5,7 +5,7 @@ import { Orb } from '@/components/handshake/Orb';
 import { useAppStore } from '@/store/appStore';
 import { PactTemplateOrb } from '@/components/handshake/PactTemplateOrb';
 import { Button } from '@/components/ui/button';
-import { Check, PenTool, Wallet } from 'lucide-react';
+import { Check, PenTool } from 'lucide-react';
 import { useTonConnectUI, useTonConnectModal, useTonAddress } from '@tonconnect/ui-react';
 import { beginCell, toNano } from '@ton/ton';
 import { toast } from 'sonner';
