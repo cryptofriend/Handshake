@@ -41,7 +41,7 @@ export const BottomNav = () => {
               ) : (
                 Icon && <Icon className={cn('w-5 h-5', isActive && 'stroke-[2.5]')} />
               )}
-              <span className="text-[10px] font-medium">{label}</span>
+              
             </button>
           );
         })}
