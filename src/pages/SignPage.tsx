@@ -477,9 +477,18 @@ const SignPage = () => {
           </div>
         </DialogContent>
       </Dialog>
+      {/* Epic Celebration Overlay */}
+      <SignCelebration
+        show={showCelebration}
+        agreementTitle={agreement.title}
+        txHash={celebrationTx}
+        onClose={() => setShowCelebration(false)}
+      />
       </div> {/* close relative z-10 wrapper */}
     </div>
   );
 };
+
+export default SignPage;
 
 export default SignPage;
