@@ -219,31 +219,6 @@ const AdminPage = () => {
           )}
         </Card>
 
-        {/* Prompt Tester */}
-        <Card className="p-4 space-y-3">
-          <label className="text-sm font-medium text-foreground">Test Prompt</label>
-          <Textarea
-            value={prompt}
-            onChange={e => setPrompt(e.target.value)}
-            placeholder="Enter a test prompt..."
-            rows={4}
-            className="resize-none"
-          />
-          <Button onClick={handleTest} disabled={!prompt.trim() || loading} className={`w-full ${testSaved ? 'bg-green-600 hover:bg-green-700' : ''}`}>
-            {testSaved ? <><CheckCircle className="w-4 h-4 mr-1" /> Sent</> : loading ? 'Running...' : <>Send Test <ArrowUp className="w-4 h-4 ml-1" /></>}
-          </Button>
-        </Card>
-
-        {/* Response */}
-        {response && (
-          <Card className="p-4 space-y-2">
-            <label className="text-sm font-medium text-foreground">Response</label>
-            <pre className="text-sm text-foreground bg-muted/50 rounded-lg p-3 whitespace-pre-wrap max-h-80 overflow-y-auto">
-              {response}
-            </pre>
-          </Card>
-        )}
-
         {/* System Prompt Editor */}
         <Card className="p-4 space-y-3">
           <label className="text-sm font-medium text-foreground">Handshake System Prompt</label>
