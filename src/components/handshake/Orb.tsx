@@ -244,7 +244,7 @@ export const Orb = ({ state, onClick }: OrbProps) => {
       </AnimatePresence>
 
       {isIdle ? (
-        <CollisionIdleOrb />
+        <OrbitalIdleOrb />
       ) : (
         /* Non-idle: original single orb */
         <motion.div
