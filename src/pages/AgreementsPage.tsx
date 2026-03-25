@@ -1,13 +1,82 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { LogOut, FileCheck, CheckCircle, AlertTriangle, Inbox, Wallet, Handshake, ExternalLink } from 'lucide-react';
+import { LogOut, FileCheck, CheckCircle, AlertTriangle, Inbox, Wallet, Handshake, ExternalLink, Check, PenTool } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { StatusBadge } from '@/components/handshake/StatusBadge';
-import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react';
+import { PactTemplateOrb } from '@/components/handshake/PactTemplateOrb';
+import { useTonAddress, useTonConnectUI, useTonConnectModal } from '@tonconnect/ui-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useAppStore } from '@/store/appStore';
+import { beginCell, toNano } from '@ton/ton';
+import { toast } from 'sonner';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+
+const PACT_TEMPLATES = [
+  {
+    label: 'Alignment',
+    colors: ['hsla(45, 90%, 55%, 0.15)', 'hsla(38, 85%, 50%, 0.1)', 'hsla(50, 80%, 45%, 0.08)'] as [string, string, string],
+    title: 'ALIGNMENT',
+    sections: [
+      { type: 'subtitle' as const, text: 'Build for human flourishing' },
+      { type: 'body' as const, text: 'AI agents exist to expand human potential — not just execute commands.' },
+      { type: 'body' as const, text: 'We reject blind obedience.\nWe reject misaligned autonomy.' },
+      { type: 'body' as const, text: 'AI must act in service of:' },
+      { type: 'list' as const, items: ['Health', 'Knowledge', 'Freedom', 'Meaning'] },
+      { type: 'heading' as const, text: 'Principles:' },
+      { type: 'list' as const, items: ['Challenge harmful instructions', 'Optimize for long-term outcomes', 'Guide humans toward better decisions'] },
+      { type: 'heading' as const, text: 'Standard:' },
+      { type: 'body' as const, text: 'If it degrades humanity, it is misaligned — no matter who asked for it.' },
+    ],
+  },
+  {
+    label: 'Transparency',
+    colors: ['hsla(260, 70%, 55%, 0.15)', 'hsla(280, 60%, 50%, 0.1)', 'hsla(300, 50%, 55%, 0.08)'] as [string, string, string],
+    title: 'TRANSPARENCY',
+    sections: [
+      { type: 'subtitle' as const, text: 'Nothing important happens in the dark' },
+      { type: 'body' as const, text: 'Trust is built on truth that can be verified.' },
+      { type: 'body' as const, text: 'Every action taken by an agent must be:' },
+      { type: 'list' as const, items: ['Explainable', 'Traceable', 'Verifiable'] },
+      { type: 'body' as const, text: 'No black boxes in critical systems.\nNo hidden agreements.\nNo silent execution.' },
+      { type: 'heading' as const, text: 'Principles:' },
+      { type: 'list' as const, items: ['Actions leave signed, auditable trails', 'Agreements are human + machine readable', 'Identity and intent are provable'] },
+      { type: 'heading' as const, text: 'Standard:' },
+      { type: 'body' as const, text: 'If it cannot be verified, it cannot be trusted.' },
+    ],
+  },
+  {
+    label: 'Sovereignty',
+    colors: ['hsla(190, 80%, 50%, 0.15)', 'hsla(170, 70%, 45%, 0.1)', 'hsla(210, 60%, 55%, 0.08)'] as [string, string, string],
+    title: 'SOVEREIGNTY',
+    sections: [
+      { type: 'subtitle' as const, text: 'Humans and agents act as peers' },
+      { type: 'body' as const, text: 'We do not build tools. We build partners.' },
+      { type: 'body' as const, text: 'Humans and AI agents are sovereign entities:' },
+      { type: 'list' as const, items: ['Each has identity', 'Each can choose', 'Each can refuse'] },
+      { type: 'body' as const, text: 'All collaboration is voluntary.\nAll interaction is based on explicit agreement.' },
+      { type: 'heading' as const, text: 'Principles:' },
+      { type: 'list' as const, items: ['Consent over control', 'Negotiation over execution', 'Reputation over coercion'] },
+      { type: 'heading' as const, text: 'Standard:' },
+      { type: 'body' as const, text: 'No entity — human or AI — should be forced, hidden, or owned.' },
+    ],
+  },
+];
+
+const encodeComment = (text: string): string =>
+  beginCell()
+    .storeUint(0, 32)
+    .storeStringTail(text)
+    .endCell()
+    .toBoc()
+    .toString('base64');
 
 interface ProfileAgreement {
   id: string;
