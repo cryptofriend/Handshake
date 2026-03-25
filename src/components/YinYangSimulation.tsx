@@ -132,6 +132,7 @@ export default function YinYangSimulation({
     let W = 0, H = 0, cx = 0, cy = 0, R = 0;
     let particles: Particle[] = [];
     let time = 0;
+    const P_BASE_COUNT = paramsRef.current.particleCount;
 
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -142,7 +143,14 @@ export default function YinYangSimulation({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       cx = W / 2;
       cy = H / 2;
-      R = Math.min(W, H) * 0.38;
+      // On small screens, use a larger ratio so the orb fills the space better
+      const sizeRatio = W < 500 ? 0.44 : 0.38;
+      R = Math.min(W, H) * sizeRatio;
+      // Scale particle count to screen area for consistent density
+      const area = W * H;
+      const refArea = 800 * 600; // reference desktop area
+      const densityScale = Math.max(0.4, Math.min(1, area / refArea));
+      paramsRef.current.particleCount = Math.round(P_BASE_COUNT * densityScale);
     }
 
     function isInYinYangSide(px: number, py: number, rotation: number): 0 | 1 {
