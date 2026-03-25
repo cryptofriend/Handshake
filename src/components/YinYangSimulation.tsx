@@ -117,7 +117,7 @@ export default function YinYangSimulation({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d', { alpha: false })!;
+    const ctx = canvas.getContext('2d', { alpha: true })!;
 
     let W = 0, H = 0, cx = 0, cy = 0, R = 0;
     let particles: Particle[] = [];
@@ -232,8 +232,7 @@ export default function YinYangSimulation({
       const effectiveR = R * breathe;
 
       // Background
-      ctx.fillStyle = '#0a0a0f';
-      ctx.fillRect(0, 0, W, H);
+      ctx.clearRect(0, 0, W, H);
 
       // Outer glow
       const outerGrad = ctx.createRadialGradient(cx, cy, effectiveR * 0.6, cx, cy, effectiveR * 1.4);
@@ -390,7 +389,7 @@ export default function YinYangSimulation({
   ];
 
   return (
-    <div className={`relative w-full h-screen overflow-hidden bg-[#0a0a0f] ${className}`}>
+    <div className={`relative w-full h-screen overflow-hidden ${className}`}>
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
