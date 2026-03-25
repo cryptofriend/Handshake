@@ -111,7 +111,7 @@ const AdminPage = () => {
     }
   };
 
-  useEffect(() => { if (unlocked) { fetchStats(); fetchPrompt(); } }, [unlocked]);
+  useEffect(() => { if (unlocked) { fetchStats(); fetchPrompt(); fetchModel(); } }, [unlocked]);
 
   if (!unlocked) {
     return (
