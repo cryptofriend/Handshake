@@ -62,13 +62,32 @@ const SignPage = () => {
         const shortHash = '0x' + id.replace(/-/g, '').slice(0, 8) + '..' + id.replace(/-/g, '').slice(-4);
         const fullHash = '0x' + id.replace(/-/g, '');
 
+        // Fetch existing signatures from DB
+        const { data: sigData } = await supabase
+          .from('agreement_signatures')
+          .select('*')
+          .eq('agreement_id', id);
+
+        const existingSignatures: AgreementSignature[] = (sigData || []).map((s: any) => ({
+          party: s.party_name || 'Signer',
+          walletAddress: s.wallet_address,
+          signedAt: s.signed_at,
+          txHash: s.tx_hash || '',
+          blockchainStatus: s.blockchain_status as 'pending' | 'confirmed' | 'failed',
+        }));
+
+        const sigCount = existingSignatures.length;
+        let status: Agreement['status'] = data.status === 'sign_ready' ? 'pending_signature' : 'draft';
+        if (sigCount >= 2) status = 'fully_signed';
+        else if (sigCount === 1) status = 'signed_by_one';
+
         const mapped: Agreement = {
           id: data.id,
           version: '1.0',
           createdAt: data.created_at,
           title: data.title,
           summary: data.summary || '',
-          status: data.status === 'sign_ready' ? 'pending_signature' : 'draft',
+          status,
           parties: parties.map((p: any) => ({
             name: p.name || p,
             role: p.role || null,
@@ -81,8 +100,8 @@ const SignPage = () => {
           fullText: fullText || `HANDSHAKE AGREEMENT v1.0\n\nTITLE\n${data.title}\n\nSUMMARY\n${data.summary}\n\nTERMS\n${terms.map((t: string, i: number) => `${i + 1}. ${t}`).join('\n')}`,
           shortHash,
           fullHash,
-          signatures: [],
-          receiptStatus: 'none',
+          signatures: existingSignatures,
+          receiptStatus: sigCount > 0 ? 'minted' : 'none',
           creatorName: parties[0]?.name || 'Party A',
           counterpartyName: parties[1]?.name || 'Party B',
           task: data.title,
@@ -126,13 +145,27 @@ const SignPage = () => {
 
       await tonConnectUI.sendTransaction(transaction);
 
+      const txHash = '0x' + Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+
       const newSig: AgreementSignature = {
         party: agreement?.parties[0]?.name || 'Signer',
         walletAddress: userAddress,
         signedAt: new Date().toISOString(),
-        txHash: '0x' + Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
+        txHash,
         blockchainStatus: 'pending',
       };
+
+      // Persist signature to database
+      if (id) {
+        await supabase.from('agreement_signatures').upsert({
+          agreement_id: id,
+          wallet_address: userAddress,
+          party_name: newSig.party,
+          tx_hash: txHash,
+          blockchain_status: 'pending',
+          signed_at: new Date().toISOString(),
+        }, { onConflict: 'agreement_id,wallet_address' });
+      }
 
       setAgreement((prev) => prev ? ({
         ...prev,
@@ -144,7 +177,13 @@ const SignPage = () => {
       toast.success('Agreement signed on-chain!');
 
       // Simulate confirmation
-      setTimeout(() => {
+      setTimeout(async () => {
+        if (id) {
+          await supabase.from('agreement_signatures')
+            .update({ blockchain_status: 'confirmed' })
+            .eq('agreement_id', id)
+            .eq('wallet_address', userAddress);
+        }
         setAgreement((prev) => prev ? ({
           ...prev,
           signatures: prev.signatures.map((s) =>
