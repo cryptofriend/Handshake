@@ -241,8 +241,8 @@ const AdminPage = () => {
               className="resize-y font-mono text-xs"
             />
           )}
-          <Button onClick={savePrompt} disabled={promptSaving || promptLoading} className="w-full">
-            {promptSaving ? 'Saving...' : 'Save Prompt'}
+          <Button onClick={savePrompt} disabled={promptSaving || promptLoading} className={`w-full ${promptSaved ? 'bg-green-600 hover:bg-green-700' : ''}`}>
+            {promptSaved ? <><CheckCircle className="w-4 h-4 mr-1" /> Saved</> : promptSaving ? 'Saving...' : 'Save Prompt'}
           </Button>
         </Card>
       </div>
