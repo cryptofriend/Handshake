@@ -98,6 +98,18 @@ async function getSystemPrompt(supabase: any): Promise<string> {
   return DEFAULT_SYSTEM_PROMPT;
 }
 
+async function getAiModel(supabase: any): Promise<string> {
+  try {
+    const { data } = await supabase
+      .from("system_config")
+      .select("value")
+      .eq("key", "ai_model")
+      .single();
+    if (data?.value) return data.value;
+  } catch {}
+  return "google/gemini-3-flash-preview";
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
