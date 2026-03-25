@@ -58,6 +58,7 @@ const AdminPage = () => {
     );
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchStats = async () => {
     setStatsLoading(true);
     try {
@@ -75,9 +76,6 @@ const AdminPage = () => {
       setStatsLoading(false);
     }
   };
-
-  // Fetch on mount
-  useState(() => { fetchStats(); });
 
   const handleTest = async () => {
     if (!prompt.trim()) return;
