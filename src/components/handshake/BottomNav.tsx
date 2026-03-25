@@ -7,7 +7,6 @@ const NAV_ITEMS = [
   { icon: Home, label: 'Home', path: '/', requiresAuth: false },
   { icon: MessageCircle, label: 'Agent', path: '/agent', requiresAuth: false },
   { icon: Handshake, label: 'To Sign', path: '/sign', requiresAuth: false },
-  { icon: User, label: 'Profile', path: '/profile', requiresAuth: false },
 ];
 
 export const BottomNav = () => {
