@@ -41,6 +41,7 @@ const INTERVAL = 6000;
 export default function ShowcaseSteps() {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const navigate = useNavigate();
 
   const next = useCallback(() => {
     setActive(prev => (prev + 1) % steps.length);
