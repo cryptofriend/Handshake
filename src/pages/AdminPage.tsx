@@ -139,32 +139,6 @@ const AdminPage = () => {
     );
   }
 
-  const handleTest = async () => {
-    if (!prompt.trim()) return;
-    setLoading(true);
-    setResponse('');
-    try {
-      const { data, error } = await supabase.functions.invoke('admin-test-prompt', {
-        body: { model, prompt: prompt.trim() },
-      });
-      if (error) throw error;
-      setResponse(data.reply || JSON.stringify(data, null, 2));
-      setTestSaved(true);
-      setTimeout(() => setTestSaved(false), 2000);
-    } catch (err: any) {
-      if (err?.status === 429) {
-        toast.error('Rate limited — wait a moment');
-      } else if (err?.status === 402) {
-        toast.error('AI credits exhausted');
-      } else {
-        toast.error('Test failed');
-      }
-      setResponse('Error: ' + (err?.message || 'Unknown'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const selectedModel = MODELS.find(m => m.id === model);
 
   return (
