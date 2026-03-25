@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, FileCheck, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
 import showcaseTalkAgent from '@/assets/showcase-talk-agent.jpg';
 import showcaseReviewSign from '@/assets/showcase-review-sign.png';
-import showcaseShareTelegram from '@/assets/showcase-share-telegram.jpg';
+import showcaseShareTelegram from '@/assets/showcase-share-telegram.png';
 
 const steps = [
   {
