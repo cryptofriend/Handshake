@@ -35,7 +35,7 @@ const steps = [
   },
 ];
 
-const INTERVAL = 3000;
+const INTERVAL = 6000;
 
 export default function ShowcaseSteps() {
   const [active, setActive] = useState(0);
