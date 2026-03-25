@@ -77,6 +77,8 @@ const AdminPage = () => {
     }
   };
 
+  useEffect(() => { if (unlocked) fetchStats(); }, [unlocked]);
+
   const handleTest = async () => {
     if (!prompt.trim()) return;
     setLoading(true);
