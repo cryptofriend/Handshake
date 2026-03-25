@@ -65,6 +65,47 @@ export type Database = {
         }
         Relationships: []
       }
+      agreement_signatures: {
+        Row: {
+          agreement_id: string
+          blockchain_status: string
+          created_at: string
+          id: string
+          party_name: string | null
+          signed_at: string | null
+          tx_hash: string | null
+          wallet_address: string
+        }
+        Insert: {
+          agreement_id: string
+          blockchain_status?: string
+          created_at?: string
+          id?: string
+          party_name?: string | null
+          signed_at?: string | null
+          tx_hash?: string | null
+          wallet_address: string
+        }
+        Update: {
+          agreement_id?: string
+          blockchain_status?: string
+          created_at?: string
+          id?: string
+          party_name?: string | null
+          signed_at?: string | null
+          tx_hash?: string | null
+          wallet_address?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agreement_signatures_agreement_id_fkey"
+            columns: ["agreement_id"]
+            isOneToOne: false
+            referencedRelation: "agreement_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_messages: {
         Row: {
           agreement_id: string | null
