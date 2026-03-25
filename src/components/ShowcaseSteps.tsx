@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, FileText, Send, CheckCheck } from 'lucide-react';
 import showcaseChat from '@/assets/showcase-chat.jpg';
 import showcaseAgreement from '@/assets/showcase-agreement.jpg';
@@ -10,137 +11,146 @@ const steps = [
     step: '01',
     icon: MessageSquare,
     title: 'Talk to AI',
-    description: 'Describe your agreement in plain language. Our AI agent understands context, asks clarifying questions, and structures your intent into a proper agreement.',
+    description: 'Describe your agreement in plain language. Our AI agent understands context and structures your intent.',
     image: showcaseChat,
-    accent: 'hsla(45, 90%, 55%, 0.15)',
-    accentBorder: 'hsla(45, 90%, 55%, 0.25)',
+    accent: 'hsla(45, 90%, 55%)',
   },
   {
     step: '02',
     icon: FileText,
     title: 'AI Generates Agreement',
-    description: 'The agent drafts a complete, structured agreement with identified parties, terms, and conditions — ready for review and signing.',
+    description: 'The agent drafts a complete, structured agreement with parties, terms, and conditions.',
     image: showcaseAgreement,
-    accent: 'hsla(260, 70%, 55%, 0.15)',
-    accentBorder: 'hsla(260, 70%, 55%, 0.25)',
+    accent: 'hsla(260, 70%, 55%)',
   },
   {
     step: '03',
     icon: Send,
-    title: 'Sign & Share via Telegram',
-    description: 'Sign the agreement on-chain with your TON wallet. Share the signing link instantly via Telegram to your counterparty.',
+    title: 'Sign & Share',
+    description: 'Sign on-chain with your TON wallet. Share the link instantly via Telegram.',
     image: showcaseSign,
-    accent: 'hsla(190, 80%, 50%, 0.15)',
-    accentBorder: 'hsla(190, 80%, 50%, 0.25)',
+    accent: 'hsla(190, 80%, 50%)',
   },
   {
     step: '04',
     icon: CheckCheck,
     title: 'Countersign & Confirm',
-    description: 'The other party opens the link, reviews the agreement, and signs. Both parties receive instant confirmation — fully verified on the blockchain.',
+    description: 'The other party signs. Both receive instant blockchain-verified confirmation.',
     image: showcaseComplete,
-    accent: 'hsla(160, 70%, 42%, 0.15)',
-    accentBorder: 'hsla(160, 70%, 42%, 0.25)',
+    accent: 'hsla(160, 70%, 42%)',
   },
 ];
 
+const INTERVAL = 3000;
+
 export default function ShowcaseSteps() {
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  const next = useCallback(() => {
+    setActive(prev => (prev + 1) % steps.length);
+  }, []);
+
+  useEffect(() => {
+    if (paused) return;
+    const timer = setInterval(next, INTERVAL);
+    return () => clearInterval(timer);
+  }, [paused, next]);
+
+  const current = steps[active];
+  const Icon = current.icon;
+
   return (
-    <div className="w-full max-w-2xl mx-auto px-5 pb-20">
+    <div
+      className="w-full max-w-lg mx-auto px-5 pb-16"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onTouchStart={() => setPaused(true)}
+      onTouchEnd={() => setPaused(false)}
+    >
       {/* Section header */}
       <motion.div
-        className="text-center mb-12"
+        className="text-center mb-8"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-50px' }}
+        viewport={{ once: true }}
         transition={{ duration: 0.6 }}
       >
         <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-2">How it works</p>
         <h2 className="text-2xl font-semibold text-foreground">Agreement in 4 steps</h2>
       </motion.div>
 
-      {/* Steps */}
-      <div className="space-y-16">
-        {steps.map((s, i) => {
-          const Icon = s.icon;
-          const isEven = i % 2 === 0;
-
-          return (
-            <motion.div
-              key={s.step}
-              className="relative"
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              {/* Connector line */}
-              {i < steps.length - 1 && (
-                <div className="absolute left-1/2 -translate-x-px bottom-0 translate-y-full h-16 w-px bg-gradient-to-b from-border to-transparent" />
-              )}
-
-              {/* Card */}
+      {/* Slide card */}
+      <div className="relative rounded-3xl overflow-hidden border border-border bg-card" style={{ minHeight: 380 }}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active}
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -40 }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+          >
+            {/* Image */}
+            <div className="relative aspect-[4/3] overflow-hidden">
+              <img
+                src={current.image}
+                alt={current.title}
+                width={800}
+                height={600}
+                className="w-full h-full object-cover"
+              />
+              {/* Step badge */}
               <div
-                className="rounded-3xl overflow-hidden border"
-                style={{
-                  background: s.accent,
-                  borderColor: s.accentBorder,
-                }}
+                className="absolute top-4 left-4 w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold backdrop-blur-md border border-border bg-card/70 text-foreground"
               >
-                {/* Image */}
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <img
-                    src={s.image}
-                    alt={s.title}
-                    loading="lazy"
-                    width={800}
-                    height={600}
-                    className="w-full h-full object-cover"
-                  />
-                  {/* Step badge */}
-                  <div
-                    className="absolute top-4 left-4 w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold backdrop-blur-md border"
-                    style={{
-                      background: s.accent,
-                      borderColor: s.accentBorder,
-                      color: 'hsl(var(--foreground))',
-                    }}
-                  >
-                    {s.step}
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div
-                      className="w-9 h-9 rounded-xl flex items-center justify-center"
-                      style={{ background: s.accentBorder }}
-                    >
-                      <Icon className="w-4.5 h-4.5 text-foreground" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-foreground">{s.title}</h3>
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{s.description}</p>
-                </div>
+                {current.step}
               </div>
-            </motion.div>
-          );
-        })}
+            </div>
+
+            {/* Content */}
+            <div className="p-5">
+              <div className="flex items-center gap-3 mb-2">
+                <div
+                  className="w-8 h-8 rounded-xl flex items-center justify-center"
+                  style={{ background: `${current.accent} / 0.2)` }}
+                >
+                  <Icon className="w-4 h-4 text-foreground" />
+                </div>
+                <h3 className="text-base font-semibold text-foreground">{current.title}</h3>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">{current.description}</p>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
 
-      {/* Bottom CTA */}
-      <motion.div
-        className="text-center mt-16"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-      >
-        <p className="text-xs tracking-widest uppercase text-muted-foreground">
-          Powered by TON blockchain
-        </p>
-      </motion.div>
+      {/* Progress dots */}
+      <div className="flex items-center justify-center gap-2 mt-5">
+        {steps.map((s, i) => (
+          <button
+            key={i}
+            onClick={() => setActive(i)}
+            className="relative h-1.5 rounded-full transition-all duration-300"
+            style={{ width: i === active ? 32 : 8, background: i === active ? current.accent : 'hsl(var(--muted))' }}
+          >
+            {i === active && !paused && (
+              <motion.div
+                className="absolute inset-0 rounded-full origin-left"
+                style={{ background: `${current.accent}` }}
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: INTERVAL / 1000, ease: 'linear' }}
+                key={`progress-${active}`}
+              />
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Bottom tag */}
+      <p className="text-center text-xs tracking-widest uppercase text-muted-foreground mt-8">
+        Powered by TON blockchain
+      </p>
     </div>
   );
 }
