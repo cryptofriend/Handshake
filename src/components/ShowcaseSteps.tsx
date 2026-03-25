@@ -1,43 +1,34 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, FileText, Send, CheckCheck, ChevronLeft, ChevronRight } from 'lucide-react';
-import showcaseChat from '@/assets/showcase-chat.jpg';
-import showcaseAgreement from '@/assets/showcase-agreement.jpg';
-import showcaseSign from '@/assets/showcase-sign.jpg';
-import showcaseComplete from '@/assets/showcase-complete.jpg';
+import { MessageSquare, FileCheck, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
+import showcaseTalkAgent from '@/assets/showcase-talk-agent.jpg';
+import showcaseReviewSign from '@/assets/showcase-review-sign.png';
+import showcaseShareTelegram from '@/assets/showcase-share-telegram.jpg';
 
 const steps = [
   {
     step: '01',
     icon: MessageSquare,
-    title: 'Talk to AI',
-    description: 'Describe your agreement in plain language. Our AI agent understands context and structures your intent.',
-    image: showcaseChat,
+    title: 'Talk to Agent',
+    description: 'Describe your agreement in plain language. Our AI agent understands context and drafts it for you.',
+    image: showcaseTalkAgent,
     accent: 'hsla(45, 90%, 55%)',
   },
   {
     step: '02',
-    icon: FileText,
-    title: 'AI Generates Agreement',
-    description: 'The agent drafts a complete, structured agreement with parties, terms, and conditions.',
-    image: showcaseAgreement,
+    icon: FileCheck,
+    title: 'Review & Sign',
+    description: 'Review the generated agreement, then sign on-chain with your TON wallet in one tap.',
+    image: showcaseReviewSign,
     accent: 'hsla(260, 70%, 55%)',
   },
   {
     step: '03',
-    icon: Send,
-    title: 'Sign & Share',
-    description: 'Sign on-chain with your TON wallet. Share the link instantly via Telegram.',
-    image: showcaseSign,
-    accent: 'hsla(190, 80%, 50%)',
-  },
-  {
-    step: '04',
-    icon: CheckCheck,
-    title: 'Countersign & Confirm',
-    description: 'The other party signs. Both receive instant blockchain-verified confirmation.',
-    image: showcaseComplete,
-    accent: 'hsla(160, 70%, 42%)',
+    icon: Share2,
+    title: 'Share with Friends',
+    description: 'Send the agreement link via Telegram. Your counterparty signs and both get blockchain confirmation.',
+    image: showcaseShareTelegram,
+    accent: 'hsla(200, 80%, 50%)',
   },
 ];
 
@@ -77,7 +68,7 @@ export default function ShowcaseSteps() {
         transition={{ duration: 0.6 }}
       >
         <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-2">How it works</p>
-        <h2 className="text-2xl font-semibold text-foreground">Agreement in 4 steps</h2>
+        <h2 className="text-2xl font-semibold text-foreground">Digital Handshake in 3 Steps</h2>
       </motion.div>
 
       {/* Slide card with nav arrows */}
