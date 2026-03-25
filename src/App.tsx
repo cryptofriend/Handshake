@@ -29,6 +29,7 @@ const App = () => (
               <Route path="/sign" element={<AgreementsPage />} />
               <Route path="/sign/:id" element={<SignPage />} />
               <Route path="/agreement/:id" element={<CounterpartyPage />} />
+              <Route path="/admin" element={<AdminPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
