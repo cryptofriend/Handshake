@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, FileText, Send, CheckCheck, ChevronLeft, ChevronRight } from 'lucide-react';
-import { MessageSquare, FileText, Send, CheckCheck } from 'lucide-react';
 import showcaseChat from '@/assets/showcase-chat.jpg';
 import showcaseAgreement from '@/assets/showcase-agreement.jpg';
 import showcaseSign from '@/assets/showcase-sign.jpg';
