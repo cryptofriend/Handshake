@@ -134,12 +134,12 @@ const SignPage = () => {
         blockchainStatus: 'pending',
       };
 
-      setAgreement((prev) => ({
+      setAgreement((prev) => prev ? ({
         ...prev,
         signatures: [...prev.signatures, newSig],
         status: prev.signatures.length === 0 ? 'signed_by_one' : 'fully_signed',
         receiptStatus: 'minting',
-      }));
+      }) : prev);
 
       toast.success('Agreement signed on-chain!');
 
