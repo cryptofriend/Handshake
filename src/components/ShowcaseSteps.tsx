@@ -10,6 +10,7 @@ const steps = [
     step: '01',
     icon: MessageSquare,
     title: 'Talk to Agent',
+    headline: 'Talk to Agent',
     description: 'Describe your agreement in plain language. Our AI agent understands context and drafts it for you.',
     image: showcaseTalkAgent,
     accent: 'hsla(45, 90%, 55%)',
@@ -18,6 +19,7 @@ const steps = [
     step: '02',
     icon: FileCheck,
     title: 'Review & Sign',
+    headline: 'Sign with TON',
     description: 'Review the generated agreement, then sign on-chain with your TON wallet in one tap.',
     image: showcaseReviewSign,
     accent: 'hsla(260, 70%, 55%)',
@@ -26,6 +28,7 @@ const steps = [
     step: '03',
     icon: Share2,
     title: 'Share with Friends',
+    headline: 'Share in Telegram',
     description: 'Send the agreement link via Telegram. Your counterparty signs and both get blockchain confirmation.',
     image: showcaseShareTelegram,
     accent: 'hsla(200, 80%, 50%)',
@@ -68,7 +71,18 @@ export default function ShowcaseSteps() {
         transition={{ duration: 0.6 }}
       >
         <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-2">How it works</p>
-        <h2 className="text-2xl font-semibold text-foreground">Digital Handshake in 3 Steps</h2>
+        <AnimatePresence mode="wait">
+          <motion.h2
+            key={active}
+            className="text-2xl font-semibold text-foreground"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            {steps[active].headline}
+          </motion.h2>
+        </AnimatePresence>
       </motion.div>
 
       {/* Slide card with nav arrows */}
