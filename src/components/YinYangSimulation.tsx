@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback, useState } from 'react';
+import { useRef, useEffect } from 'react';
 
 // ── Tunable Parameters ──────────────────────────────────────────────
 interface SimParams {
@@ -103,16 +103,6 @@ export default function YinYangSimulation({
   const mouseRef = useRef({ x: 0, y: 0, active: false });
   const rippleRef = useRef<{ x: number; y: number; t: number; strength: number }[]>([]);
   const paramsRef = useRef<SimParams>({ ...DEFAULT_PARAMS, ...userParams });
-  const [showControls, setShowControls] = useState(false);
-  const [liveParams, setLiveParams] = useState<SimParams>({ ...DEFAULT_PARAMS, ...userParams });
-
-  useEffect(() => {
-    paramsRef.current = liveParams;
-  }, [liveParams]);
-
-  const handleParamChange = useCallback((key: keyof SimParams, value: number) => {
-    setLiveParams(prev => ({ ...prev, [key]: value }));
-  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -395,37 +385,6 @@ export default function YinYangSimulation({
         className="absolute inset-0 w-full h-full"
         style={{ touchAction: 'none' }}
       />
-
-      {/* Toggle controls */}
-      <button
-        onClick={() => setShowControls(c => !c)}
-        className="absolute top-4 right-4 z-20 px-3 py-1.5 text-xs font-medium tracking-wider uppercase rounded-lg bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80 backdrop-blur-sm border border-border transition-all"
-      >
-        {showControls ? 'Hide' : 'Tune'}
-      </button>
-
-      {/* Controls panel */}
-      {showControls && (
-        <div className="absolute top-14 right-4 z-20 w-56 p-4 rounded-xl bg-card/80 backdrop-blur-md border border-border space-y-3">
-          {sliders.map(s => (
-            <div key={s.key}>
-              <div className="flex justify-between text-[10px] text-muted-foreground mb-1 font-mono uppercase tracking-wider">
-                <span>{s.label}</span>
-                <span>{liveParams[s.key]}</span>
-              </div>
-              <input
-                type="range"
-                min={s.min}
-                max={s.max}
-                step={s.step}
-                value={liveParams[s.key]}
-                onChange={e => handleParamChange(s.key, parseFloat(e.target.value))}
-                className="w-full h-1 appearance-none bg-muted rounded-full outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:cursor-pointer"
-              />
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
