@@ -20,67 +20,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-// Mock agreement for demo
-const MOCK_AGREEMENT: Agreement = {
-  id: 'hsk-001',
-  version: '1.0',
-  createdAt: new Date().toISOString(),
-  title: 'Booga × Handshake Partnership',
-  summary: 'Strategic partnership agreement defining ownership, roles, and commitments between Booga and Handshake Agent Reserve.',
-  status: 'pending_signature',
-  parties: [
-    { name: 'Booga', role: 'Founder & Lead' },
-    { name: 'Handshake', role: 'Agent Reserve' },
-  ],
-  allocations: [
-    { party: 'Booga', percentage: 85, label: 'Booga' },
-    { party: 'Handshake', percentage: 15, label: 'Agent Reserve' },
-  ],
-  fullText: `HANDSHAKE AGREEMENT v1.0
-
-PARTIES
-1. Booga ("Founder & Lead")
-2. Handshake Agent Reserve ("Agent Reserve")
-
-ROLES & COMMITMENTS
-Booga shall serve as the primary decision-maker and lead contributor to the project. Booga commits to:
-• Active development and strategic direction
-• Community engagement and partnership cultivation
-• Transparent communication of project milestones
-
-Handshake Agent Reserve commits to:
-• Providing AI-powered agreement infrastructure
-• Maintaining protocol integrity and security
-• Supporting dispute resolution mechanisms
-
-OWNERSHIP MODEL
-• Booga: 85% ownership stake
-• Handshake Agent Reserve: 15% ownership stake
-
-Ownership is non-dilutable without mutual written consent of both parties.
-
-PROOF MODEL
-All agreements are signed on the TON blockchain. Each signature creates a verifiable, timestamped proof of consent. Agreement hashes are computed deterministically from the canonical agreement text.
-
-AMENDMENT RULE
-This agreement may only be amended by mutual consent of both parties, recorded as a new version with fresh on-chain signatures. Previous versions remain immutable and verifiable.
-
-DISPUTE RESOLUTION
-In the event of a dispute, both parties agree to engage the Handshake arbitration protocol before seeking external resolution.`,
-  shortHash: '0x7f3a..c91e',
-  fullHash: '0x7f3a4b2d8e1c6f9a0b5d3e7c2a8f4d6b1e9c3a5d7f2b4e6a8c0d2f4b6e8a0c91e',
-  signatures: [],
-  receiptStatus: 'none',
-  creatorName: 'Booga',
-  counterpartyName: 'Handshake',
-  task: 'Partnership agreement',
-  payment: 'N/A',
-  deadline: 'Ongoing',
-  notes: '',
-  creatorSigned: false,
-  counterpartySigned: false,
-};
-
 const SignPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -88,14 +27,19 @@ const SignPage = () => {
   const { open: openTonModal } = useTonConnectModal();
   const [tonConnectUI] = useTonConnectUI();
 
-  const [agreement, setAgreement] = useState<Agreement>(MOCK_AGREEMENT);
-  const [loading, setLoading] = useState(!!id);
+  const [agreement, setAgreement] = useState<Agreement | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [signing, setSigning] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  // Fetch agreement draft from database if id is provided
+  // Fetch agreement draft from database
   useEffect(() => {
-    if (!id) return;
+    if (!id) {
+      setNotFound(true);
+      setLoading(false);
+      return;
+    }
     const fetchDraft = async () => {
       setLoading(true);
       try {
@@ -103,10 +47,10 @@ const SignPage = () => {
           .from('agreement_drafts')
           .select('*')
           .eq('id', id)
-          .single();
+          .maybeSingle();
 
         if (error || !data) {
-          toast.error('Agreement not found');
+          setNotFound(true);
           setLoading(false);
           return;
         }
@@ -152,7 +96,7 @@ const SignPage = () => {
         setAgreement(mapped);
       } catch (err) {
         console.error('Error fetching agreement:', err);
-        toast.error('Failed to load agreement');
+        setNotFound(true);
       } finally {
         setLoading(false);
       }
@@ -160,9 +104,9 @@ const SignPage = () => {
     fetchDraft();
   }, [id]);
 
-  const userHasSigned = agreement.signatures.some(
+  const userHasSigned = agreement?.signatures.some(
     (s) => s.walletAddress === userAddress
-  );
+  ) ?? false;
 
   const handleSignConfirm = async () => {
     setConfirmOpen(false);
@@ -183,25 +127,25 @@ const SignPage = () => {
       await tonConnectUI.sendTransaction(transaction);
 
       const newSig: AgreementSignature = {
-        party: agreement.parties[0]?.name || 'Signer',
+        party: agreement?.parties[0]?.name || 'Signer',
         walletAddress: userAddress,
         signedAt: new Date().toISOString(),
         txHash: '0x' + Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
         blockchainStatus: 'pending',
       };
 
-      setAgreement((prev) => ({
+      setAgreement((prev) => prev ? ({
         ...prev,
         signatures: [...prev.signatures, newSig],
         status: prev.signatures.length === 0 ? 'signed_by_one' : 'fully_signed',
         receiptStatus: 'minting',
-      }));
+      }) : prev);
 
       toast.success('Agreement signed on-chain!');
 
       // Simulate confirmation
       setTimeout(() => {
-        setAgreement((prev) => ({
+        setAgreement((prev) => prev ? ({
           ...prev,
           signatures: prev.signatures.map((s) =>
             s.walletAddress === userAddress
@@ -209,7 +153,7 @@ const SignPage = () => {
               : s
           ),
           receiptStatus: 'minted',
-        }));
+        }) : prev);
         toast.success('Transaction confirmed');
       }, 5000);
     } catch (err: any) {
@@ -224,9 +168,18 @@ const SignPage = () => {
   };
 
   const handleCopyHash = () => {
-    navigator.clipboard.writeText(agreement.fullHash);
+    navigator.clipboard.writeText(agreement?.fullHash || '');
     toast.success('Agreement hash copied');
   };
+
+  if (notFound) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: 'hsl(var(--background))' }}>
+        <p className="text-muted-foreground text-sm">Agreement not found</p>
+        <Button variant="outline" onClick={() => navigate('/agent')}>Go to Agent</Button>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -241,6 +194,8 @@ const SignPage = () => {
       </div>
     );
   }
+
+  if (!agreement) return null;
 
   return (
     <div className="min-h-screen pb-24 relative overflow-hidden" style={{ background: 'hsl(var(--background))' }}>
