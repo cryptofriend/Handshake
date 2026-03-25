@@ -201,7 +201,7 @@ const AdminPage = () => {
         {/* Model Selector */}
         <Card className="p-4 space-y-3">
           <label className="text-sm font-medium text-foreground">AI Model</label>
-          <Select value={model} onValueChange={setModel}>
+          <Select value={model} onValueChange={saveModel}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
