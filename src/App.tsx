@@ -10,6 +10,7 @@ import CounterpartyPage from "./pages/CounterpartyPage";
 import SignPage from "./pages/SignPage";
 import AgreementsPage from "./pages/AgreementsPage";
 import NotFound from "./pages/NotFound";
+import AdminPage from "./pages/AdminPage";
 import { BottomNav } from "./components/handshake/BottomNav";
 
 const queryClient = new QueryClient();
