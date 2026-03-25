@@ -5,6 +5,7 @@ import { useTonAddress, useTonConnectModal, useTonConnectUI } from '@tonconnect/
 import { toNano } from '@ton/ton';
 import { toast } from 'sonner';
 import { ArrowLeft, Wallet, PenTool, Copy, AlertTriangle, Pencil, Check } from 'lucide-react';
+import { SignCelebration } from '@/components/handshake/SignCelebration';
 import { Button } from '@/components/ui/button';
 import { StatusBadge } from '@/components/handshake/StatusBadge';
 import { AgreementCardFlip } from '@/components/handshake/AgreementCardFlip';
@@ -32,6 +33,8 @@ const SignPage = () => {
   const [notFound, setNotFound] = useState(false);
   const [signing, setSigning] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebrationTx, setCelebrationTx] = useState('');
 
   // Fetch agreement draft from database
   useEffect(() => {
@@ -217,6 +220,10 @@ const SignPage = () => {
       }) : prev);
 
       toast.success('Agreement signed on-chain!');
+
+      // Show epic celebration
+      setCelebrationTx(txHash);
+      setShowCelebration(true);
 
       // Simulate confirmation
       setTimeout(async () => {
@@ -470,6 +477,13 @@ const SignPage = () => {
           </div>
         </DialogContent>
       </Dialog>
+      {/* Epic Celebration Overlay */}
+      <SignCelebration
+        show={showCelebration}
+        agreementTitle={agreement.title}
+        txHash={celebrationTx}
+        onClose={() => setShowCelebration(false)}
+      />
       </div> {/* close relative z-10 wrapper */}
     </div>
   );

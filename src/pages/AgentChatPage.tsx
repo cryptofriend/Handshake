@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -6,7 +6,7 @@ import { ArrowUp, Sparkles } from 'lucide-react';
 import { ChatMessage, AgreementPreview, HandshakeStatus } from '@/types/chat';
 import { ChatAgreementCard } from '@/components/handshake/ChatAgreementCard';
 import { useAppStore } from '@/store/appStore';
-import { supabase } from '@/integrations/supabase/client';
+import { streamChat } from '@/lib/streamChat';
 import { toast } from 'sonner';
 
 const WELCOME_MSG: ChatMessage = {
@@ -32,10 +32,11 @@ const AgentChatPage = () => {
   const messages: ChatMessage[] = chatConversation?.messages ?? [WELCOME_MSG];
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
+  const [streamingText, setStreamingText] = useState('');
+  const [streamingId, setStreamingId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const sessionId = useRef(getSessionId());
 
-  // Initialize conversation with welcome message if empty
   useEffect(() => {
     if (!chatConversation) {
       addChatMessage(WELCOME_MSG);
@@ -44,9 +45,9 @@ const AgentChatPage = () => {
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
-  }, [messages, isThinking]);
+  }, [messages, isThinking, streamingText]);
 
-  const handleSend = async () => {
+  const handleSend = useCallback(async () => {
     if (!input.trim() || isThinking) return;
 
     const userMsg: ChatMessage = {
@@ -60,73 +61,76 @@ const AgentChatPage = () => {
     setInput('');
     setIsThinking(true);
 
-    try {
-      // Build history from stored messages (exclude welcome)
-      const history = messages
-        .filter((m) => m.id !== 'welcome')
-        .map((m) => ({ role: m.role, content: m.content }));
+    const msgId = (Date.now() + 1).toString();
+    setStreamingId(msgId);
+    setStreamingText('');
 
-      const { data, error } = await supabase.functions.invoke('chat', {
-        body: {
-          sessionId: sessionId.current,
-          userId: null,
-          message: messageText,
-          history,
-        },
-      });
+    const history = messages
+      .filter((m) => m.id !== 'welcome')
+      .map((m) => ({ role: m.role, content: m.content }));
 
-      if (error) throw error;
+    streamChat({
+      sessionId: sessionId.current,
+      userId: null,
+      message: messageText,
+      history,
+      onToken: (token) => {
+        setStreamingText((prev) => prev + token);
+      },
+      onDone: (data) => {
+        setIsThinking(false);
+        setStreamingId(null);
+        setStreamingText('');
 
-      // Map backend response to ChatMessage
-      const agreement: AgreementPreview | undefined = data.agreement
-        ? {
-            id: data.agreement.id || `draft-${Date.now()}`,
-            title: data.agreement.title,
-            summary: data.agreement.summary,
-            parties: (data.agreement.parties || []).map((p: any) => p.name || p),
-            keyTerms: Object.fromEntries(
-              (data.agreement.terms || []).map((t: string, i: number) => [`Term ${i + 1}`, t])
-            ),
-            missingFields: data.agreement.missingFields,
-            status: data.status as HandshakeStatus,
-            openAgreementUrl: data.actions?.openAgreementUrl || undefined,
-          }
-        : undefined;
+        const agreement: AgreementPreview | undefined = data.agreement
+          ? {
+              id: data.agreement.id || `draft-${Date.now()}`,
+              title: data.agreement.title,
+              summary: data.agreement.summary,
+              parties: (data.agreement.parties || []).map((p: any) => p.name || p),
+              keyTerms: Object.fromEntries(
+                (data.agreement.terms || []).map((t: string, i: number) => [`Term ${i + 1}`, t])
+              ),
+              missingFields: data.agreement.missingFields,
+              status: data.status as HandshakeStatus,
+              openAgreementUrl: data.actions?.openAgreementUrl || undefined,
+            }
+          : undefined;
 
-      const agentMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        role: 'agent',
-        content: data.reply,
-        timestamp: new Date().toISOString(),
-        handshakeStatus: data.status as HandshakeStatus,
-        agreement,
-        agreementId: data.agreement?.id,
-      };
+        const agentMsg: ChatMessage = {
+          id: msgId,
+          role: 'agent',
+          content: data.reply,
+          timestamp: new Date().toISOString(),
+          handshakeStatus: data.status as HandshakeStatus,
+          agreement,
+          agreementId: data.agreement?.id,
+        };
 
-      addChatMessage(agentMsg);
-    } catch (err: any) {
-      console.error('Chat error:', err);
+        addChatMessage(agentMsg);
+      },
+      onError: (err) => {
+        setIsThinking(false);
+        setStreamingId(null);
+        setStreamingText('');
 
-      // Handle rate limit / payment errors
-      if (err?.status === 429) {
-        toast.error('Rate limited. Please wait a moment and try again.');
-      } else if (err?.status === 402) {
-        toast.error('AI credits exhausted. Please add funds.');
-      } else {
-        toast.error('Failed to get response. Please try again.');
-      }
+        if (err?.status === 429) {
+          toast.error('Rate limited. Please wait a moment.');
+        } else if (err?.status === 402) {
+          toast.error('AI credits exhausted.');
+        } else {
+          toast.error('Failed to get response. Try again.');
+        }
 
-      // Add fallback error message in chat
-      addChatMessage({
-        id: (Date.now() + 1).toString(),
-        role: 'agent',
-        content: "I'm having trouble connecting right now. Please try again in a moment.",
-        timestamp: new Date().toISOString(),
-      });
-    } finally {
-      setIsThinking(false);
-    }
-  };
+        addChatMessage({
+          id: msgId,
+          role: 'agent',
+          content: "I'm having trouble connecting right now. Please try again.",
+          timestamp: new Date().toISOString(),
+        });
+      },
+    });
+  }, [input, isThinking, messages, addChatMessage]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -150,6 +154,12 @@ const AgentChatPage = () => {
     ));
   };
 
+  const agentBubbleStyle = {
+    background: 'hsla(218, 90%, 60%, 0.08)',
+    border: '1px solid hsla(218, 90%, 60%, 0.12)',
+    color: 'hsl(var(--foreground))',
+  };
+
   return (
     <div className="fixed inset-0 bg-background flex flex-col z-10">
       {/* Header */}
@@ -160,12 +170,11 @@ const AgentChatPage = () => {
         <div>
           <h1 className="logo-text text-lg text-foreground leading-tight">Handshake Agent</h1>
           <p className="text-xs text-muted-foreground">
-            {isThinking ? 'Thinking...' : 'Online'}
+            {isThinking ? (streamingText ? 'Typing...' : 'Thinking...') : 'Online'}
           </p>
         </div>
       </div>
 
-      {/* Divider */}
       <div className="h-px bg-border/50" />
 
       {/* Messages */}
@@ -180,27 +189,17 @@ const AgentChatPage = () => {
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div className="max-w-[85%]">
-                {/* Message bubble */}
                 <div
                   className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                     msg.role === 'user'
                       ? 'bg-primary text-primary-foreground rounded-br-md'
                       : 'rounded-bl-md'
                   }`}
-                  style={
-                    msg.role === 'agent'
-                      ? {
-                          background: 'hsla(218, 90%, 60%, 0.08)',
-                          border: '1px solid hsla(218, 90%, 60%, 0.12)',
-                          color: 'hsl(var(--foreground))',
-                        }
-                      : undefined
-                  }
+                  style={msg.role === 'agent' ? agentBubbleStyle : undefined}
                 >
                   {renderMarkdown(msg.content)}
                 </div>
 
-                {/* Agreement Card (inline, below the message bubble) */}
                 {msg.agreement && (
                   <ChatAgreementCard agreement={msg.agreement} />
                 )}
@@ -209,8 +208,31 @@ const AgentChatPage = () => {
           ))}
         </AnimatePresence>
 
-        {/* Thinking indicator */}
-        {isThinking && (
+        {/* Streaming message (typing effect) */}
+        {streamingId && streamingText && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex justify-start"
+          >
+            <div className="max-w-[85%]">
+              <div
+                className="rounded-2xl rounded-bl-md px-4 py-3 text-sm leading-relaxed"
+                style={agentBubbleStyle}
+              >
+                {renderMarkdown(streamingText)}
+                <motion.span
+                  className="inline-block w-0.5 h-4 bg-primary/60 ml-0.5 align-middle"
+                  animate={{ opacity: [1, 0] }}
+                  transition={{ duration: 0.5, repeat: Infinity }}
+                />
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Thinking dots (before streaming starts) */}
+        {isThinking && !streamingText && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -218,10 +240,7 @@ const AgentChatPage = () => {
           >
             <div
               className="rounded-2xl rounded-bl-md px-4 py-3 flex items-center gap-1.5"
-              style={{
-                background: 'hsla(218, 90%, 60%, 0.08)',
-                border: '1px solid hsla(218, 90%, 60%, 0.12)',
-              }}
+              style={agentBubbleStyle}
             >
               {[0, 1, 2].map((i) => (
                 <motion.span
