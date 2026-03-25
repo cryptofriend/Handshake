@@ -33,6 +33,8 @@ const SignPage = () => {
   const [notFound, setNotFound] = useState(false);
   const [signing, setSigning] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebrationTx, setCelebrationTx] = useState('');
 
   // Fetch agreement draft from database
   useEffect(() => {
@@ -218,6 +220,10 @@ const SignPage = () => {
       }) : prev);
 
       toast.success('Agreement signed on-chain!');
+
+      // Show epic celebration
+      setCelebrationTx(txHash);
+      setShowCelebration(true);
 
       // Simulate confirmation
       setTimeout(async () => {
