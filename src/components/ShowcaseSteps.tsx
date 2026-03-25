@@ -101,7 +101,7 @@ export default function ShowcaseSteps() {
         >
           <ChevronRight className="w-4 h-4" />
         </button>
-      <div className="relative rounded-3xl overflow-hidden border border-border bg-card" style={{ minHeight: 760 }}>
+      <div className="relative rounded-3xl overflow-hidden border border-border bg-card" style={{ minHeight: 380 }}>
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
