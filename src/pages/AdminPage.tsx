@@ -78,6 +78,8 @@ const AdminPage = () => {
       const { error } = await supabase.from('system_config').update({ value: systemPrompt, updated_at: new Date().toISOString() }).eq('key', 'handshake_system_prompt');
       if (error) throw error;
       toast.success('System prompt saved!');
+      setPromptSaved(true);
+      setTimeout(() => setPromptSaved(false), 2000);
     } catch {
       toast.error('Failed to save prompt');
     } finally {
