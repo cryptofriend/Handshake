@@ -212,9 +212,8 @@ const AdminPage = () => {
             rows={4}
             className="resize-none"
           />
-          <Button onClick={handleTest} disabled={!prompt.trim() || loading} className="w-full">
-            {loading ? 'Running...' : 'Send Test'}
-            <ArrowUp className="w-4 h-4 ml-1" />
+          <Button onClick={handleTest} disabled={!prompt.trim() || loading} className={`w-full ${testSaved ? 'bg-green-600 hover:bg-green-700' : ''}`}>
+            {testSaved ? <><CheckCircle className="w-4 h-4 mr-1" /> Sent</> : loading ? 'Running...' : <>Send Test <ArrowUp className="w-4 h-4 ml-1" /></>}
           </Button>
         </Card>
 
