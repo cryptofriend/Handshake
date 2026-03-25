@@ -139,6 +139,7 @@ export default function ShowcaseSteps() {
           </motion.div>
         </AnimatePresence>
       </div>
+      </div>
 
       {/* Progress dots */}
       <div className="flex items-center justify-center gap-2 mt-5">
