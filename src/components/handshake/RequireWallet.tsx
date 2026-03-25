@@ -18,7 +18,7 @@ const RequireWallet = ({ children }: { children: React.ReactNode }) => {
           <p className="text-sm text-muted-foreground">
             Connect your TON wallet to access this page.
           </p>
-          <Button onClick={open} className="w-full">
+          <Button onClick={() => open()} className="w-full">
             Connect Wallet
           </Button>
         </Card>
