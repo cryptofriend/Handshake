@@ -75,8 +75,8 @@ const COLORS = {
   ],
 };
 
-function getColor(side: 0 | 1, t: number): [number, number, number] {
-  const palette = side === 0 ? COLORS.green : COLORS.pink;
+function getColor(side: 0 | 1, t: number, colors: { green: number[][]; pink: number[][] }): [number, number, number] {
+  const palette = side === 0 ? colors.green : colors.pink;
   const idx = Math.floor(t * (palette.length - 1));
   const frac = t * (palette.length - 1) - idx;
   const a = palette[Math.min(idx, palette.length - 1)];
@@ -89,20 +89,40 @@ function getColor(side: 0 | 1, t: number): [number, number, number] {
 }
 
 // ── Main component ──────────────────────────────────────────────────
+export interface ColorScheme {
+  label: string;
+  sideA: number[][];
+  sideB: number[][];
+  preview: string[];
+}
+
 interface YinYangSimulationProps {
   params?: Partial<SimParams>;
   className?: string;
+  colorScheme?: ColorScheme;
 }
 
 export default function YinYangSimulation({
   params: userParams,
   className = '',
+  colorScheme,
 }: YinYangSimulationProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animRef = useRef<number>(0);
   const mouseRef = useRef({ x: 0, y: 0, active: false });
   const rippleRef = useRef<{ x: number; y: number; t: number; strength: number }[]>([]);
   const paramsRef = useRef<SimParams>({ ...DEFAULT_PARAMS, ...userParams });
+  const colorsRef = useRef<{ green: number[][]; pink: number[][] }>({
+    green: colorScheme?.sideA || COLORS.green,
+    pink: colorScheme?.sideB || COLORS.pink,
+  });
+
+  useEffect(() => {
+    colorsRef.current = {
+      green: colorScheme?.sideA || COLORS.green,
+      pink: colorScheme?.sideB || COLORS.pink,
+    };
+  }, [colorScheme]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -226,8 +246,10 @@ export default function YinYangSimulation({
 
       // Outer glow
       const outerGrad = ctx.createRadialGradient(cx, cy, effectiveR * 0.6, cx, cy, effectiveR * 1.4);
-      outerGrad.addColorStop(0, `rgba(190, 220, 130, ${0.02 * P.glow})`);
-      outerGrad.addColorStop(0.5, `rgba(200, 120, 220, ${0.015 * P.glow})`);
+      const cA = colorsRef.current.green[0];
+      const cB = colorsRef.current.pink[0];
+      outerGrad.addColorStop(0, `rgba(${cA[0]}, ${cA[1]}, ${cA[2]}, ${0.02 * P.glow})`);
+      outerGrad.addColorStop(0.5, `rgba(${cB[0]}, ${cB[1]}, ${cB[2]}, ${0.015 * P.glow})`);
       outerGrad.addColorStop(1, 'transparent');
       ctx.fillStyle = outerGrad;
       ctx.fillRect(0, 0, W, H);
@@ -319,7 +341,7 @@ export default function YinYangSimulation({
         // Draw
         const lifeRatio = Math.min(p.life / 30, 1) * Math.min((p.maxLife - p.life) / 60, 1);
         const alpha = lifeRatio * (0.4 + P.glow * 0.5);
-        const [r, g, b] = getColor(p.side, (Math.sin(time + i * 0.01) + 1) / 2);
+        const [r, g, b] = getColor(p.side, (Math.sin(time + i * 0.01) + 1) / 2, colorsRef.current);
 
         ctx.globalAlpha = alpha;
         ctx.fillStyle = `rgb(${r | 0},${g | 0},${b | 0})`;
@@ -345,7 +367,7 @@ export default function YinYangSimulation({
         const oy = cy + Math.sin(a) * or;
         const oAlpha = (0.15 + Math.sin(time * 2 + i * 0.5) * 0.1) * P.glow;
         const oSide = i % 2 === 0 ? 0 : 1;
-        const [r, g, b] = getColor(oSide as 0 | 1, 0.5);
+        const [r, g, b] = getColor(oSide as 0 | 1, 0.5, colorsRef.current);
         ctx.globalAlpha = oAlpha;
         ctx.fillStyle = `rgb(${r | 0},${g | 0},${b | 0})`;
         ctx.beginPath();
