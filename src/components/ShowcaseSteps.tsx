@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, FileText, Send, CheckCheck } from 'lucide-react';
+import { MessageSquare, FileText, Send, CheckCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 import showcaseChat from '@/assets/showcase-chat.jpg';
 import showcaseAgreement from '@/assets/showcase-agreement.jpg';
 import showcaseSign from '@/assets/showcase-sign.jpg';
@@ -80,7 +80,22 @@ export default function ShowcaseSteps() {
         <h2 className="text-2xl font-semibold text-foreground">Agreement in 4 steps</h2>
       </motion.div>
 
-      {/* Slide card */}
+      {/* Slide card with nav arrows */}
+      <div className="relative">
+        {/* Left arrow */}
+        <button
+          onClick={() => setActive((active - 1 + steps.length) % steps.length)}
+          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-all shadow-sm"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+        {/* Right arrow */}
+        <button
+          onClick={() => setActive((active + 1) % steps.length)}
+          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-10 w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-all shadow-sm"
+        >
+          <ChevronRight className="w-4 h-4" />
+        </button>
       <div className="relative rounded-3xl overflow-hidden border border-border bg-card" style={{ minHeight: 380 }}>
         <AnimatePresence mode="wait">
           <motion.div
@@ -122,6 +137,7 @@ export default function ShowcaseSteps() {
             </div>
           </motion.div>
         </AnimatePresence>
+      </div>
       </div>
 
       {/* Progress dots */}
