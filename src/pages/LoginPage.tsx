@@ -185,6 +185,10 @@ const LoginPage = () => {
       </motion.div>
       </div>
 
+      <p className="text-center text-xs text-muted-foreground py-6">
+        © {new Date().getFullYear()} Handshake Monster. All rights reserved.
+      </p>
+
       {/* Template Detail Dialog */}
       <Dialog open={!!selectedTemplate} onOpenChange={(open) => !open && setSelectedTemplate(null)}>
         <DialogContent
