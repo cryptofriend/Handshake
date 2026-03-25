@@ -185,7 +185,7 @@ const LoginPage = () => {
       </motion.div>
       </div>
 
-      <p className="text-center text-xs text-muted-foreground py-6">
+      <p className="text-center text-[10px] text-muted-foreground pt-8 pb-12">
         © {new Date().getFullYear()} Handshake Monster. All rights reserved.
       </p>
 
