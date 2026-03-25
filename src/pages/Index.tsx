@@ -50,9 +50,9 @@ const Index = () => {
   const [activeScheme, setActiveScheme] = useState(0);
 
   return (
-    <div className="flex flex-col items-center justify-center py-4 bg-background min-h-[calc(100vh-8rem)] relative">
+    <div className="flex flex-col items-center justify-center py-2 bg-background min-h-[calc(100vh-8rem)] relative">
       <YinYangSimulation
-        className="!h-[56vh] max-h-[500px]"
+        className={`transition-all duration-300 ${showControls ? '!h-[36vh] max-h-[300px]' : '!h-[56vh] max-h-[500px]'}`}
         colorScheme={COLOR_SCHEMES[activeScheme]}
       />
 
