@@ -74,6 +74,28 @@ const AdminPage = () => {
     }
   };
 
+  const fetchModel = async () => {
+    try {
+      const { data } = await supabase.from('system_config').select('value').eq('key', 'ai_model').single();
+      if (data?.value) setModel(data.value);
+    } catch { /* use default */ }
+  };
+
+  const saveModel = async (newModel: string) => {
+    setModel(newModel);
+    setModelSaving(true);
+    try {
+      const { error } = await supabase.from('system_config').update({ value: newModel, updated_at: new Date().toISOString() }).eq('key', 'ai_model');
+      if (error) throw error;
+      setModelSaved(true);
+      setTimeout(() => setModelSaved(false), 2000);
+    } catch {
+      toast.error('Failed to save model');
+    } finally {
+      setModelSaving(false);
+    }
+  };
+
   const savePrompt = async () => {
     setPromptSaving(true);
     try {
