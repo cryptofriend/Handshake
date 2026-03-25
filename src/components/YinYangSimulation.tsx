@@ -75,8 +75,8 @@ const COLORS = {
   ],
 };
 
-function getColor(side: 0 | 1, t: number): [number, number, number] {
-  const palette = side === 0 ? COLORS.green : COLORS.pink;
+function getColor(side: 0 | 1, t: number, colors: { green: number[][]; pink: number[][] }): [number, number, number] {
+  const palette = side === 0 ? colors.green : colors.pink;
   const idx = Math.floor(t * (palette.length - 1));
   const frac = t * (palette.length - 1) - idx;
   const a = palette[Math.min(idx, palette.length - 1)];
@@ -89,14 +89,23 @@ function getColor(side: 0 | 1, t: number): [number, number, number] {
 }
 
 // ── Main component ──────────────────────────────────────────────────
+export interface ColorScheme {
+  label: string;
+  sideA: number[][];
+  sideB: number[][];
+  preview: string[];
+}
+
 interface YinYangSimulationProps {
   params?: Partial<SimParams>;
   className?: string;
+  colorScheme?: ColorScheme;
 }
 
 export default function YinYangSimulation({
   params: userParams,
   className = '',
+  colorScheme,
 }: YinYangSimulationProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animRef = useRef<number>(0);
