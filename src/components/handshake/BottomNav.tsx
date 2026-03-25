@@ -1,14 +1,15 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MessageCircle, User, Handshake } from 'lucide-react';
+import { MessageCircle, User } from 'lucide-react';
 import { useTonAddress, useTonConnectModal } from '@tonconnect/ui-react';
 import { cn } from '@/lib/utils';
 import logoImg from '@/assets/logo.png';
+import handshakeIcon from '@/assets/handshake-icon.png';
 
 const NAV_ITEMS = [
-  { icon: null as any, label: 'Home', path: '/', requiresAuth: false, isLogo: true },
-  { icon: MessageCircle, label: 'Agent', path: '/agent', requiresAuth: false, isLogo: false },
-  { icon: Handshake, label: 'To Sign', path: '/sign', requiresAuth: false, isLogo: false },
-  { icon: User, label: 'Profile', path: '/profile', requiresAuth: false, isLogo: false },
+  { icon: null as any, label: 'Home', path: '/', requiresAuth: false, isLogo: true, isHandshake: false },
+  { icon: MessageCircle, label: 'Agent', path: '/agent', requiresAuth: false, isLogo: false, isHandshake: false },
+  { icon: null as any, label: 'To Sign', path: '/sign', requiresAuth: false, isLogo: false, isHandshake: true },
+  { icon: User, label: 'Profile', path: '/profile', requiresAuth: false, isLogo: false, isHandshake: false },
 ];
 
 export const BottomNav = () => {
