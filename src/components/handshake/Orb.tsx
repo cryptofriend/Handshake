@@ -70,66 +70,63 @@ const MiniOrb = ({ blobs }: { blobs: { color: string; size: number; dur: number;
 );
 
 /**
- * Liquid mitosis idle animation.
+ * Liquid collision idle animation.
  * 
- * The orb stretches into a peanut shape, the center neck thins like
- * a liquid filament, then the two halves pinch off and drift apart
- * before flowing back together.
+ * Two daughter orbs start far apart, accelerate toward each other,
+ * collide in the center with a flash/ripple, merge into a single
+ * orb that breathes, then split apart again to repeat.
  * 
- * Timeline (10s):
- *   0-15%   breathe
- *   15-35%  elongate into peanut (border-radius morphs)
- *   35-50%  neck thins, daughters emerge from within
- *   50-65%  pinch off — daughters fully separate, bridge snaps
- *   65-80%  daughters drift back
- *   80-100% merge back into sphere
+ * Timeline (8s):
+ *   0-10%   daughters far apart, breathing
+ *   10-40%  accelerate inward
+ *   40-55%  collision — flash, merge into main orb
+ *   55-75%  merged orb breathes/pulses
+ *   75-90%  main orb elongates, daughters re-emerge outward
+ *   90-100% daughters drift to starting positions
  */
-const MITOSIS_DURATION = 10;
-const T = [0, 0.15, 0.35, 0.50, 0.65, 0.80, 1];
+const COLLISION_DURATION = 8;
+const T = [0, 0.10, 0.40, 0.50, 0.55, 0.75, 0.90, 1];
 
-const MitosisIdleOrb = () => {
+const CollisionIdleOrb = () => {
   const timing = {
-    duration: MITOSIS_DURATION,
+    duration: COLLISION_DURATION,
     repeat: Infinity,
     ease: 'easeInOut' as const,
     times: T,
   };
 
-  // Main orb: stretches wide into a peanut, fades only after daughters are fully visible
-  const mainScaleX =   [1,   1.02, 1.5,  1.6,  0,    0,    1];
-  const mainScaleY =   [1,   1.02, 0.72, 0.65, 0,    0,    1];
-  const mainOpacity =  [1,   1,    1,    0.8,  0,    0,    1];
-  // Morph border-radius into peanut/figure-8 shape
-  const mainRadius = [
-    '50%',                    // sphere
-    '50%',                    // sphere
-    '45% 45% 45% 45% / 50%', // slight peanut
-    '40% 40% 40% 40% / 50%', // deeper peanut indent
-    '50%',                    // hidden
-    '50%',                    // hidden
-    '50%',                    // sphere
-  ];
+  // Daughters: start apart → rush inward → disappear at collision
+  const dOpacity =  [1,    1,    0.9,  0,    0,    0,    0.8,  1];
+  const dScale =    [0.55, 0.55, 0.6,  0.3,  0,    0,    0.5,  0.55];
+  const leftX =     [-55,  -55,  -8,   0,    0,    0,    -30,  -55];
+  const rightX =    [55,   55,   8,    0,    0,    0,    30,   55];
 
-  // Center "waist" pinch — a dark inward shadow to fake the neck indent
-  const waistOpacity = [0, 0, 0.4, 0.8, 0, 0, 0];
-  const waistScaleY =  [0, 0, 0.6, 0.3, 0, 0, 0];
+  // Main merged orb: hidden → appears at collision → breathes → fades as daughters re-emerge
+  const mainOpacity = [0,   0,    0.5,  1,    1,    1,    0.3,  0];
+  const mainScale =   [0.3, 0.3,  0.6,  1.15, 1.0,  1.05, 0.8,  0.3];
 
-  // Daughters: emerge from edges of the stretched orb, then drift apart
-  const dOpacity =     [0,    0,    0.2,  0.9,  1,    0.5,  0];
-  const dScale =       [0.35, 0.35, 0.5,  0.65, 0.65, 0.5,  0.35];
-  const leftX =        [0,    0,    -10,  -30,  -50,  -20,  0];
-  const rightX =       [0,    0,    10,   30,   50,   20,   0];
-
-  // Liquid bridge/filament connecting daughters during split
-  const bridgeOpacity = [0, 0, 0.6, 0.7, 0, 0, 0];
-  const bridgeWidth =   [0, 0, 80,  100, 60, 0, 0];
-  const bridgeHeight =  [0, 0, 50,  16,  4,  0, 0];
+  // Collision flash/ripple
+  const flashOpacity = [0, 0, 0, 0.8, 0.3, 0, 0, 0];
+  const flashScale =   [0, 0, 0, 1.0, 2.0, 2.5, 0, 0];
 
   return (
     <div className="relative w-40 h-40 flex items-center justify-center">
-      {/* Main single orb — morphs into peanut shape */}
+      {/* Collision flash ripple */}
       <motion.div
-        className="absolute w-40 h-40 overflow-hidden"
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 160,
+          height: 160,
+          background: 'radial-gradient(circle, hsla(218, 90%, 70%, 0.4), hsla(260, 80%, 60%, 0.2), transparent 70%)',
+          filter: 'blur(10px)',
+        }}
+        animate={{ opacity: flashOpacity, scale: flashScale }}
+        transition={timing}
+      />
+
+      {/* Main merged orb — appears on collision */}
+      <motion.div
+        className="absolute w-40 h-40 rounded-full overflow-hidden"
         style={{
           background: 'radial-gradient(circle at 30% 30%, hsla(218, 86%, 65%, 0.15), hsla(260, 70%, 50%, 0.1), hsla(200, 80%, 40%, 0.08))',
           backdropFilter: 'blur(40px)',
@@ -140,12 +137,7 @@ const MitosisIdleOrb = () => {
             inset 0 0 60px hsla(218, 86%, 55%, 0.05)
           `,
         }}
-        animate={{
-          scaleX: mainScaleX,
-          scaleY: mainScaleY,
-          opacity: mainOpacity,
-          borderRadius: mainRadius,
-        }}
+        animate={{ opacity: mainOpacity, scale: mainScale }}
         transition={timing}
       >
         <FloatingBlob color="hsla(218, 90%, 60%, 0.5)" size={80} duration={5} delay={0} x={20} y={15} />
@@ -158,37 +150,7 @@ const MitosisIdleOrb = () => {
         />
       </motion.div>
 
-      {/* Center waist pinch — darkened inward area to enhance peanut look */}
-      <motion.div
-        className="absolute pointer-events-none"
-        style={{
-          width: 30,
-          height: 80,
-          borderRadius: '50%',
-          background: 'radial-gradient(ellipse, hsla(230, 30%, 10%, 0.15), transparent 70%)',
-          filter: 'blur(8px)',
-        }}
-        animate={{ opacity: waistOpacity, scaleY: waistScaleY }}
-        transition={timing}
-      />
-
-      {/* Liquid bridge/filament — stretches between the daughters */}
-      <motion.div
-        className="absolute pointer-events-none"
-        style={{
-          borderRadius: '50%',
-          background: 'radial-gradient(ellipse, hsla(218, 86%, 55%, 0.3), hsla(260, 70%, 50%, 0.15), transparent 80%)',
-          filter: 'blur(6px)',
-        }}
-        animate={{
-          width: bridgeWidth,
-          height: bridgeHeight,
-          opacity: bridgeOpacity,
-        }}
-        transition={timing}
-      />
-
-      {/* Left daughter */}
+      {/* Left orb */}
       <motion.div
         className="absolute"
         style={{ width: 100, height: 100 }}
@@ -201,7 +163,7 @@ const MitosisIdleOrb = () => {
         ]} />
       </motion.div>
 
-      {/* Right daughter */}
+      {/* Right orb */}
       <motion.div
         className="absolute"
         style={{ width: 100, height: 100 }}
