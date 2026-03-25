@@ -125,7 +125,7 @@ export default function ShowcaseSteps() {
                 alt={current.title}
                 width={800}
                 height={600}
-                className="w-full h-full object-cover"
+                className={`w-full h-full object-cover ${active === 1 ? 'object-[center_75%]' : ''}`}
               />
               {/* Step badge */}
               <div
