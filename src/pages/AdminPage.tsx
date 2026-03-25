@@ -31,6 +31,8 @@ const AdminPage = () => {
   const [unlocked, setUnlocked] = useState(false);
   const [passInput, setPassInput] = useState('');
   const [model, setModel] = useState(MODELS[0].id);
+  const [modelSaving, setModelSaving] = useState(false);
+  const [modelSaved, setModelSaved] = useState(false);
   const [prompt, setPrompt] = useState('');
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
