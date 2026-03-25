@@ -162,6 +162,7 @@ serve(async (req) => {
     conversationMessages.push({ role: "user", content: message });
 
     // Call Lovable AI
+    const aiModel = await getAiModel(supabase);
     const aiResponse = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
       {
@@ -171,7 +172,7 @@ serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
+          model: aiModel,
           messages: conversationMessages,
         }),
       }
