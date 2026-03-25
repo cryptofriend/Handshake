@@ -195,6 +195,8 @@ const SignPage = () => {
     );
   }
 
+  if (!agreement) return null;
+
   return (
     <div className="min-h-screen pb-24 relative overflow-hidden" style={{ background: 'hsl(var(--background))' }}>
       {/* Ambient orb glow behind content */}
