@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, FileCheck, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
 import showcaseTalkAgent from '@/assets/showcase-talk-agent.jpg';
-import showcaseReviewSign from '@/assets/showcase-review-sign.png';
+import showcaseReviewSign from '@/assets/showcase-review-sign.jpg';
 import showcaseShareTelegram from '@/assets/showcase-share-telegram.png';
 
 const steps = [
@@ -35,7 +35,7 @@ const steps = [
   },
 ];
 
-const INTERVAL = 3000;
+const INTERVAL = 6000;
 
 export default function ShowcaseSteps() {
   const [active, setActive] = useState(0);
