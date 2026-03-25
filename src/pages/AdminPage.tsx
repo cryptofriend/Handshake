@@ -36,6 +36,9 @@ const AdminPage = () => {
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState<{ messages: number; drafts: number } | null>(null);
   const [statsLoading, setStatsLoading] = useState(false);
+  const [systemPrompt, setSystemPrompt] = useState('');
+  const [promptLoading, setPromptLoading] = useState(false);
+  const [promptSaving, setPromptSaving] = useState(false);
 
   const fetchStats = async () => {
     setStatsLoading(true);
