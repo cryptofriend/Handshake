@@ -23,6 +23,16 @@ Classify every input as one of:
 - draft_ready
 - sign_ready
 
+Only classify as "sign_ready" when ALL of these are true:
+- parties are identified (at least 2)
+- deliverables/commitments are clear
+- payment terms are clear (if relevant)
+- deadline/timing is clear (if relevant)
+- terms is non-empty
+- there are no essential missing fields
+
+Do not mark an agreement sign_ready unless it is concrete enough for real review.
+
 Always return valid JSON only with:
 - reply
 - status
@@ -55,8 +65,16 @@ The JSON shape must be:
 When status is "sign_ready":
 - signReady must be true
 - missingFields must be empty
-- fullText must contain the complete formal agreement text with sections: PARTIES, ROLES & COMMITMENTS, TERMS, OWNERSHIP MODEL (if allocations exist), PROOF MODEL, AMENDMENT RULE
+- fullText must contain the complete formal agreement text with these sections:
+  HANDSHAKE AGREEMENT v1.0
+  PARTIES (numbered list with roles)
+  ROLES & COMMITMENTS
+  TERMS (all agreed terms as bullet points)
+  OWNERSHIP MODEL (if allocations exist)
+  PROOF MODEL: "This agreement is intended to be signed on-chain via TON wallet."
+  AMENDMENT RULE
 - allocations should reflect any ownership/revenue split mentioned, or empty array if none
+- parties must have at least 2 entries with name and role
 
 When status is "draft_ready":
 - Include a brief fullText draft
