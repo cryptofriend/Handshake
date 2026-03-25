@@ -178,7 +178,7 @@ export default function ShowcaseSteps() {
 
       {/* Bottom tag */}
       <p className="text-center text-xs tracking-widest uppercase text-muted-foreground mt-8">
-        Powered by TON blockchain
+        Powered by OpenClaw, TON & Telegram
       </p>
     </div>
   );
