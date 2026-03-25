@@ -1,14 +1,15 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MessageCircle, User, Handshake } from 'lucide-react';
+import { MessageCircle, User } from 'lucide-react';
 import { useTonAddress, useTonConnectModal } from '@tonconnect/ui-react';
 import { cn } from '@/lib/utils';
 import logoImg from '@/assets/logo.png';
+import handshakeIcon from '@/assets/handshake-icon.png';
 
 const NAV_ITEMS = [
-  { icon: null as any, label: 'Home', path: '/', requiresAuth: false, isLogo: true },
-  { icon: MessageCircle, label: 'Agent', path: '/agent', requiresAuth: false, isLogo: false },
-  { icon: Handshake, label: 'To Sign', path: '/sign', requiresAuth: false, isLogo: false },
-  { icon: User, label: 'Profile', path: '/profile', requiresAuth: false, isLogo: false },
+  { icon: null as any, label: 'Home', path: '/', requiresAuth: false, isLogo: true, isHandshake: false },
+  { icon: MessageCircle, label: 'Agent', path: '/agent', requiresAuth: false, isLogo: false, isHandshake: false },
+  { icon: null as any, label: 'To Sign', path: '/sign', requiresAuth: false, isLogo: false, isHandshake: true },
+  { icon: User, label: 'Profile', path: '/profile', requiresAuth: false, isLogo: false, isHandshake: false },
 ];
 
 export const BottomNav = () => {
@@ -20,7 +21,7 @@ export const BottomNav = () => {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-xl border-t border-border safe-area-bottom">
       <div className="flex items-center justify-around max-w-md mx-auto h-16">
-        {NAV_ITEMS.map(({ icon: Icon, label, path, requiresAuth, isLogo }) => {
+        {NAV_ITEMS.map(({ icon: Icon, label, path, requiresAuth, isLogo, isHandshake }) => {
           const isActive = location.pathname === path;
           const isLocked = requiresAuth && !userAddress;
           return (
@@ -38,6 +39,8 @@ export const BottomNav = () => {
             >
               {isLogo ? (
                 <img src={logoImg} alt="Home" className={cn('w-5 h-5 object-contain', !isActive && 'opacity-60')} />
+              ) : isHandshake ? (
+                <img src={handshakeIcon} alt="To Sign" className={cn('w-6 h-6 object-contain', !isActive && 'opacity-40')} />
               ) : (
                 Icon && <Icon className={cn('w-5 h-5', isActive && 'stroke-[2.5]')} />
               )}
