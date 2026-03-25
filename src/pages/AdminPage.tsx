@@ -33,16 +33,12 @@ const AdminPage = () => {
   const [model, setModel] = useState(MODELS[0].id);
   const [modelSaving, setModelSaving] = useState(false);
   const [modelSaved, setModelSaved] = useState(false);
-  const [prompt, setPrompt] = useState('');
-  const [response, setResponse] = useState('');
-  const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState<{ messages: number; drafts: number; uniqueUsers: number; aiCalls: number } | null>(null);
   const [statsLoading, setStatsLoading] = useState(false);
   const [systemPrompt, setSystemPrompt] = useState('');
   const [promptLoading, setPromptLoading] = useState(false);
   const [promptSaving, setPromptSaving] = useState(false);
   const [promptSaved, setPromptSaved] = useState(false);
-  const [testSaved, setTestSaved] = useState(false);
 
   const fetchStats = async () => {
     setStatsLoading(true);
