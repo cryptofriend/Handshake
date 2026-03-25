@@ -236,8 +236,8 @@ export default function YinYangSimulation({
 
       // Outer glow
       const outerGrad = ctx.createRadialGradient(cx, cy, effectiveR * 0.6, cx, cy, effectiveR * 1.4);
-      outerGrad.addColorStop(0, `rgba(140, 255, 80, ${0.02 * P.glow})`);
-      outerGrad.addColorStop(0.5, `rgba(255, 60, 150, ${0.015 * P.glow})`);
+      outerGrad.addColorStop(0, `rgba(190, 220, 130, ${0.02 * P.glow})`);
+      outerGrad.addColorStop(0.5, `rgba(200, 120, 220, ${0.015 * P.glow})`);
       outerGrad.addColorStop(1, 'transparent');
       ctx.fillStyle = outerGrad;
       ctx.fillRect(0, 0, W, H);
