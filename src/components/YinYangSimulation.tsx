@@ -399,17 +399,17 @@ export default function YinYangSimulation({
       {/* Toggle controls */}
       <button
         onClick={() => setShowControls(c => !c)}
-        className="absolute top-4 right-4 z-20 px-3 py-1.5 text-xs font-medium tracking-wider uppercase rounded-lg bg-white/5 text-white/40 hover:text-white/70 hover:bg-white/10 backdrop-blur-sm border border-white/5 transition-all"
+        className="absolute top-4 right-4 z-20 px-3 py-1.5 text-xs font-medium tracking-wider uppercase rounded-lg bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80 backdrop-blur-sm border border-border transition-all"
       >
         {showControls ? 'Hide' : 'Tune'}
       </button>
 
       {/* Controls panel */}
       {showControls && (
-        <div className="absolute top-14 right-4 z-20 w-56 p-4 rounded-xl bg-black/60 backdrop-blur-md border border-white/10 space-y-3">
+        <div className="absolute top-14 right-4 z-20 w-56 p-4 rounded-xl bg-card/80 backdrop-blur-md border border-border space-y-3">
           {sliders.map(s => (
             <div key={s.key}>
-              <div className="flex justify-between text-[10px] text-white/50 mb-1 font-mono uppercase tracking-wider">
+              <div className="flex justify-between text-[10px] text-muted-foreground mb-1 font-mono uppercase tracking-wider">
                 <span>{s.label}</span>
                 <span>{liveParams[s.key]}</span>
               </div>
@@ -420,7 +420,7 @@ export default function YinYangSimulation({
                 step={s.step}
                 value={liveParams[s.key]}
                 onChange={e => handleParamChange(s.key, parseFloat(e.target.value))}
-                className="w-full h-1 appearance-none bg-white/10 rounded-full outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white/60 [&::-webkit-slider-thumb]:cursor-pointer"
+                className="w-full h-1 appearance-none bg-muted rounded-full outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:cursor-pointer"
               />
             </div>
           ))}
