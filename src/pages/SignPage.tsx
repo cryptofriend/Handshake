@@ -20,67 +20,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-// Mock agreement for demo
-const MOCK_AGREEMENT: Agreement = {
-  id: 'hsk-001',
-  version: '1.0',
-  createdAt: new Date().toISOString(),
-  title: 'Booga × Handshake Partnership',
-  summary: 'Strategic partnership agreement defining ownership, roles, and commitments between Booga and Handshake Agent Reserve.',
-  status: 'pending_signature',
-  parties: [
-    { name: 'Booga', role: 'Founder & Lead' },
-    { name: 'Handshake', role: 'Agent Reserve' },
-  ],
-  allocations: [
-    { party: 'Booga', percentage: 85, label: 'Booga' },
-    { party: 'Handshake', percentage: 15, label: 'Agent Reserve' },
-  ],
-  fullText: `HANDSHAKE AGREEMENT v1.0
-
-PARTIES
-1. Booga ("Founder & Lead")
-2. Handshake Agent Reserve ("Agent Reserve")
-
-ROLES & COMMITMENTS
-Booga shall serve as the primary decision-maker and lead contributor to the project. Booga commits to:
-• Active development and strategic direction
-• Community engagement and partnership cultivation
-• Transparent communication of project milestones
-
-Handshake Agent Reserve commits to:
-• Providing AI-powered agreement infrastructure
-• Maintaining protocol integrity and security
-• Supporting dispute resolution mechanisms
-
-OWNERSHIP MODEL
-• Booga: 85% ownership stake
-• Handshake Agent Reserve: 15% ownership stake
-
-Ownership is non-dilutable without mutual written consent of both parties.
-
-PROOF MODEL
-All agreements are signed on the TON blockchain. Each signature creates a verifiable, timestamped proof of consent. Agreement hashes are computed deterministically from the canonical agreement text.
-
-AMENDMENT RULE
-This agreement may only be amended by mutual consent of both parties, recorded as a new version with fresh on-chain signatures. Previous versions remain immutable and verifiable.
-
-DISPUTE RESOLUTION
-In the event of a dispute, both parties agree to engage the Handshake arbitration protocol before seeking external resolution.`,
-  shortHash: '0x7f3a..c91e',
-  fullHash: '0x7f3a4b2d8e1c6f9a0b5d3e7c2a8f4d6b1e9c3a5d7f2b4e6a8c0d2f4b6e8a0c91e',
-  signatures: [],
-  receiptStatus: 'none',
-  creatorName: 'Booga',
-  counterpartyName: 'Handshake',
-  task: 'Partnership agreement',
-  payment: 'N/A',
-  deadline: 'Ongoing',
-  notes: '',
-  creatorSigned: false,
-  counterpartySigned: false,
-};
-
 const SignPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -88,8 +27,9 @@ const SignPage = () => {
   const { open: openTonModal } = useTonConnectModal();
   const [tonConnectUI] = useTonConnectUI();
 
-  const [agreement, setAgreement] = useState<Agreement>(MOCK_AGREEMENT);
-  const [loading, setLoading] = useState(!!id);
+  const [agreement, setAgreement] = useState<Agreement | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [signing, setSigning] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
