@@ -37,6 +37,26 @@ const AdminPage = () => {
   const [stats, setStats] = useState<{ messages: number; drafts: number } | null>(null);
   const [statsLoading, setStatsLoading] = useState(false);
 
+  const fetchStats = async () => {
+    setStatsLoading(true);
+    try {
+      const [msgRes, draftRes] = await Promise.all([
+        supabase.from('chat_messages').select('id', { count: 'exact', head: true }),
+        supabase.from('agreement_drafts').select('id', { count: 'exact', head: true }),
+      ]);
+      setStats({
+        messages: msgRes.count ?? 0,
+        drafts: draftRes.count ?? 0,
+      });
+    } catch {
+      toast.error('Failed to fetch stats');
+    } finally {
+      setStatsLoading(false);
+    }
+  };
+
+  useEffect(() => { if (unlocked) fetchStats(); }, [unlocked]);
+
   if (!unlocked) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-5">
@@ -57,27 +77,6 @@ const AdminPage = () => {
       </div>
     );
   }
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const fetchStats = async () => {
-    setStatsLoading(true);
-    try {
-      const [msgRes, draftRes] = await Promise.all([
-        supabase.from('chat_messages').select('id', { count: 'exact', head: true }),
-        supabase.from('agreement_drafts').select('id', { count: 'exact', head: true }),
-      ]);
-      setStats({
-        messages: msgRes.count ?? 0,
-        drafts: draftRes.count ?? 0,
-      });
-    } catch {
-      toast.error('Failed to fetch stats');
-    } finally {
-      setStatsLoading(false);
-    }
-  };
-
-  useEffect(() => { if (unlocked) fetchStats(); }, [unlocked]);
 
   const handleTest = async () => {
     if (!prompt.trim()) return;
