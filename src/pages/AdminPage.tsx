@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { ArrowUp, Sparkles, Zap, MessageSquare, DollarSign, CheckCircle } from 'lucide-react';
+import { ArrowUp, Sparkles, Zap, MessageSquare, DollarSign, CheckCircle, Users, Flame } from 'lucide-react';
 
 const MODELS = [
   { id: 'google/gemini-3-flash-preview', label: 'Gemini 3 Flash (default)', tier: 'fast' },
@@ -36,7 +36,7 @@ const AdminPage = () => {
   const [prompt, setPrompt] = useState('');
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
-  const [stats, setStats] = useState<{ messages: number; drafts: number } | null>(null);
+  const [stats, setStats] = useState<{ messages: number; drafts: number; uniqueUsers: number; aiCalls: number } | null>(null);
   const [statsLoading, setStatsLoading] = useState(false);
   const [systemPrompt, setSystemPrompt] = useState('');
   const [promptLoading, setPromptLoading] = useState(false);
@@ -47,13 +47,18 @@ const AdminPage = () => {
   const fetchStats = async () => {
     setStatsLoading(true);
     try {
-      const [msgRes, draftRes] = await Promise.all([
+      const [msgRes, draftRes, usersRes, aiCallsRes] = await Promise.all([
         supabase.from('chat_messages').select('id', { count: 'exact', head: true }),
         supabase.from('agreement_drafts').select('id', { count: 'exact', head: true }),
+        supabase.from('chat_messages').select('session_id'),
+        supabase.from('chat_messages').select('id', { count: 'exact', head: true }).eq('role', 'agent'),
       ]);
+      const uniqueSessions = new Set((usersRes.data || []).map((r: any) => r.session_id)).size;
       setStats({
         messages: msgRes.count ?? 0,
         drafts: draftRes.count ?? 0,
+        uniqueUsers: uniqueSessions,
+        aiCalls: aiCallsRes.count ?? 0,
       });
     } catch {
       toast.error('Failed to fetch stats');
@@ -178,6 +183,24 @@ const AdminPage = () => {
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3">
+          <Card className="p-4 flex items-center gap-3">
+            <Users className="w-5 h-5 text-primary" />
+            <div>
+              <p className="text-2xl font-bold text-foreground">
+                {statsLoading ? '...' : stats?.uniqueUsers ?? '–'}
+              </p>
+              <p className="text-xs text-muted-foreground">Unique Users</p>
+            </div>
+          </Card>
+          <Card className="p-4 flex items-center gap-3">
+            <Flame className="w-5 h-5 text-primary" />
+            <div>
+              <p className="text-2xl font-bold text-foreground">
+                {statsLoading ? '...' : stats?.aiCalls ?? '–'}
+              </p>
+              <p className="text-xs text-muted-foreground">AI Credits Burned</p>
+            </div>
+          </Card>
           <Card className="p-4 flex items-center gap-3">
             <MessageSquare className="w-5 h-5 text-primary" />
             <div>
