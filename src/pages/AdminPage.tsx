@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { ArrowUp, Sparkles, Zap, MessageSquare, DollarSign, CheckCircle, Users, Flame } from 'lucide-react';
+import { Sparkles, Zap, MessageSquare, DollarSign, CheckCircle, Users, Flame } from 'lucide-react';
 
 const MODELS = [
   { id: 'google/gemini-3-flash-preview', label: 'Gemini 3 Flash (default)', tier: 'fast' },
@@ -33,16 +33,12 @@ const AdminPage = () => {
   const [model, setModel] = useState(MODELS[0].id);
   const [modelSaving, setModelSaving] = useState(false);
   const [modelSaved, setModelSaved] = useState(false);
-  const [prompt, setPrompt] = useState('');
-  const [response, setResponse] = useState('');
-  const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState<{ messages: number; drafts: number; uniqueUsers: number; aiCalls: number } | null>(null);
   const [statsLoading, setStatsLoading] = useState(false);
   const [systemPrompt, setSystemPrompt] = useState('');
   const [promptLoading, setPromptLoading] = useState(false);
   const [promptSaving, setPromptSaving] = useState(false);
   const [promptSaved, setPromptSaved] = useState(false);
-  const [testSaved, setTestSaved] = useState(false);
 
   const fetchStats = async () => {
     setStatsLoading(true);
@@ -139,32 +135,6 @@ const AdminPage = () => {
     );
   }
 
-  const handleTest = async () => {
-    if (!prompt.trim()) return;
-    setLoading(true);
-    setResponse('');
-    try {
-      const { data, error } = await supabase.functions.invoke('admin-test-prompt', {
-        body: { model, prompt: prompt.trim() },
-      });
-      if (error) throw error;
-      setResponse(data.reply || JSON.stringify(data, null, 2));
-      setTestSaved(true);
-      setTimeout(() => setTestSaved(false), 2000);
-    } catch (err: any) {
-      if (err?.status === 429) {
-        toast.error('Rate limited — wait a moment');
-      } else if (err?.status === 402) {
-        toast.error('AI credits exhausted');
-      } else {
-        toast.error('Test failed');
-      }
-      setResponse('Error: ' + (err?.message || 'Unknown'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const selectedModel = MODELS.find(m => m.id === model);
 
   return (
@@ -243,36 +213,11 @@ const AdminPage = () => {
           </Select>
           {selectedModel && (
             <p className="text-xs text-muted-foreground flex items-center gap-1">
-              {modelSaved ? <CheckCircle className="w-3 h-3 text-green-500" /> : <Zap className="w-3 h-3" />}
-              {modelSaved ? <span className="text-green-500">Saved</span> : selectedModel.id}
+              {modelSaved ? <CheckCircle className="w-3 h-3 text-green-600" /> : <Zap className="w-3 h-3" />}
+              {modelSaved ? <span className="text-green-600 font-medium">Model saved ✓</span> : selectedModel.id}
             </p>
           )}
         </Card>
-
-        {/* Prompt Tester */}
-        <Card className="p-4 space-y-3">
-          <label className="text-sm font-medium text-foreground">Test Prompt</label>
-          <Textarea
-            value={prompt}
-            onChange={e => setPrompt(e.target.value)}
-            placeholder="Enter a test prompt..."
-            rows={4}
-            className="resize-none"
-          />
-          <Button onClick={handleTest} disabled={!prompt.trim() || loading} className={`w-full ${testSaved ? 'bg-green-600 hover:bg-green-700' : ''}`}>
-            {testSaved ? <><CheckCircle className="w-4 h-4 mr-1" /> Sent</> : loading ? 'Running...' : <>Send Test <ArrowUp className="w-4 h-4 ml-1" /></>}
-          </Button>
-        </Card>
-
-        {/* Response */}
-        {response && (
-          <Card className="p-4 space-y-2">
-            <label className="text-sm font-medium text-foreground">Response</label>
-            <pre className="text-sm text-foreground bg-muted/50 rounded-lg p-3 whitespace-pre-wrap max-h-80 overflow-y-auto">
-              {response}
-            </pre>
-          </Card>
-        )}
 
         {/* System Prompt Editor */}
         <Card className="p-4 space-y-3">
