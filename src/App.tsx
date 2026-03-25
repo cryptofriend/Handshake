@@ -20,7 +20,7 @@ const queryClient = new QueryClient();
 
 const AppLayout = () => {
   const location = useLocation();
-  const isHome = location.pathname === "/";
+  const isHome = false;
 
   return (
     <>
