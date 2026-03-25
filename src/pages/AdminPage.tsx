@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { ArrowUp, Sparkles, Zap, MessageSquare, DollarSign } from 'lucide-react';
+import { ArrowUp, Sparkles, Zap, MessageSquare, DollarSign, CheckCircle } from 'lucide-react';
 
 const MODELS = [
   { id: 'google/gemini-3-flash-preview', label: 'Gemini 3 Flash (default)', tier: 'fast' },
@@ -39,6 +39,8 @@ const AdminPage = () => {
   const [systemPrompt, setSystemPrompt] = useState('');
   const [promptLoading, setPromptLoading] = useState(false);
   const [promptSaving, setPromptSaving] = useState(false);
+  const [promptSaved, setPromptSaved] = useState(false);
+  const [testSaved, setTestSaved] = useState(false);
 
   const fetchStats = async () => {
     setStatsLoading(true);
@@ -76,6 +78,8 @@ const AdminPage = () => {
       const { error } = await supabase.from('system_config').update({ value: systemPrompt, updated_at: new Date().toISOString() }).eq('key', 'handshake_system_prompt');
       if (error) throw error;
       toast.success('System prompt saved!');
+      setPromptSaved(true);
+      setTimeout(() => setPromptSaved(false), 2000);
     } catch {
       toast.error('Failed to save prompt');
     } finally {
@@ -116,6 +120,8 @@ const AdminPage = () => {
       });
       if (error) throw error;
       setResponse(data.reply || JSON.stringify(data, null, 2));
+      setTestSaved(true);
+      setTimeout(() => setTestSaved(false), 2000);
     } catch (err: any) {
       if (err?.status === 429) {
         toast.error('Rate limited — wait a moment');
@@ -206,9 +212,8 @@ const AdminPage = () => {
             rows={4}
             className="resize-none"
           />
-          <Button onClick={handleTest} disabled={!prompt.trim() || loading} className="w-full">
-            {loading ? 'Running...' : 'Send Test'}
-            <ArrowUp className="w-4 h-4 ml-1" />
+          <Button onClick={handleTest} disabled={!prompt.trim() || loading} className={`w-full ${testSaved ? 'bg-green-600 hover:bg-green-700' : ''}`}>
+            {testSaved ? <><CheckCircle className="w-4 h-4 mr-1" /> Sent</> : loading ? 'Running...' : <>Send Test <ArrowUp className="w-4 h-4 ml-1" /></>}
           </Button>
         </Card>
 
@@ -236,8 +241,8 @@ const AdminPage = () => {
               className="resize-y font-mono text-xs"
             />
           )}
-          <Button onClick={savePrompt} disabled={promptSaving || promptLoading} className="w-full">
-            {promptSaving ? 'Saving...' : 'Save Prompt'}
+          <Button onClick={savePrompt} disabled={promptSaving || promptLoading} className={`w-full ${promptSaved ? 'bg-green-600 hover:bg-green-700' : ''}`}>
+            {promptSaved ? <><CheckCircle className="w-4 h-4 mr-1" /> Saved</> : promptSaving ? 'Saving...' : 'Save Prompt'}
           </Button>
         </Card>
       </div>
