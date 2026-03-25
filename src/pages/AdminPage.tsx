@@ -47,13 +47,18 @@ const AdminPage = () => {
   const fetchStats = async () => {
     setStatsLoading(true);
     try {
-      const [msgRes, draftRes] = await Promise.all([
+      const [msgRes, draftRes, usersRes, aiCallsRes] = await Promise.all([
         supabase.from('chat_messages').select('id', { count: 'exact', head: true }),
         supabase.from('agreement_drafts').select('id', { count: 'exact', head: true }),
+        supabase.from('chat_messages').select('session_id'),
+        supabase.from('chat_messages').select('id', { count: 'exact', head: true }).eq('role', 'agent'),
       ]);
+      const uniqueSessions = new Set((usersRes.data || []).map((r: any) => r.session_id)).size;
       setStats({
         messages: msgRes.count ?? 0,
         drafts: draftRes.count ?? 0,
+        uniqueUsers: uniqueSessions,
+        aiCalls: aiCallsRes.count ?? 0,
       });
     } catch {
       toast.error('Failed to fetch stats');
