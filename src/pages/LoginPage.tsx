@@ -5,7 +5,7 @@ import { Orb } from '@/components/handshake/Orb';
 import { useAppStore } from '@/store/appStore';
 import { PactTemplateOrb } from '@/components/handshake/PactTemplateOrb';
 import { Button } from '@/components/ui/button';
-import { Check, PenTool, Wallet } from 'lucide-react';
+import { Check, PenTool } from 'lucide-react';
 import { useTonConnectUI, useTonConnectModal, useTonAddress } from '@tonconnect/ui-react';
 import { beginCell, toNano } from '@ton/ton';
 import { toast } from 'sonner';
@@ -122,25 +122,6 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col px-6">
-      {/* Header with sign in */}
-      <div className="flex items-center justify-between pt-5 pb-2 w-full max-w-sm mx-auto">
-        <div />
-        {userAddress ? (
-          <span className="text-xs text-muted-foreground font-mono truncate max-w-[120px]">
-            {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
-          </span>
-        ) : (
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-xl gap-1.5 text-xs h-8"
-            onClick={() => openTonModal()}
-          >
-            <Wallet className="w-3.5 h-3.5" />
-            Sign in
-          </Button>
-        )}
-      </div>
 
       <div className="flex-1 flex flex-col items-center justify-center">
       <motion.div

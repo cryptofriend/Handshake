@@ -12,6 +12,7 @@ import AgreementsPage from "./pages/AgreementsPage";
 import NotFound from "./pages/NotFound";
 import AdminPage from "./pages/AdminPage";
 import { BottomNav } from "./components/handshake/BottomNav";
+import { AppHeader } from "./components/handshake/AppHeader";
 import RequireWallet from "./components/handshake/RequireWallet";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <AppHeader />
           <div className="pb-16">
             <Routes>
               <Route path="/" element={<LoginPage />} />
