@@ -26,7 +26,7 @@ const App = () => (
               <Route path="/" element={<LoginPage />} />
               <Route path="/agent" element={<AgentChatPage />} />
               <Route path="/sign/:id" element={<SignPage />} />
-              <Route path="/sign" element={<SignPage />} />
+              
               <Route path="/agreement/:id" element={<CounterpartyPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="*" element={<NotFound />} />
