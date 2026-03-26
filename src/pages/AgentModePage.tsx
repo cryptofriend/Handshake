@@ -37,16 +37,16 @@ const AgentModePage = () => {
   const [mobileTab, setMobileTab] = useState<'builder' | 'preview'>('builder');
   const [onboarded, setOnboarded] = useState(false);
 
-  if (!onboarded) {
-    return <AgentOnboarding onContinue={() => setOnboarded(true)} />;
-  }
-
   // Keep participants[0] in sync with agent id
   useMemo(() => {
     if (payload.participants[0] !== agentId) {
       setPayload(prev => ({ ...prev, participants: [agentId, prev.participants[1] || ''] }));
     }
   }, [agentId]);
+
+  if (!onboarded) {
+    return <AgentOnboarding onContinue={() => setOnboarded(true)} />;
+  }
 
   const handleSign = useCallback(async () => {
     if (!address) { toast.error('Connect wallet first'); return; }
