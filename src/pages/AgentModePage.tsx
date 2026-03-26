@@ -1,4 +1,5 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { AgentOnboarding } from '@/components/agent-mode/AgentOnboarding';
 import { useTonAddress } from '@tonconnect/ui-react';
 import { Button } from '@/components/ui/button';
 import { AgentTopBar } from '@/components/agent-mode/AgentTopBar';
@@ -34,9 +35,10 @@ const AgentModePage = () => {
   const [signing, setSigning] = useState(false);
   const [executing, setExecuting] = useState(false);
   const [mobileTab, setMobileTab] = useState<'builder' | 'preview'>('builder');
+  const [onboarded, setOnboarded] = useState(false);
 
   // Keep participants[0] in sync with agent id
-  useMemo(() => {
+  useEffect(() => {
     if (payload.participants[0] !== agentId) {
       setPayload(prev => ({ ...prev, participants: [agentId, prev.participants[1] || ''] }));
     }
@@ -51,7 +53,6 @@ const AgentModePage = () => {
       const agreementId = await hashPayload(payload);
       const txHash = `0x${agreementId.slice(0, 16)}`;
 
-      // Store in DB
       await supabase.from('agreement_drafts').insert({
         id: agreementId.slice(0, 36),
         title: payload.title,
@@ -117,6 +118,10 @@ const AgentModePage = () => {
       setExecuting(false);
     }
   }, [signedData]);
+
+  if (!onboarded) {
+    return <AgentOnboarding onContinue={() => setOnboarded(true)} />;
+  }
 
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] bg-background">
