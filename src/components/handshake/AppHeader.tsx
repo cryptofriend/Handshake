@@ -14,10 +14,10 @@ export const AppHeader = () => {
           href="https://t.me/handshakealphagroup"
           target="_blank"
           rel="noopener noreferrer"
-          className="w-8 h-8 rounded-full bg-[#2AABEE] hover:bg-[#229ED9] text-white flex items-center justify-center transition-transform hover:scale-110 active:scale-95"
+          className="text-muted-foreground hover:text-foreground transition-colors"
           aria-label="Join Telegram Community"
         >
-          <Send className="w-3.5 h-3.5" />
+          <Send className="w-4 h-4" />
         </a>
         {userAddress ? (
           <span className="text-xs text-muted-foreground font-mono truncate max-w-[80px]">
