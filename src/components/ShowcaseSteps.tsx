@@ -38,17 +38,12 @@ const INTERVAL = 6000;
 export default function ShowcaseSteps() {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const navigate = useNavigate();
 
   const next = useCallback(() => {
     setActive(prev => (prev + 1) % steps.length);
   }, []);
-
-  useEffect(() => {
-    if (paused) return;
-    const timer = setInterval(next, INTERVAL);
-    return () => clearInterval(timer);
-  }, [paused, next]);
 
   const current = steps[active];
   const Icon = current.icon;
@@ -118,11 +113,12 @@ export default function ShowcaseSteps() {
             {/* Video */}
             <div className="relative aspect-[9/16] overflow-hidden">
               <video
+                ref={videoRef}
                 src={current.video}
                 autoPlay
                 muted
-                loop
                 playsInline
+                onEnded={() => { if (!paused) next(); }}
                 className="w-full h-full object-cover"
               />
               {/* Step badge */}
