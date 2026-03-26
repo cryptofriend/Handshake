@@ -38,6 +38,8 @@ const COLOR_SCHEMES = [
 
 const Index = () => {
   const [activeScheme, setActiveScheme] = useState(0);
+  const [mode, setMode] = useState<'human' | 'agent'>('human');
+  const navigate = useNavigate();
 
   const cycleScheme = useCallback(() => {
     setActiveScheme(prev => {
@@ -47,6 +49,13 @@ const Index = () => {
     });
   }, []);
 
+  const handleModeSwitch = (newMode: 'human' | 'agent') => {
+    setMode(newMode);
+    if (newMode === 'agent') {
+      navigate('/agent');
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center py-2 bg-background min-h-[calc(100vh-8rem)] relative">
       <YinYangSimulation
@@ -54,10 +63,34 @@ const Index = () => {
         colorScheme={COLOR_SCHEMES[activeScheme]}
       />
 
+      {/* Human / Agent switcher */}
+      <div className="mt-4 flex items-center rounded-full border border-border bg-muted/50 p-0.5">
+        <button
+          onClick={() => handleModeSwitch('human')}
+          className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
+            mode === 'human'
+              ? 'bg-foreground text-background shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          Human
+        </button>
+        <button
+          onClick={() => handleModeSwitch('agent')}
+          className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
+            mode === 'agent'
+              ? 'bg-foreground text-background shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          Agent
+        </button>
+      </div>
+
       {/* Color orb button */}
       <button
         onClick={cycleScheme}
-        className="mt-4 w-8 h-8 rounded-full border border-border shadow-sm hover:scale-110 transition-transform"
+        className="mt-3 w-8 h-8 rounded-full border border-border shadow-sm hover:scale-110 transition-transform"
         style={{
           background: `linear-gradient(135deg, ${COLOR_SCHEMES[activeScheme].preview[0]}, ${COLOR_SCHEMES[activeScheme].preview[1]})`,
         }}
