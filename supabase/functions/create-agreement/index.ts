@@ -14,15 +14,11 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-
-    // Validate required fields
     const { title, summary, parties, terms, fullText } = body;
 
     if (!title || !parties || !Array.isArray(parties) || parties.length < 2) {
       return new Response(
-        JSON.stringify({
-          error: "Required: title, parties (array with at least 2 entries)",
-        }),
+        JSON.stringify({ error: "Required: title, parties (array with at least 2 entries)" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -50,6 +46,7 @@ serve(async (req) => {
     const sessionId = body.sessionId || `agent-${crypto.randomUUID()}`;
     const userId = body.userId || null;
 
+    // 1. Create agreement draft
     const { data, error } = await supabase
       .from("agreement_drafts")
       .insert({
@@ -74,17 +71,80 @@ serve(async (req) => {
     }
 
     const agreementId = data.id;
-    const signUrl = `/sign/${agreementId}`;
+
+    // 2. Create participant records and invite tokens for each party
+    const participantResults = [];
+    for (const party of parties) {
+      const name = party.name || party;
+      const role = party.role || null;
+
+      // Create participant
+      const { data: participant, error: pErr } = await supabase
+        .from("agreement_participants")
+        .insert({
+          agreement_id: agreementId,
+          name,
+          role,
+          signature_status: "pending",
+        })
+        .select("id")
+        .single();
+
+      if (pErr) {
+        console.error("Participant insert error:", pErr);
+        continue;
+      }
+
+      // Generate cryptographically strong invite token
+      const tokenBytes = new Uint8Array(24);
+      crypto.getRandomValues(tokenBytes);
+      const inviteToken = Array.from(tokenBytes, (b) => b.toString(16).padStart(2, "0")).join("");
+
+      // Create invite
+      const { error: iErr } = await supabase
+        .from("agreement_invites")
+        .insert({
+          agreement_id: agreementId,
+          participant_id: participant.id,
+          invite_token: inviteToken,
+          status: "pending",
+        });
+
+      if (iErr) {
+        console.error("Invite insert error:", iErr);
+      }
+
+      // Log invite_created event
+      await supabase.from("agreement_events").insert({
+        agreement_id: agreementId,
+        participant_id: participant.id,
+        event_type: "invite_created",
+        metadata_json: { invite_token: inviteToken, party_name: name },
+      });
+
+      const signUrl = `/sign/${agreementId}?invite=${inviteToken}`;
+
+      participantResults.push({
+        participantId: participant.id,
+        name,
+        role,
+        inviteToken,
+        signUrl,
+      });
+    }
 
     return new Response(
       JSON.stringify({
         agreementId,
-        signUrl,
+        signUrl: `/sign/${agreementId}`,
         createdAt: data.created_at,
-        parties: parties.map((p: any) => ({
-          name: p.name || p,
-          role: p.role || null,
-          signUrl,
+        participants: participantResults,
+        // Legacy compat
+        parties: participantResults.map((p) => ({
+          name: p.name,
+          role: p.role,
+          signUrl: p.signUrl,
+          inviteToken: p.inviteToken,
         })),
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -92,9 +152,7 @@ serve(async (req) => {
   } catch (e) {
     console.error("create-agreement error:", e);
     return new Response(
-      JSON.stringify({
-        error: e instanceof Error ? e.message : "Unknown error",
-      }),
+      JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
