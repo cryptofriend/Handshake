@@ -59,7 +59,7 @@ export default function ShowcaseSteps() {
 
   return (
     <div
-      className="w-full max-w-lg mx-auto px-5 pb-16"
+      className="w-full max-w-[21rem] mx-auto px-5 pb-16"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={() => setPaused(true)}
