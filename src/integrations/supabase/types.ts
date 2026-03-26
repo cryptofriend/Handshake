@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      agent_api_keys: {
+        Row: {
+          agent_name: string
+          api_key_hash: string
+          created_at: string
+          id: string
+          is_active: boolean
+          last_used_at: string | null
+          wallet_address: string
+        }
+        Insert: {
+          agent_name: string
+          api_key_hash: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_used_at?: string | null
+          wallet_address: string
+        }
+        Update: {
+          agent_name?: string
+          api_key_hash?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_used_at?: string | null
+          wallet_address?: string
+        }
+        Relationships: []
+      }
       agreement_drafts: {
         Row: {
           allocations: Json | null
