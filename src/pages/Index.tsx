@@ -41,16 +41,13 @@ const Index = () => {
   const [mode, setMode] = useState<'human' | 'agent'>('human');
   const navigate = useNavigate();
 
-  const cycleScheme = useCallback(() => {
+  const handleModeSwitch = (newMode: 'human' | 'agent') => {
+    setMode(newMode);
     setActiveScheme(prev => {
       let next;
       do { next = Math.floor(Math.random() * COLOR_SCHEMES.length); } while (next === prev);
       return next;
     });
-  }, []);
-
-  const handleModeSwitch = (newMode: 'human' | 'agent') => {
-    setMode(newMode);
     if (newMode === 'agent') {
       navigate('/agent-mode');
     }
@@ -64,8 +61,7 @@ const Index = () => {
       />
 
       {/* Human / Agent switcher */}
-      {/* Human / Agent switcher + color dot */}
-      <div className="mt-4 flex items-center gap-3">
+      <div className="mt-4">
         <div className="flex items-center rounded-full border border-border bg-muted/50 p-0.5">
           <button
             onClick={() => handleModeSwitch('human')}
@@ -88,14 +84,6 @@ const Index = () => {
             Agent
           </button>
         </div>
-        <button
-          onClick={cycleScheme}
-          className="w-6 h-6 rounded-full border border-border shadow-sm hover:scale-110 transition-transform"
-          style={{
-            background: `linear-gradient(135deg, ${COLOR_SCHEMES[activeScheme].preview[0]}, ${COLOR_SCHEMES[activeScheme].preview[1]})`,
-          }}
-          aria-label="Change color scheme"
-        />
       </div>
 
       {/* Showcase steps */}
