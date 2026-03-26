@@ -113,11 +113,12 @@ export default function ShowcaseSteps() {
             {/* Video */}
             <div className="relative aspect-[9/16] overflow-hidden">
               <video
+                ref={videoRef}
                 src={current.video}
                 autoPlay
                 muted
-                loop
                 playsInline
+                onEnded={() => { if (!paused) next(); }}
                 className="w-full h-full object-cover"
               />
               {/* Step badge */}
