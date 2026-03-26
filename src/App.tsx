@@ -13,7 +13,7 @@ import AgreementsPage from "./pages/AgreementsPage";
 import NotFound from "./pages/NotFound";
 import AdminPage from "./pages/AdminPage";
 import { BottomNav } from "./components/handshake/BottomNav";
-import { TelegramFab } from "./components/handshake/TelegramFab";
+
 import { AppHeader } from "./components/handshake/AppHeader";
 import RequireWallet from "./components/handshake/RequireWallet";
 
@@ -38,7 +38,7 @@ const AppLayout = () => {
         </Routes>
       </div>
       {!isHome && <BottomNav />}
-      <TelegramFab />
+      
     </>
   );
 };

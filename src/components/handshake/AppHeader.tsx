@@ -1,4 +1,4 @@
-import { Wallet } from 'lucide-react';
+import { Wallet, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTonAddress, useTonConnectModal } from '@tonconnect/ui-react';
 
@@ -10,6 +10,15 @@ export const AppHeader = () => {
     <div className="flex items-center justify-between px-5 pt-4 pb-2 w-full max-w-md mx-auto">
       <h1 className="logo-text text-xl text-foreground">Handshake</h1>
       <div className="flex items-center gap-2">
+        <a
+          href="https://t.me/handshakealphagroup"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-8 h-8 rounded-full bg-[#2AABEE] hover:bg-[#229ED9] text-white flex items-center justify-center transition-transform hover:scale-110 active:scale-95"
+          aria-label="Join Telegram Community"
+        >
+          <Send className="w-3.5 h-3.5" />
+        </a>
         {userAddress ? (
           <span className="text-xs text-muted-foreground font-mono truncate max-w-[80px]">
             {userAddress.slice(0, 4)}...{userAddress.slice(-4)}
