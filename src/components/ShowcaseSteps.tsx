@@ -1,10 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, FileCheck, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import showcaseTalkAgent from '@/assets/showcase-talk-agent.jpg';
-import showcaseReviewSign from '@/assets/showcase-review-sign.jpg';
-import showcaseShareTelegram from '@/assets/showcase-share-telegram.png';
 
 const steps = [
   {
@@ -13,7 +10,7 @@ const steps = [
     title: 'Talk to Agent',
     headline: 'Talk to Agent',
     description: 'Describe your agreement in plain language. Our AI agent understands context and drafts it for you.',
-    image: showcaseTalkAgent,
+    video: '/videos/showcase-talk-agent.mp4',
     accent: 'hsla(45, 90%, 55%)',
   },
   {
@@ -22,7 +19,7 @@ const steps = [
     title: 'Review & Sign',
     headline: 'Sign with TON',
     description: 'Review the generated agreement, then sign on-chain with your TON wallet in one tap.',
-    image: showcaseReviewSign,
+    video: '/videos/showcase-review-sign.mp4',
     accent: 'hsla(260, 70%, 55%)',
   },
   {
@@ -31,7 +28,7 @@ const steps = [
     title: 'Share with Friends',
     headline: 'Share in Telegram',
     description: 'Send the agreement link via Telegram. Your counterparty signs and both get blockchain confirmation.',
-    image: showcaseShareTelegram,
+    video: '/videos/showcase-share-telegram.mp4',
     accent: 'hsla(200, 80%, 50%)',
   },
 ];
@@ -118,14 +115,15 @@ export default function ShowcaseSteps() {
             exit={{ opacity: 0, x: -40 }}
             transition={{ duration: 0.4, ease: 'easeInOut' }}
           >
-            {/* Image */}
-            <div className="relative aspect-[4/3] overflow-hidden">
-              <img
-                src={current.image}
-                alt={current.title}
-                width={800}
-                height={600}
-                className={`w-full h-full object-cover ${active === 1 ? 'object-[center_75%]' : ''}`}
+            {/* Video */}
+            <div className="relative aspect-[9/16] overflow-hidden">
+              <video
+                src={current.video}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover"
               />
               {/* Step badge */}
               <div
