@@ -65,6 +65,155 @@ export type Database = {
         }
         Relationships: []
       }
+      agreement_events: {
+        Row: {
+          agreement_id: string
+          created_at: string
+          event_type: string
+          id: string
+          metadata_json: Json | null
+          participant_id: string | null
+          telegram_user_id: string | null
+          wallet_address: string | null
+        }
+        Insert: {
+          agreement_id: string
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata_json?: Json | null
+          participant_id?: string | null
+          telegram_user_id?: string | null
+          wallet_address?: string | null
+        }
+        Update: {
+          agreement_id?: string
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata_json?: Json | null
+          participant_id?: string | null
+          telegram_user_id?: string | null
+          wallet_address?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agreement_events_agreement_id_fkey"
+            columns: ["agreement_id"]
+            isOneToOne: false
+            referencedRelation: "agreement_drafts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agreement_events_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "agreement_participants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agreement_invites: {
+        Row: {
+          agreement_id: string
+          created_at: string
+          id: string
+          invite_token: string
+          opened_at: string | null
+          opened_by_telegram_user_id: string | null
+          participant_id: string | null
+          status: string
+        }
+        Insert: {
+          agreement_id: string
+          created_at?: string
+          id?: string
+          invite_token: string
+          opened_at?: string | null
+          opened_by_telegram_user_id?: string | null
+          participant_id?: string | null
+          status?: string
+        }
+        Update: {
+          agreement_id?: string
+          created_at?: string
+          id?: string
+          invite_token?: string
+          opened_at?: string | null
+          opened_by_telegram_user_id?: string | null
+          participant_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agreement_invites_agreement_id_fkey"
+            columns: ["agreement_id"]
+            isOneToOne: false
+            referencedRelation: "agreement_drafts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agreement_invites_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "agreement_participants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agreement_participants: {
+        Row: {
+          agreement_id: string
+          created_at: string
+          id: string
+          invited_at: string | null
+          name: string
+          opened_at: string | null
+          role: string | null
+          signature_status: string
+          signed_at: string | null
+          telegram_user_id: string | null
+          viewed_at: string | null
+          wallet_address: string | null
+        }
+        Insert: {
+          agreement_id: string
+          created_at?: string
+          id?: string
+          invited_at?: string | null
+          name: string
+          opened_at?: string | null
+          role?: string | null
+          signature_status?: string
+          signed_at?: string | null
+          telegram_user_id?: string | null
+          viewed_at?: string | null
+          wallet_address?: string | null
+        }
+        Update: {
+          agreement_id?: string
+          created_at?: string
+          id?: string
+          invited_at?: string | null
+          name?: string
+          opened_at?: string | null
+          role?: string | null
+          signature_status?: string
+          signed_at?: string | null
+          telegram_user_id?: string | null
+          viewed_at?: string | null
+          wallet_address?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agreement_participants_agreement_id_fkey"
+            columns: ["agreement_id"]
+            isOneToOne: false
+            referencedRelation: "agreement_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agreement_signatures: {
         Row: {
           agreement_id: string
