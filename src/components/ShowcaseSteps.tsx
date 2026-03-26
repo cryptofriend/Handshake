@@ -45,6 +45,15 @@ export default function ShowcaseSteps() {
     setActive(prev => (prev + 1) % steps.length);
   }, []);
 
+  // Ensure video plays from start on slide change
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    }
+  }, [active]);
+
   const current = steps[active];
   const Icon = current.icon;
 
