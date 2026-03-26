@@ -64,38 +64,39 @@ const Index = () => {
       />
 
       {/* Human / Agent switcher */}
-      <div className="mt-4 flex items-center rounded-full border border-border bg-muted/50 p-0.5">
+      {/* Human / Agent switcher + color dot */}
+      <div className="mt-4 flex items-center gap-3">
+        <div className="flex items-center rounded-full border border-border bg-muted/50 p-0.5">
+          <button
+            onClick={() => handleModeSwitch('human')}
+            className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
+              mode === 'human'
+                ? 'bg-foreground text-background shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            Human
+          </button>
+          <button
+            onClick={() => handleModeSwitch('agent')}
+            className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
+              mode === 'agent'
+                ? 'bg-foreground text-background shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            Agent
+          </button>
+        </div>
         <button
-          onClick={() => handleModeSwitch('human')}
-          className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
-            mode === 'human'
-              ? 'bg-foreground text-background shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          Human
-        </button>
-        <button
-          onClick={() => handleModeSwitch('agent')}
-          className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
-            mode === 'agent'
-              ? 'bg-foreground text-background shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          Agent
-        </button>
+          onClick={cycleScheme}
+          className="w-6 h-6 rounded-full border border-border shadow-sm hover:scale-110 transition-transform"
+          style={{
+            background: `linear-gradient(135deg, ${COLOR_SCHEMES[activeScheme].preview[0]}, ${COLOR_SCHEMES[activeScheme].preview[1]})`,
+          }}
+          aria-label="Change color scheme"
+        />
       </div>
-
-      {/* Color orb button */}
-      <button
-        onClick={cycleScheme}
-        className="mt-3 w-8 h-8 rounded-full border border-border shadow-sm hover:scale-110 transition-transform"
-        style={{
-          background: `linear-gradient(135deg, ${COLOR_SCHEMES[activeScheme].preview[0]}, ${COLOR_SCHEMES[activeScheme].preview[1]})`,
-        }}
-        aria-label="Change color scheme"
-      />
 
       {/* Showcase steps */}
       <div className="mt-20 w-full">
