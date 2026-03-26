@@ -42,9 +42,7 @@ const AgentModePage = () => {
     if (payload.participants[0] !== agentId) {
       setPayload(prev => ({ ...prev, participants: [agentId, prev.participants[1] || ''] }));
     }
-  }, [agentId]);
 
-  if (!onboarded) {
   const handleSign = useCallback(async () => {
     if (!address) { toast.error('Connect wallet first'); return; }
     if (!payload.participants[1]) { toast.error('Enter counterparty agent ID'); return; }
