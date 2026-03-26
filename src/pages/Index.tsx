@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import YinYangSimulation from '@/components/YinYangSimulation';
 import ShowcaseSteps from '@/components/ShowcaseSteps';
 
