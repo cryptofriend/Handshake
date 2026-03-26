@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import YinYangSimulation from '@/components/YinYangSimulation';
 import ShowcaseSteps from '@/components/ShowcaseSteps';
 
@@ -35,13 +36,39 @@ const COLOR_SCHEMES = [
   },
 ];
 
+const MODES = ['Humans', 'Agents', 'Both'] as const;
+
 const Index = () => {
   const [activeScheme, setActiveScheme] = useState(0);
+  const [activeMode, setActiveMode] = useState(0);
+  const navigate = useNavigate();
+
+  const handleModeChange = (index: number) => {
+    setActiveMode(index);
+    if (MODES[index] === 'Agents') {
+      navigate('/agent-mode');
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center py-2 bg-background min-h-[calc(100vh-8rem)] relative">
-      <h1 className="text-2xl font-semibold text-foreground tracking-tight mb-4">
-        Agreements for <span className="text-primary">Humans</span>
+      <h1 className="text-2xl font-semibold text-foreground tracking-tight mb-4 flex items-baseline gap-2">
+        <span>Agreements for</span>
+        <span className="relative inline-flex items-center rounded-full border border-border bg-muted/50 p-0.5">
+          {MODES.map((mode, i) => (
+            <button
+              key={mode}
+              onClick={() => handleModeChange(i)}
+              className={`px-3 py-1 rounded-full text-sm font-semibold transition-all ${
+                activeMode === i
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {mode}
+            </button>
+          ))}
+        </span>
       </h1>
       <YinYangSimulation
         className="transition-all duration-300 !h-[56vh] max-h-[500px]"
