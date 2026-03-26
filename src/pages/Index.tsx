@@ -40,7 +40,7 @@ const Index = () => {
 
   return (
     <div className="flex flex-col items-center justify-center py-2 bg-background min-h-[calc(100vh-8rem)] relative">
-      <h1 className="text-2xl font-semibold text-foreground tracking-tight mb-4">
+      <h1 className="text-5xl font-bold text-foreground tracking-tight mt-8 mb-10">
         Agreements for <span className="text-primary">Humans</span>
       </h1>
       <YinYangSimulation
