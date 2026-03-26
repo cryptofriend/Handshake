@@ -36,6 +36,7 @@ const AppLayout = () => {
           <Route path="/sign/:id" element={<SignPage />} />
           <Route path="/agreement/:id" element={<CounterpartyPage />} />
           <Route path="/agent-mode" element={<AgentModePage />} />
+          <Route path="/docs/agents" element={<AgentDocsPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
