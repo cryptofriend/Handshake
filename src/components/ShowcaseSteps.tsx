@@ -38,17 +38,12 @@ const INTERVAL = 6000;
 export default function ShowcaseSteps() {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const navigate = useNavigate();
 
   const next = useCallback(() => {
     setActive(prev => (prev + 1) % steps.length);
   }, []);
-
-  useEffect(() => {
-    if (paused) return;
-    const timer = setInterval(next, INTERVAL);
-    return () => clearInterval(timer);
-  }, [paused, next]);
 
   const current = steps[active];
   const Icon = current.icon;
