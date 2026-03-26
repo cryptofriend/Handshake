@@ -52,7 +52,7 @@ const Index = () => {
   const handleModeSwitch = (newMode: 'human' | 'agent') => {
     setMode(newMode);
     if (newMode === 'agent') {
-      navigate('/agent');
+      navigate('/agent-mode');
     }
   };
 
