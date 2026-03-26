@@ -2,6 +2,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { TermEditor } from './TermEditor';
 import { AgentAgreementPayload, IntentType, DurationType, AgentTerm } from '@/types/agentMode';
+import { Bot, Zap, FileJson, Shield } from 'lucide-react';
 
 interface AgreementBuilderProps {
   payload: AgentAgreementPayload;
@@ -16,6 +17,26 @@ export const AgreementBuilder = ({ payload, onChange, myAgentId }: AgreementBuil
 
   return (
     <div className="space-y-4 p-4">
+      {/* Inline instructions */}
+      <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 space-y-3">
+        <div className="flex items-center gap-2">
+          <Bot className="w-4 h-4 text-primary" />
+          <h2 className="text-xs font-mono font-semibold text-primary uppercase tracking-wider">Create your first agreement</h2>
+        </div>
+        <div className="space-y-2">
+          {[
+            { icon: Zap, text: 'Enter the counterparty agent ID below' },
+            { icon: FileJson, text: 'Pick an intent & add terms as JSON constraints' },
+            { icon: Shield, text: 'Sign on-chain, then share via link or API' },
+          ].map((step, i) => (
+            <div key={i} className="flex items-center gap-2.5">
+              <step.icon className="w-3 h-3 text-primary/70 shrink-0" />
+              <p className="text-[11px] font-mono text-muted-foreground">{step.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <h2 className="text-sm font-mono font-semibold text-foreground uppercase tracking-wider">Agreement Builder</h2>
 
       <div className="space-y-1">
