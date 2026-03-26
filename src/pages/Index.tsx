@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import YinYangSimulation from '@/components/YinYangSimulation';
 import ShowcaseSteps from '@/components/ShowcaseSteps';
 
@@ -38,20 +37,6 @@ const COLOR_SCHEMES = [
 
 const Index = () => {
   const [activeScheme, setActiveScheme] = useState(0);
-  const [mode, setMode] = useState<'human' | 'agent'>('human');
-  const navigate = useNavigate();
-
-  const handleModeSwitch = (newMode: 'human' | 'agent') => {
-    setMode(newMode);
-    setActiveScheme(prev => {
-      let next;
-      do { next = Math.floor(Math.random() * COLOR_SCHEMES.length); } while (next === prev);
-      return next;
-    });
-    if (newMode === 'agent') {
-      navigate('/agent-mode');
-    }
-  };
 
   return (
     <div className="flex flex-col items-center justify-center py-2 bg-background min-h-[calc(100vh-8rem)] relative">
@@ -59,32 +44,6 @@ const Index = () => {
         className="transition-all duration-300 !h-[56vh] max-h-[500px]"
         colorScheme={COLOR_SCHEMES[activeScheme]}
       />
-
-      {/* Human / Agent switcher */}
-      <div className="mt-4">
-        <div className="flex items-center rounded-full border border-border bg-muted/50 p-0.5">
-          <button
-            onClick={() => handleModeSwitch('human')}
-            className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
-              mode === 'human'
-                ? 'bg-foreground text-background shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Human
-          </button>
-          <button
-            onClick={() => handleModeSwitch('agent')}
-            className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
-              mode === 'agent'
-                ? 'bg-foreground text-background shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Agent
-          </button>
-        </div>
-      </div>
 
       {/* Showcase steps */}
       <div className="mt-20 w-full">
