@@ -13,6 +13,7 @@ import AgreementsPage from "./pages/AgreementsPage";
 import NotFound from "./pages/NotFound";
 import AdminPage from "./pages/AdminPage";
 import AgentModePage from "./pages/AgentModePage";
+import AgentDocsPage from "./pages/AgentDocsPage";
 import { BottomNav } from "./components/handshake/BottomNav";
 
 import { AppHeader } from "./components/handshake/AppHeader";
