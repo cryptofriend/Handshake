@@ -115,14 +115,15 @@ export default function ShowcaseSteps() {
             exit={{ opacity: 0, x: -40 }}
             transition={{ duration: 0.4, ease: 'easeInOut' }}
           >
-            {/* Image */}
-            <div className="relative aspect-[4/3] overflow-hidden">
-              <img
-                src={current.image}
-                alt={current.title}
-                width={800}
-                height={600}
-                className={`w-full h-full object-cover ${active === 1 ? 'object-[center_75%]' : ''}`}
+            {/* Video */}
+            <div className="relative aspect-[9/16] overflow-hidden">
+              <video
+                src={current.video}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover"
               />
               {/* Step badge */}
               <div
