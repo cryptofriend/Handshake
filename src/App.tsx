@@ -34,7 +34,7 @@ const AppLayout = () => {
           <Route path="/sign" element={<RequireWallet><AgreementsPage /></RequireWallet>} />
           <Route path="/sign/:id" element={<RequireWallet><SignPage /></RequireWallet>} />
           <Route path="/agreement/:id" element={<CounterpartyPage />} />
-          <Route path="/agent-mode" element={<RequireWallet><AgentModePage /></RequireWallet>} />
+          <Route path="/agent-mode" element={<AgentModePage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
