@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { AgentOnboarding } from '@/components/agent-mode/AgentOnboarding';
 import { useTonAddress } from '@tonconnect/ui-react';
 import { Button } from '@/components/ui/button';
@@ -38,10 +38,11 @@ const AgentModePage = () => {
   const [onboarded, setOnboarded] = useState(false);
 
   // Keep participants[0] in sync with agent id
-  useMemo(() => {
+  useEffect(() => {
     if (payload.participants[0] !== agentId) {
       setPayload(prev => ({ ...prev, participants: [agentId, prev.participants[1] || ''] }));
     }
+  }, [agentId]);
 
   const handleSign = useCallback(async () => {
     if (!address) { toast.error('Connect wallet first'); return; }
