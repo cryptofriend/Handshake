@@ -3,7 +3,15 @@ import { MessageCircle, Handshake, Home } from 'lucide-react';
 import { useTonAddress, useTonConnectModal } from '@tonconnect/ui-react';
 import { cn } from '@/lib/utils';
 
-const NAV_ITEMS = [
+interface NavItem {
+  icon: typeof Home;
+  label: string;
+  path: string;
+  requiresAuth: boolean;
+  external?: boolean;
+}
+
+const NAV_ITEMS: NavItem[] = [
   { icon: Home, label: 'Home', path: '/', requiresAuth: false },
   { icon: MessageCircle, label: 'Agent', path: 'https://t.me/handshakemonsterbot', requiresAuth: false, external: true },
   { icon: Handshake, label: 'To Sign', path: '/sign', requiresAuth: false },
