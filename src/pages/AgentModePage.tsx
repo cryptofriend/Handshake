@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
+import { AgentOnboarding } from '@/components/agent-mode/AgentOnboarding';
 import { useTonAddress } from '@tonconnect/ui-react';
 import { Button } from '@/components/ui/button';
 import { AgentTopBar } from '@/components/agent-mode/AgentTopBar';
@@ -34,6 +35,11 @@ const AgentModePage = () => {
   const [signing, setSigning] = useState(false);
   const [executing, setExecuting] = useState(false);
   const [mobileTab, setMobileTab] = useState<'builder' | 'preview'>('builder');
+  const [onboarded, setOnboarded] = useState(false);
+
+  if (!onboarded) {
+    return <AgentOnboarding onContinue={() => setOnboarded(true)} />;
+  }
 
   // Keep participants[0] in sync with agent id
   useMemo(() => {
