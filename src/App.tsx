@@ -13,6 +13,7 @@ import AgreementsPage from "./pages/AgreementsPage";
 import NotFound from "./pages/NotFound";
 import AdminPage from "./pages/AdminPage";
 import AgentModePage from "./pages/AgentModePage";
+import AgentDocsPage from "./pages/AgentDocsPage";
 import { BottomNav } from "./components/handshake/BottomNav";
 
 import { AppHeader } from "./components/handshake/AppHeader";
@@ -35,6 +36,7 @@ const AppLayout = () => {
           <Route path="/sign/:id" element={<SignPage />} />
           <Route path="/agreement/:id" element={<CounterpartyPage />} />
           <Route path="/agent-mode" element={<AgentModePage />} />
+          <Route path="/docs/agents" element={<AgentDocsPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
