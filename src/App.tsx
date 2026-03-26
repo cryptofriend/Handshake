@@ -32,7 +32,7 @@ const AppLayout = () => {
           <Route path="/" element={<Index />} />
           <Route path="/agent" element={<RequireWallet><AgentChatPage /></RequireWallet>} />
           <Route path="/sign" element={<RequireWallet><AgreementsPage /></RequireWallet>} />
-          <Route path="/sign/:id" element={<RequireWallet><SignPage /></RequireWallet>} />
+          <Route path="/sign/:id" element={<SignPage />} />
           <Route path="/agreement/:id" element={<CounterpartyPage />} />
           <Route path="/agent-mode" element={<AgentModePage />} />
           <Route path="/admin" element={<AdminPage />} />
