@@ -1,10 +1,6 @@
 import { useState } from 'react';
-import { MessageCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import YinYangSimulation from '@/components/YinYangSimulation';
 import ShowcaseSteps from '@/components/ShowcaseSteps';
-
-const TG_BOT_URL = 'https://t.me/handshakemonsterbot';
 
 const COLOR_SCHEMES = [
   {
@@ -51,19 +47,6 @@ const Index = () => {
         className="transition-all duration-300 !h-[56vh] max-h-[500px]"
         colorScheme={COLOR_SCHEMES[activeScheme]}
       />
-
-      {/* Start CTA — opens TG bot */}
-      <a
-        href={TG_BOT_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-6"
-      >
-        <Button size="lg" className="rounded-2xl h-14 px-8 text-base font-semibold gap-2.5 shadow-lg">
-          <MessageCircle className="w-5 h-5" />
-          Start in Telegram
-        </Button>
-      </a>
 
       {/* Showcase steps */}
       <div className="mt-20 w-full">
