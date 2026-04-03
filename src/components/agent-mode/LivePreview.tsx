@@ -65,7 +65,7 @@ export const LivePreview = ({ payload, signedData }: LivePreviewProps) => {
                 size="sm"
                 variant="ghost"
                 className="h-6 text-[10px] font-mono gap-1"
-                onClick={() => copyToClipboard(window.location.origin + '/agreement/' + signedData.agreement_id, 'Link')}
+                onClick={() => copyToClipboard(`https://t.me/handshakemonsterbot/app?startapp=agreement_${signedData.agreement_id}`, 'Link')}
               >
                 {copied === 'Link' ? <Check className="w-3 h-3" /> : <Link className="w-3 h-3" />} Link
               </Button>

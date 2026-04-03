@@ -48,11 +48,25 @@ export async function resolveInviteToken(inviteToken: string, telegramUserId?: s
   };
 }
 
-export function generateDeepLink(agreementId: string, inviteToken: string): string {
+const DEFAULT_BOT_USERNAME = 'handshakemonsterbot';
+
+/** Primary signing surface — Telegram mini app deep link */
+export function generateSignLink(inviteToken: string, botUsername: string = DEFAULT_BOT_USERNAME): string {
+  return `https://t.me/${botUsername}/app?startapp=${inviteToken}`;
+}
+
+/** Fallback web sign link */
+export function generateWebSignLink(agreementId: string, inviteToken: string): string {
   const baseUrl = window.location.origin;
   return `${baseUrl}/sign/${agreementId}?invite=${inviteToken}`;
 }
 
+/** @deprecated Use generateSignLink instead */
+export function generateDeepLink(agreementId: string, inviteToken: string): string {
+  return generateWebSignLink(agreementId, inviteToken);
+}
+
+/** @deprecated Use generateSignLink instead */
 export function generateTelegramDeepLink(botUsername: string, inviteToken: string): string {
   return `https://t.me/${botUsername}/app?startapp=${inviteToken}`;
 }
