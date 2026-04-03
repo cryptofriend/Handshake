@@ -122,28 +122,34 @@ serve(async (req) => {
         metadata_json: { invite_token: inviteToken, party_name: name },
       });
 
-      const signUrl = `/sign/${agreementId}?invite=${inviteToken}`;
+      const botUsername = Deno.env.get("TELEGRAM_BOT_USERNAME") || "handshakemonsterbot";
+      const miniAppSignUrl = `https://t.me/${botUsername}/app?startapp=${inviteToken}`;
+      const webSignUrl = `/sign/${agreementId}?invite=${inviteToken}`;
 
       participantResults.push({
         participantId: participant.id,
         name,
         role,
         inviteToken,
-        signUrl,
+        miniAppSignUrl,
+        webSignUrl,
       });
     }
 
     return new Response(
       JSON.stringify({
         agreementId,
-        signUrl: `/sign/${agreementId}`,
+        miniAppSignUrl: `https://t.me/${Deno.env.get("TELEGRAM_BOT_USERNAME") || "handshakemonsterbot"}/app?startapp=agreement_${agreementId}`,
+        webSignUrl: `/sign/${agreementId}`,
         createdAt: data.created_at,
         participants: participantResults,
         // Legacy compat
         parties: participantResults.map((p) => ({
           name: p.name,
           role: p.role,
-          signUrl: p.signUrl,
+          miniAppSignUrl: p.miniAppSignUrl,
+          webSignUrl: p.webSignUrl,
+          signUrl: p.miniAppSignUrl,
           inviteToken: p.inviteToken,
         })),
       }),
