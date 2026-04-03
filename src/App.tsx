@@ -18,12 +18,16 @@ import { BottomNav } from "./components/handshake/BottomNav";
 
 import { AppHeader } from "./components/handshake/AppHeader";
 import RequireWallet from "./components/handshake/RequireWallet";
+import { useTelegramStartParam } from "./hooks/useTelegramStartParam";
 
 const queryClient = new QueryClient();
 
 const AppLayout = () => {
   const location = useLocation();
   const isHome = false;
+
+  // Handle Telegram Mini App startapp deep links
+  useTelegramStartParam();
 
   return (
     <>
