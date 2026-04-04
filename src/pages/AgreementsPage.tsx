@@ -101,23 +101,11 @@ const AgreementsPage = () => {
     }
     setSigning(true);
     try {
-      const transaction = {
-        validUntil: Math.floor(Date.now() / 1000) + 300,
-        messages: [{
-          address: userAddress,
-          amount: toNano('0.01').toString(),
-          payload: encodeComment(`Handshake Manifesto Signed: ${pactTitle}`),
-        }],
-      };
-      await tonConnectUI.sendTransaction(transaction);
+      // Gasless: just record the pact signing with wallet ownership proof
       addSignedPact(pactTitle, userAddress);
-      toast.success(`${pactTitle} signed on-chain!`);
+      toast.success(`${pactTitle} signed!`);
     } catch (err: any) {
-      if (err?.message?.includes('Cancelled') || err?.message?.includes('canceled')) {
-        toast.info('Transaction cancelled');
-      } else {
-        toast.error(err?.message || 'Transaction failed.');
-      }
+      toast.error(err?.message || 'Signing failed.');
     } finally {
       setSigning(false);
     }
