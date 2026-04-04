@@ -84,10 +84,10 @@ export default function ShowcaseSteps() {
         transition={{ duration: 0.6 }}
       >
         <button
-          onClick={() => navigate('/agent')}
+          onClick={() => openTonModal()}
           className="mb-6 px-8 py-3 rounded-full bg-primary text-primary-foreground font-semibold text-sm tracking-wide hover:opacity-90 transition-opacity shadow-lg"
         >
-          START
+          LOGIN
         </button>
         <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-2 font-serif">How it works</p>
         <AnimatePresence mode="wait">
