@@ -39,6 +39,12 @@ const COLOR_SCHEMES = [
 
 const Index = () => {
   const [activeScheme, setActiveScheme] = useState(0);
+  const address = useTonAddress();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (address) navigate('/dashboard');
+  }, [address, navigate]);
 
   return (
     <div className="flex flex-col items-center justify-center py-2 bg-background min-h-[calc(100vh-8rem)] relative">

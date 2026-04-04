@@ -131,7 +131,7 @@ const DashboardPage = () => {
 
   const statusIcon = (status: string) => {
     if (status === 'fully_signed' || status === 'executed') return <CheckCircle2 className="w-4 h-4 text-[hsl(var(--success))]" />;
-    if (status.includes('pending') || status.includes('signature')) return <Clock className="w-4 h-4 text-yellow-500" />;
+    if (status.includes('pending') || status.includes('signature')) return <Clock className="w-4 h-4 text-primary" />;
     return <FileSignature className="w-4 h-4 text-muted-foreground" />;
   };
 
