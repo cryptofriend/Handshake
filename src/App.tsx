@@ -36,6 +36,7 @@ const AppLayout = () => {
       <div className={isHome ? "" : "pb-16"}>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/agent" element={<RequireWallet><AgentChatPage /></RequireWallet>} />
           <Route path="/sign" element={<RequireWallet><AgreementsPage /></RequireWallet>} />
           <Route path="/sign/:id" element={<SignPage />} />
