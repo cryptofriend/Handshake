@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAppStore } from '@/store/appStore';
-import { beginCell, toNano } from '@ton/ton';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -70,13 +69,6 @@ const PACT_TEMPLATES = [
   },
 ];
 
-const encodeComment = (text: string): string =>
-  beginCell()
-    .storeUint(0, 32)
-    .storeStringTail(text)
-    .endCell()
-    .toBoc()
-    .toString('base64');
 
 interface ProfileAgreement {
   id: string;
@@ -109,23 +101,11 @@ const AgreementsPage = () => {
     }
     setSigning(true);
     try {
-      const transaction = {
-        validUntil: Math.floor(Date.now() / 1000) + 300,
-        messages: [{
-          address: userAddress,
-          amount: toNano('0.01').toString(),
-          payload: encodeComment(`Handshake Manifesto Signed: ${pactTitle}`),
-        }],
-      };
-      await tonConnectUI.sendTransaction(transaction);
+      // Gasless: just record the pact signing with wallet ownership proof
       addSignedPact(pactTitle, userAddress);
-      toast.success(`${pactTitle} signed on-chain!`);
+      toast.success(`${pactTitle} signed!`);
     } catch (err: any) {
-      if (err?.message?.includes('Cancelled') || err?.message?.includes('canceled')) {
-        toast.info('Transaction cancelled');
-      } else {
-        toast.error(err?.message || 'Transaction failed.');
-      }
+      toast.error(err?.message || 'Signing failed.');
     } finally {
       setSigning(false);
     }
