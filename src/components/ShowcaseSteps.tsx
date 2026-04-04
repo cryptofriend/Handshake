@@ -41,6 +41,15 @@ export default function ShowcaseSteps() {
   const [paused, setPaused] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const navigate = useNavigate();
+  const address = useTonAddress();
+  const { open: openTonModal } = useTonConnectModal();
+
+  // Redirect to dashboard after wallet connects
+  useEffect(() => {
+    if (address) {
+      navigate('/dashboard');
+    }
+  }, [address, navigate]);
 
   const next = useCallback(() => {
     setActive(prev => (prev + 1) % steps.length);
