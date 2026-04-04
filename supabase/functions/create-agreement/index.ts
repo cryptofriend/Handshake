@@ -123,7 +123,7 @@ serve(async (req) => {
       });
 
       const botUsername = Deno.env.get("TELEGRAM_BOT_USERNAME") || "handshakemonsterbot";
-      const miniAppSignUrl = `https://t.me/${botUsername}/app?startapp=${inviteToken}`;
+      const miniAppSignUrl = `https://t.me/${botUsername}/new?startapp=${inviteToken}`;
       const webSignUrl = `/sign/${agreementId}?invite=${inviteToken}`;
 
       participantResults.push({
