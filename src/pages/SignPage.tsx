@@ -441,7 +441,7 @@ const SignPage = () => {
               onClick={() => setConfirmOpen(true)}
             >
               <PenTool className="w-4 h-4" />
-              {signing ? 'Signing...' : 'Sign with TON'}
+              {signing ? 'Signing...' : 'Sign (Gasless)'}
             </Button>
           )}
 
