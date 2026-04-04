@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useTonAddress } from '@tonconnect/ui-react';
 import YinYangSimulation from '@/components/YinYangSimulation';
 import ShowcaseSteps from '@/components/ShowcaseSteps';
 
