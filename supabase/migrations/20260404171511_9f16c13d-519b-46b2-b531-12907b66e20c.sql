@@ -1,0 +1,1 @@
+ALTER TABLE public.agent_api_keys ADD COLUMN telegram_bot_token text;

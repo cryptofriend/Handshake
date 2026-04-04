@@ -22,6 +22,7 @@ export type Database = {
           id: string
           is_active: boolean
           last_used_at: string | null
+          telegram_bot_token: string | null
           wallet_address: string
         }
         Insert: {
@@ -31,6 +32,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           last_used_at?: string | null
+          telegram_bot_token?: string | null
           wallet_address: string
         }
         Update: {
@@ -40,6 +42,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           last_used_at?: string | null
+          telegram_bot_token?: string | null
           wallet_address?: string
         }
         Relationships: []
