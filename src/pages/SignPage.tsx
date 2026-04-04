@@ -238,95 +238,57 @@ const SignPage = () => {
       });
     }
 
-    try {
-      const transaction = {
-        validUntil: Math.floor(Date.now() / 1000) + 300,
-        messages: [{
-          address: userAddress,
-          amount: toNano('0.01').toString(),
-          payload: undefined,
-        }],
-      };
+    const result = await signWithProof({
+      agreementId: id!,
+      partyName: participant?.name || agreement?.parties[0]?.name || 'Signer',
+      participantId: participant?.id,
+    });
 
-      await tonConnectUI.sendTransaction(transaction);
-
-      const txHash = '0x' + Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
-
+    if (result.ok && result.txHash) {
       const newSig: AgreementSignature = {
         party: participant?.name || agreement?.parties[0]?.name || 'Signer',
         walletAddress: userAddress,
         signedAt: new Date().toISOString(),
-        txHash,
-        blockchainStatus: 'pending',
+        txHash: result.txHash,
+        blockchainStatus: 'confirmed',
       };
-
-      // Persist signature
-      if (id) {
-        await supabase.from('agreement_signatures').upsert({
-          agreement_id: id,
-          wallet_address: userAddress,
-          party_name: newSig.party,
-          tx_hash: txHash,
-          blockchain_status: 'pending',
-          signed_at: new Date().toISOString(),
-        }, { onConflict: 'agreement_id,wallet_address' });
-
-        // Log signature_completed
-        logAgreementEvent({
-          agreementId: id,
-          participantId: participant?.id,
-          eventType: 'signature_completed',
-          walletAddress: userAddress,
-          metadata: { tx_hash: txHash },
-        });
-      }
 
       setAgreement((prev) => prev ? ({
         ...prev,
         signatures: [...prev.signatures, newSig],
         status: prev.signatures.length === 0 ? 'signed_by_one' : 'fully_signed',
-        receiptStatus: 'minting',
+        receiptStatus: 'minted',
       }) : prev);
 
-      toast.success('Agreement signed on-chain!');
-      setCelebrationTx(txHash);
+      toast.success('Agreement signed gaslessly!');
+      setCelebrationTx(result.txHash);
       setShowCelebration(true);
 
-      // Simulate confirmation
-      setTimeout(async () => {
-        if (id) {
-          await supabase.from('agreement_signatures')
-            .update({ blockchain_status: 'confirmed' })
-            .eq('agreement_id', id)
-            .eq('wallet_address', userAddress);
-        }
-        setAgreement((prev) => prev ? ({
-          ...prev,
-          signatures: prev.signatures.map((s) =>
-            s.walletAddress === userAddress ? { ...s, blockchainStatus: 'confirmed' as const } : s
-          ),
-          receiptStatus: 'minted',
-        }) : prev);
-        toast.success('Transaction confirmed');
-      }, 5000);
-    } catch (err: any) {
-      if (err?.message?.includes('Cancelled') || err?.message?.includes('canceled')) {
-        toast.info('Transaction cancelled');
-      } else {
-        toast.error(err?.message || 'Transaction failed');
-        if (id) {
-          logAgreementEvent({
-            agreementId: id,
-            participantId: participant?.id,
-            eventType: 'signature_failed',
-            walletAddress: userAddress,
-            metadata: { error: err?.message },
-          });
-        }
+      if (id) {
+        logAgreementEvent({
+          agreementId: id,
+          participantId: participant?.id,
+          eventType: 'signature_completed',
+          walletAddress: userAddress,
+          metadata: { tx_hash: result.txHash, method: 'ton_proof' },
+        });
       }
-    } finally {
-      setSigning(false);
+    } else if (result.error === 'cancelled') {
+      toast.info('Signing cancelled');
+    } else {
+      toast.error(result.error || 'Signing failed');
+      if (id) {
+        logAgreementEvent({
+          agreementId: id,
+          participantId: participant?.id,
+          eventType: 'signature_failed',
+          walletAddress: userAddress,
+          metadata: { error: result.error },
+        });
+      }
     }
+
+    setSigning(false);
   };
 
   const handleCopyHash = () => {
