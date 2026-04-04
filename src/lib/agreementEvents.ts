@@ -52,7 +52,7 @@ const DEFAULT_BOT_USERNAME = 'handshakemonsterbot';
 
 /** Primary signing surface — Telegram mini app deep link */
 export function generateSignLink(inviteToken: string, botUsername: string = DEFAULT_BOT_USERNAME): string {
-  return `https://t.me/${botUsername}/app?startapp=${inviteToken}`;
+  return `https://t.me/${botUsername}/new?startapp=${inviteToken}`;
 }
 
 /** Fallback web sign link */
