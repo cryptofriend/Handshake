@@ -38,6 +38,7 @@ const SignPage = () => {
   const userAddress = useTonAddress();
   const { open: openTonModal } = useTonConnectModal();
   const [tonConnectUI] = useTonConnectUI();
+  const { signWithProof } = useTonProofSign();
 
   const [agreement, setAgreement] = useState<Agreement | null>(null);
   const [participant, setParticipant] = useState<ParticipantContext | null>(null);
