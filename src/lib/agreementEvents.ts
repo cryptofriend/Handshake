@@ -68,5 +68,5 @@ export function generateDeepLink(agreementId: string, inviteToken: string): stri
 
 /** @deprecated Use generateSignLink instead */
 export function generateTelegramDeepLink(botUsername: string, inviteToken: string): string {
-  return `https://t.me/${botUsername}/app?startapp=${inviteToken}`;
+  return `https://t.me/${botUsername}/new?startapp=${inviteToken}`;
 }

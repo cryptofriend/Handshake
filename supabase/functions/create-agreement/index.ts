@@ -139,7 +139,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         agreementId,
-        miniAppSignUrl: `https://t.me/${Deno.env.get("TELEGRAM_BOT_USERNAME") || "handshakemonsterbot"}/app?startapp=agreement_${agreementId}`,
+        miniAppSignUrl: `https://t.me/${Deno.env.get("TELEGRAM_BOT_USERNAME") || "handshakemonsterbot"}/new?startapp=agreement_${agreementId}`,
         webSignUrl: `/sign/${agreementId}`,
         createdAt: data.created_at,
         participants: participantResults,
