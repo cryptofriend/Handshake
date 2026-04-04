@@ -12,7 +12,7 @@ export const AppHeader = () => {
 
   return (
     <div className="flex items-center justify-between px-5 pt-4 pb-2 w-full max-w-md mx-auto">
-      <h1 className="logo-text text-xl text-foreground">Handshake</h1>
+      <h1 className="logo-text text-xl text-foreground">Handshake Monster</h1>
       <div className="flex items-center rounded-full border border-border bg-muted/50 p-0.5">
         <button
           onClick={() => handleSwitch('human')}
