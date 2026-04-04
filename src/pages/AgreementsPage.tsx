@@ -69,13 +69,6 @@ const PACT_TEMPLATES = [
   },
 ];
 
-const encodeComment = (text: string): string =>
-  beginCell()
-    .storeUint(0, 32)
-    .storeStringTail(text)
-    .endCell()
-    .toBoc()
-    .toString('base64');
 
 interface ProfileAgreement {
   id: string;
