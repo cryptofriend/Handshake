@@ -506,7 +506,7 @@ const SignPage = () => {
             </div>
 
             <p className="text-xs text-muted-foreground text-center">
-              A 0.01 TON transaction will be sent as your cryptographic proof of consent.
+              Your wallet will sign a cryptographic proof — no gas fees required.
             </p>
 
             <div className="flex gap-2 pt-2">
