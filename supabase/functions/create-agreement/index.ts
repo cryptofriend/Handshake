@@ -123,7 +123,7 @@ serve(async (req) => {
       });
 
       const botUsername = Deno.env.get("TELEGRAM_BOT_USERNAME") || "handshakemonsterbot";
-      const miniAppSignUrl = `https://t.me/${botUsername}/app?startapp=${inviteToken}`;
+      const miniAppSignUrl = `https://t.me/${botUsername}/new?startapp=${inviteToken}`;
       const webSignUrl = `/sign/${agreementId}?invite=${inviteToken}`;
 
       participantResults.push({
@@ -139,7 +139,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         agreementId,
-        miniAppSignUrl: `https://t.me/${Deno.env.get("TELEGRAM_BOT_USERNAME") || "handshakemonsterbot"}/app?startapp=agreement_${agreementId}`,
+        miniAppSignUrl: `https://t.me/${Deno.env.get("TELEGRAM_BOT_USERNAME") || "handshakemonsterbot"}/new?startapp=agreement_${agreementId}`,
         webSignUrl: `/sign/${agreementId}`,
         createdAt: data.created_at,
         participants: participantResults,
