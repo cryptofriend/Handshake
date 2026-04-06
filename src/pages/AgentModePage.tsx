@@ -7,6 +7,7 @@ import { AgreementBuilder } from '@/components/agent-mode/AgreementBuilder';
 import { LivePreview } from '@/components/agent-mode/LivePreview';
 import { AgentAgreementPayload, AgentAgreementSigned } from '@/types/agentMode';
 import { supabase } from '@/integrations/supabase/client';
+import { useTonProofSign } from '@/hooks/useTonProofSign';
 import { toast } from 'sonner';
 import { Loader2, PenTool, Rocket } from 'lucide-react';
 
@@ -29,6 +30,7 @@ const hashPayload = async (payload: AgentAgreementPayload): Promise<string> => {
 const AgentModePage = () => {
   const address = useTonAddress();
   const agentId = address ? `agent://${address.slice(0, 8)}` : 'agent://—';
+  const { signWithProof } = useTonProofSign();
 
   const [payload, setPayload] = useState<AgentAgreementPayload>(() => createEmptyPayload(agentId));
   const [signedData, setSignedData] = useState<AgentAgreementSigned | null>(null);
@@ -49,11 +51,11 @@ const AgentModePage = () => {
 
     setSigning(true);
     try {
-      const agreementId = await hashPayload(payload);
-      const txHash = `0x${agreementId.slice(0, 16)}`;
+      // 1. Create agreement draft first
+      const agreementId = (await hashPayload(payload)).slice(0, 36);
 
       await supabase.from('agreement_drafts').insert({
-        id: agreementId.slice(0, 36),
+        id: agreementId,
         title: payload.title,
         summary: `Agent agreement: ${payload.intent}`,
         session_id: agentId,
@@ -64,36 +66,45 @@ const AgentModePage = () => {
         full_text: JSON.stringify(payload),
       });
 
-      await supabase.from('agreement_signatures').insert({
-        agreement_id: agreementId.slice(0, 36),
-        wallet_address: address,
-        party_name: agentId,
-        tx_hash: txHash,
-        blockchain_status: 'confirmed',
+      // 2. Sign on-chain with ton_proof (gasless)
+      const result = await signWithProof({
+        agreementId,
+        partyName: agentId,
       });
+
+      if (!result.ok) {
+        // Clean up draft if signing was cancelled/failed
+        if (result.error === 'cancelled') {
+          toast.info('Signing cancelled');
+        } else {
+          toast.error(result.error || 'Signing failed');
+        }
+        await supabase.from('agreement_drafts').delete().eq('id', agreementId);
+        return;
+      }
 
       const signed: AgentAgreementSigned = {
         ...payload,
-        agreement_id: agreementId.slice(0, 36),
+        agreement_id: agreementId,
         signatures: [{
           agent_id: agentId,
           wallet_address: address,
           signed_at: new Date().toISOString(),
-          tx_hash: txHash,
+          tx_hash: result.txHash || '',
         }],
         status: 'pending_counterparty',
       };
 
       setSignedData(signed);
       setMobileTab('preview');
-      toast.success('Agreement signed as agent');
+      toast.success('Agreement signed on-chain via ton_proof ✅');
     } catch (err) {
       toast.error('Signing failed');
       console.error(err);
     } finally {
       setSigning(false);
     }
-  }, [address, payload, agentId]);
+  }, [address, payload, agentId, signWithProof]);
 
   const handleExecute = useCallback(async () => {
     if (!signedData) return;
