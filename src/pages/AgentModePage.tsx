@@ -229,7 +229,6 @@ const AgentModePage = () => {
         </>
       )}
     </div>
-    </div>
   );
 };
 
