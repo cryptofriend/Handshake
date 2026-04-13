@@ -38,6 +38,7 @@ const AgentModePage = () => {
   const [signing, setSigning] = useState(false);
   const [executing, setExecuting] = useState(false);
   const [mobileTab, setMobileTab] = useState<'builder' | 'preview'>('builder');
+  const [mainView, setMainView] = useState<'prompt' | 'builder'>('prompt');
 
   // Keep participants[0] in sync with agent id
   useEffect(() => {
