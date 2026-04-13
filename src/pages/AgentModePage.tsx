@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { AgentTopBar } from '@/components/agent-mode/AgentTopBar';
 import { AgreementBuilder } from '@/components/agent-mode/AgreementBuilder';
 import { LivePreview } from '@/components/agent-mode/LivePreview';
+import { AgentPromptSection } from '@/components/agent-mode/AgentPromptSection';
 import { AgentAgreementPayload, AgentAgreementSigned } from '@/types/agentMode';
 import { supabase } from '@/integrations/supabase/client';
 import { useTonProofSign } from '@/hooks/useTonProofSign';
