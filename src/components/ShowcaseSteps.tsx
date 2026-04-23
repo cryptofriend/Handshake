@@ -41,17 +41,18 @@ const INTERVAL = 6000;
 export default function ShowcaseSteps() {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const navigate = useNavigate();
   const address = useTonAddress();
-  const { open: openTonModal } = useTonConnectModal();
+  const authIdentity = useAppStore((s) => s.authIdentity);
 
-  // Redirect to dashboard after wallet connects
+  // Redirect to dashboard once any auth method is established
   useEffect(() => {
-    if (address) {
+    if (address || authIdentity) {
       navigate('/dashboard');
     }
-  }, [address, navigate]);
+  }, [address, authIdentity, navigate]);
 
   const next = useCallback(() => {
     setActive(prev => (prev + 1) % steps.length);
