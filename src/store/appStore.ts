@@ -3,6 +3,15 @@ import { Agreement, User } from '@/types/agreement';
 import { ChatMessage, ChatConversation } from '@/types/chat';
 
 type AppMode = 'human' | 'agent';
+export type AuthMethod = 'ton' | 'solana' | 'world';
+
+export interface AuthIdentity {
+  method: AuthMethod;
+  address: string;        // wallet address or world id nullifier
+  displayName?: string;
+  signedAt: string;
+  proof?: string;         // signature / proof payload
+}
 
 interface AppState {
   user: User | null;
@@ -11,6 +20,8 @@ interface AppState {
   signedPacts: Set<string>;
   mode: AppMode;
   chatConversation: ChatConversation | null;
+  authIdentity: AuthIdentity | null;
+  setAuthIdentity: (identity: AuthIdentity | null) => void;
   setUser: (user: User | null) => void;
   setMode: (mode: AppMode) => void;
   setCurrentAgreement: (agreement: Agreement | null) => void;
@@ -30,6 +41,19 @@ export const useAppStore = create<AppState>((set, get) => ({
   signedPacts: new Set<string>(),
   mode: 'human',
   chatConversation: null,
+  authIdentity: (() => {
+    try {
+      const raw = localStorage.getItem('handshake.authIdentity');
+      return raw ? JSON.parse(raw) : null;
+    } catch { return null; }
+  })(),
+  setAuthIdentity: (identity) => {
+    try {
+      if (identity) localStorage.setItem('handshake.authIdentity', JSON.stringify(identity));
+      else localStorage.removeItem('handshake.authIdentity');
+    } catch {}
+    set({ authIdentity: identity });
+  },
   setUser: (user) => set({ user }),
   setMode: (mode) => set({ mode }),
   setCurrentAgreement: (agreement) => set({ currentAgreement: agreement }),
