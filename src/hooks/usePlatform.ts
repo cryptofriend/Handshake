@@ -4,16 +4,6 @@ export type Platform = 'telegram' | 'world' | 'web';
 
 declare global {
   interface Window {
-    Telegram?: {
-      WebApp?: {
-        initData?: string;
-        initDataUnsafe?: any;
-        platform?: string;
-        version?: string;
-        ready?: () => void;
-        expand?: () => void;
-      };
-    };
     WorldApp?: any;
     MiniKit?: any;
   }
