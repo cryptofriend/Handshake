@@ -26,7 +26,9 @@ function detect(): PlatformInfo {
   const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
 
   // Telegram Mini App detection — Telegram injects window.Telegram.WebApp with initData
-  const tg = typeof window !== 'undefined' ? window.Telegram?.WebApp : undefined;
+  const tg = (typeof window !== 'undefined' ? (window.Telegram?.WebApp as any) : undefined) as
+    | { initData?: string; platform?: string; version?: string }
+    | undefined;
   const isTelegram = !!tg && (!!tg.initData || !!tg.platform);
 
   // World App detection — World App injects window.WorldApp / MiniKit, and UA contains "WorldApp"
