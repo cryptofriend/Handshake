@@ -12,7 +12,6 @@ import SignPage from "./pages/SignPage";
 import AgreementsPage from "./pages/AgreementsPage";
 import NotFound from "./pages/NotFound";
 import AdminPage from "./pages/AdminPage";
-import DashboardPage from "./pages/DashboardPage";
 import AgentModePage from "./pages/AgentModePage";
 import AgentDocsPage from "./pages/AgentDocsPage";
 import { BottomNav } from "./components/handshake/BottomNav";
@@ -36,7 +35,7 @@ const AppLayout = () => {
       <div className={isHome ? "" : "pb-16"}>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/dashboard" element={<Navigate to="/" replace />} />
           <Route path="/agent" element={<RequireWallet><AgentChatPage /></RequireWallet>} />
           <Route path="/sign" element={<RequireWallet><AgreementsPage /></RequireWallet>} />
           <Route path="/sign/:id" element={<SignPage />} />
