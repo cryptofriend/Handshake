@@ -137,7 +137,7 @@ const AgentChatPage = () => {
         });
       },
     });
-  }, [input, isThinking, messages, addChatMessage]);
+  }, [input, isThinking, messages, addChatMessage, userKey]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
