@@ -1,9 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, FileCheck, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useTonAddress } from '@tonconnect/ui-react';
-import { useAppStore } from '@/store/appStore';
 import { LoginDialog } from '@/components/handshake/LoginDialog';
 
 const steps = [
@@ -43,17 +40,6 @@ export default function ShowcaseSteps() {
   const [paused, setPaused] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const navigate = useNavigate();
-  const address = useTonAddress();
-  const authIdentity = useAppStore((s) => s.authIdentity);
-
-  // Redirect to dashboard once any auth method is established
-  useEffect(() => {
-    if (address || authIdentity) {
-      navigate('/dashboard');
-    }
-  }, [address, authIdentity, navigate]);
-
   const next = useCallback(() => {
     setActive(prev => (prev + 1) % steps.length);
   }, []);
