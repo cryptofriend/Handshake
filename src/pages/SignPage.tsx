@@ -121,21 +121,21 @@ const SignPage = () => {
       agreementId: id,
       participantId: participant?.id,
       eventType: 'agreement_viewed',
-      walletAddress: userAddress || null,
+      walletAddress: signerAddress || null,
     });
-  }, [agreement, id, participant, userAddress]);
+  }, [agreement, id, participant, signerAddress]);
 
   // Log wallet_connected when wallet becomes available
   useEffect(() => {
-    if (!userAddress || !id || !agreement || walletLinked.current) return;
+    if (!signerAddress || !id || !agreement || walletLinked.current) return;
     walletLinked.current = true;
     logAgreementEvent({
       agreementId: id,
       participantId: participant?.id,
       eventType: 'wallet_connected',
-      walletAddress: userAddress,
+      walletAddress: signerAddress,
     });
-  }, [userAddress, id, agreement, participant]);
+  }, [signerAddress, id, agreement, participant]);
 
   // Fetch and sync signatures
   useEffect(() => {
@@ -228,7 +228,7 @@ const SignPage = () => {
   };
 
   const userHasSigned = agreement?.signatures.some(
-    (s) => s.walletAddress === userAddress
+    (s) => s.walletAddress === signerAddress
   ) ?? false;
 
   const handleSignConfirm = async () => {
@@ -241,7 +241,7 @@ const SignPage = () => {
         agreementId: id,
         participantId: participant?.id,
         eventType: 'signature_started',
-        walletAddress: userAddress,
+        walletAddress: signerAddress,
       });
     }
 
@@ -254,7 +254,7 @@ const SignPage = () => {
     if (result.ok && result.txHash) {
       const newSig: AgreementSignature = {
         party: participant?.name || agreement?.parties[0]?.name || 'Signer',
-        walletAddress: userAddress,
+        walletAddress: signerAddress,
         signedAt: new Date().toISOString(),
         txHash: result.txHash,
         blockchainStatus: 'confirmed',
@@ -276,7 +276,7 @@ const SignPage = () => {
           agreementId: id,
           participantId: participant?.id,
           eventType: 'signature_completed',
-          walletAddress: userAddress,
+          walletAddress: signerAddress,
           metadata: { tx_hash: result.txHash, method: 'ton_proof' },
         });
       }
@@ -289,7 +289,7 @@ const SignPage = () => {
           agreementId: id,
           participantId: participant?.id,
           eventType: 'signature_failed',
-          walletAddress: userAddress,
+          walletAddress: signerAddress,
           metadata: { error: result.error },
         });
       }
@@ -416,16 +416,16 @@ const SignPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          {userAddress && (
+          {signerAddress && (
             <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-muted/50">
               <Wallet className="w-3.5 h-3.5 text-primary" />
               <span className="text-xs font-mono text-muted-foreground">
-                {userAddress.slice(0, 8)}...{userAddress.slice(-4)}
+                {signerAddress.slice(0, 8)}...{signerAddress.slice(-4)}
               </span>
             </div>
           )}
 
-          {!userAddress ? (
+          {!signerAddress ? (
             <Button
               className="w-full rounded-2xl h-14 text-base font-semibold gap-2"
               onClick={() => openTonModal()}
