@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { useTonAddress, useTonConnectModal, useTonConnectUI } from '@tonconnect/ui-react';
+import { useTonAddress } from '@tonconnect/ui-react';
 import { toast } from 'sonner';
-import { useTonProofSign } from '@/hooks/useTonProofSign';
+import { useSignAgreement } from '@/hooks/useSignAgreement';
+import { useAppStore } from '@/store/appStore';
+import { LoginDialog } from '@/components/handshake/LoginDialog';
 import { ArrowLeft, Wallet, PenTool, Copy, AlertTriangle, Pencil, Check } from 'lucide-react';
 import { SignCelebration } from '@/components/handshake/SignCelebration';
 import { Button } from '@/components/ui/button';
@@ -35,10 +37,14 @@ const SignPage = () => {
   const [searchParams] = useSearchParams();
   const inviteToken = searchParams.get('invite');
   const navigate = useNavigate();
-  const userAddress = useTonAddress();
-  const { open: openTonModal } = useTonConnectModal();
-  const [tonConnectUI] = useTonConnectUI();
-  const { signWithProof } = useTonProofSign();
+  const tonAddress = useTonAddress();
+  const authIdentity = useAppStore((s) => s.authIdentity);
+  const { sign } = useSignAgreement();
+
+  // Effective signer address — prefer explicit auth identity, fall back to TON wallet
+  const signerAddress = authIdentity?.address || tonAddress || '';
+  const signerMethod = authIdentity?.method || (tonAddress ? 'ton' : null);
+  const isAuthed = !!signerMethod;
 
   const [agreement, setAgreement] = useState<Agreement | null>(null);
   const [participant, setParticipant] = useState<ParticipantContext | null>(null);
@@ -47,6 +53,7 @@ const SignPage = () => {
   const [invalidInvite, setInvalidInvite] = useState(false);
   const [signing, setSigning] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationTx, setCelebrationTx] = useState('');
   const viewLogged = useRef(false);
@@ -114,21 +121,21 @@ const SignPage = () => {
       agreementId: id,
       participantId: participant?.id,
       eventType: 'agreement_viewed',
-      walletAddress: userAddress || null,
+      walletAddress: signerAddress || null,
     });
-  }, [agreement, id, participant, userAddress]);
+  }, [agreement, id, participant, signerAddress]);
 
   // Log wallet_connected when wallet becomes available
   useEffect(() => {
-    if (!userAddress || !id || !agreement || walletLinked.current) return;
+    if (!signerAddress || !id || !agreement || walletLinked.current) return;
     walletLinked.current = true;
     logAgreementEvent({
       agreementId: id,
       participantId: participant?.id,
       eventType: 'wallet_connected',
-      walletAddress: userAddress,
+      walletAddress: signerAddress,
     });
-  }, [userAddress, id, agreement, participant]);
+  }, [signerAddress, id, agreement, participant]);
 
   // Fetch and sync signatures
   useEffect(() => {
@@ -221,7 +228,7 @@ const SignPage = () => {
   };
 
   const userHasSigned = agreement?.signatures.some(
-    (s) => s.walletAddress === userAddress
+    (s) => s.walletAddress === signerAddress
   ) ?? false;
 
   const handleSignConfirm = async () => {
@@ -234,11 +241,11 @@ const SignPage = () => {
         agreementId: id,
         participantId: participant?.id,
         eventType: 'signature_started',
-        walletAddress: userAddress,
+        walletAddress: signerAddress,
       });
     }
 
-    const result = await signWithProof({
+    const result = await sign({
       agreementId: id!,
       partyName: participant?.name || agreement?.parties[0]?.name || 'Signer',
       participantId: participant?.id,
@@ -247,7 +254,7 @@ const SignPage = () => {
     if (result.ok && result.txHash) {
       const newSig: AgreementSignature = {
         party: participant?.name || agreement?.parties[0]?.name || 'Signer',
-        walletAddress: userAddress,
+        walletAddress: signerAddress,
         signedAt: new Date().toISOString(),
         txHash: result.txHash,
         blockchainStatus: 'confirmed',
@@ -260,7 +267,7 @@ const SignPage = () => {
         receiptStatus: 'minted',
       }) : prev);
 
-      toast.success('Agreement signed gaslessly!');
+      toast.success(`Agreement signed via ${result.method?.toUpperCase()}`);
       setCelebrationTx(result.txHash);
       setShowCelebration(true);
 
@@ -269,8 +276,8 @@ const SignPage = () => {
           agreementId: id,
           participantId: participant?.id,
           eventType: 'signature_completed',
-          walletAddress: userAddress,
-          metadata: { tx_hash: result.txHash, method: 'ton_proof' },
+          walletAddress: signerAddress,
+          metadata: { tx_hash: result.txHash, method: result.method },
         });
       }
     } else if (result.error === 'cancelled') {
@@ -282,7 +289,7 @@ const SignPage = () => {
           agreementId: id,
           participantId: participant?.id,
           eventType: 'signature_failed',
-          walletAddress: userAddress,
+          walletAddress: signerAddress,
           metadata: { error: result.error },
         });
       }
@@ -409,22 +416,25 @@ const SignPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          {userAddress && (
+          {isAuthed && signerAddress && (
             <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-muted/50">
               <Wallet className="w-3.5 h-3.5 text-primary" />
-              <span className="text-xs font-mono text-muted-foreground">
-                {userAddress.slice(0, 8)}...{userAddress.slice(-4)}
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70 mr-1">
+                {signerMethod}
+              </span>
+              <span className="text-xs font-mono text-muted-foreground truncate">
+                {signerAddress.slice(0, 8)}...{signerAddress.slice(-4)}
               </span>
             </div>
           )}
 
-          {!userAddress ? (
+          {!isAuthed ? (
             <Button
               className="w-full rounded-2xl h-14 text-base font-semibold gap-2"
-              onClick={() => openTonModal()}
+              onClick={() => setLoginOpen(true)}
             >
               <Wallet className="w-4 h-4" />
-              Connect TON Wallet
+              Sign in to Sign
             </Button>
           ) : userHasSigned ? (
             <Button
@@ -441,7 +451,7 @@ const SignPage = () => {
               onClick={() => setConfirmOpen(true)}
             >
               <PenTool className="w-4 h-4" />
-              {signing ? 'Signing...' : 'Sign (Gasless)'}
+              {signing ? 'Signing...' : signerMethod === 'ton' ? 'Sign (Gasless)' : `Sign with ${signerMethod?.toUpperCase()}`}
             </Button>
           )}
 
@@ -535,6 +545,7 @@ const SignPage = () => {
         txHash={celebrationTx}
         onClose={() => setShowCelebration(false)}
       />
+      <LoginDialog open={loginOpen} onOpenChange={setLoginOpen} />
       </div>
     </div>
   );

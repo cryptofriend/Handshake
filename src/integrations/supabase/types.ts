@@ -254,6 +254,7 @@ export type Database = {
           created_at: string
           id: string
           party_name: string | null
+          signature_method: string
           signed_at: string | null
           tx_hash: string | null
           wallet_address: string
@@ -264,6 +265,7 @@ export type Database = {
           created_at?: string
           id?: string
           party_name?: string | null
+          signature_method?: string
           signed_at?: string | null
           tx_hash?: string | null
           wallet_address: string
@@ -274,6 +276,7 @@ export type Database = {
           created_at?: string
           id?: string
           party_name?: string | null
+          signature_method?: string
           signed_at?: string | null
           tx_hash?: string | null
           wallet_address?: string

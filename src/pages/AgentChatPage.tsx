@@ -16,11 +16,12 @@ const WELCOME_MSG: ChatMessage = {
   timestamp: new Date().toISOString(),
 };
 
-const getSessionId = (): string => {
-  let sid = sessionStorage.getItem('handshake_session_id');
+const getSessionId = (userKey: string): string => {
+  const storageKey = `handshake_session_id::${userKey}`;
+  let sid = sessionStorage.getItem(storageKey);
   if (!sid) {
     sid = crypto.randomUUID();
-    sessionStorage.setItem('handshake_session_id', sid);
+    sessionStorage.setItem(storageKey, sid);
   }
   return sid;
 };
@@ -28,6 +29,12 @@ const getSessionId = (): string => {
 const AgentChatPage = () => {
   const chatConversation = useAppStore((s) => s.chatConversation);
   const addChatMessage = useAppStore((s) => s.addChatMessage);
+  const authIdentity = useAppStore((s) => s.authIdentity);
+
+  // Per-user namespace: e.g. "solana:7xK..." / "ton:EQ..." / "world:0xnull..."
+  const userKey = authIdentity
+    ? `${authIdentity.method}:${authIdentity.address}`
+    : 'anon';
 
   const messages: ChatMessage[] = chatConversation?.messages ?? [WELCOME_MSG];
   const [input, setInput] = useState('');
@@ -35,7 +42,7 @@ const AgentChatPage = () => {
   const [streamingText, setStreamingText] = useState('');
   const [streamingId, setStreamingId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const sessionId = useRef(getSessionId());
+  const sessionId = useRef(getSessionId(userKey));
 
   useEffect(() => {
     if (!chatConversation) {
@@ -71,7 +78,7 @@ const AgentChatPage = () => {
 
     streamChat({
       sessionId: sessionId.current,
-      userId: null,
+      userId: userKey,
       message: messageText,
       history,
       onToken: (token) => {
@@ -130,7 +137,7 @@ const AgentChatPage = () => {
         });
       },
     });
-  }, [input, isThinking, messages, addChatMessage]);
+  }, [input, isThinking, messages, addChatMessage, userKey]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
