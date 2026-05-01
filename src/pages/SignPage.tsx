@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { useTonAddress, useTonConnectModal, useTonConnectUI } from '@tonconnect/ui-react';
+import { useTonAddress } from '@tonconnect/ui-react';
 import { toast } from 'sonner';
-import { useTonProofSign } from '@/hooks/useTonProofSign';
+import { useSignAgreement } from '@/hooks/useSignAgreement';
+import { useAppStore } from '@/store/appStore';
+import { LoginDialog } from '@/components/handshake/LoginDialog';
 import { ArrowLeft, Wallet, PenTool, Copy, AlertTriangle, Pencil, Check } from 'lucide-react';
 import { SignCelebration } from '@/components/handshake/SignCelebration';
 import { Button } from '@/components/ui/button';
@@ -35,10 +37,14 @@ const SignPage = () => {
   const [searchParams] = useSearchParams();
   const inviteToken = searchParams.get('invite');
   const navigate = useNavigate();
-  const userAddress = useTonAddress();
-  const { open: openTonModal } = useTonConnectModal();
-  const [tonConnectUI] = useTonConnectUI();
-  const { signWithProof } = useTonProofSign();
+  const tonAddress = useTonAddress();
+  const authIdentity = useAppStore((s) => s.authIdentity);
+  const { sign } = useSignAgreement();
+
+  // Effective signer address — prefer explicit auth identity, fall back to TON wallet
+  const signerAddress = authIdentity?.address || tonAddress || '';
+  const signerMethod = authIdentity?.method || (tonAddress ? 'ton' : null);
+  const isAuthed = !!signerMethod;
 
   const [agreement, setAgreement] = useState<Agreement | null>(null);
   const [participant, setParticipant] = useState<ParticipantContext | null>(null);
@@ -47,6 +53,7 @@ const SignPage = () => {
   const [invalidInvite, setInvalidInvite] = useState(false);
   const [signing, setSigning] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationTx, setCelebrationTx] = useState('');
   const viewLogged = useRef(false);
