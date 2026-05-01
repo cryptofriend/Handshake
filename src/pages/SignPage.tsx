@@ -545,6 +545,7 @@ const SignPage = () => {
         txHash={celebrationTx}
         onClose={() => setShowCelebration(false)}
       />
+      <LoginDialog open={loginOpen} onOpenChange={setLoginOpen} />
       </div>
     </div>
   );
