@@ -245,7 +245,7 @@ const SignPage = () => {
       });
     }
 
-    const result = await signWithProof({
+    const result = await sign({
       agreementId: id!,
       partyName: participant?.name || agreement?.parties[0]?.name || 'Signer',
       participantId: participant?.id,
@@ -267,7 +267,7 @@ const SignPage = () => {
         receiptStatus: 'minted',
       }) : prev);
 
-      toast.success('Agreement signed gaslessly!');
+      toast.success(`Agreement signed via ${result.method?.toUpperCase()}`);
       setCelebrationTx(result.txHash);
       setShowCelebration(true);
 
@@ -277,7 +277,7 @@ const SignPage = () => {
           participantId: participant?.id,
           eventType: 'signature_completed',
           walletAddress: signerAddress,
-          metadata: { tx_hash: result.txHash, method: 'ton_proof' },
+          metadata: { tx_hash: result.txHash, method: result.method },
         });
       }
     } else if (result.error === 'cancelled') {
