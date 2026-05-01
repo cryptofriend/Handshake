@@ -1,65 +1,93 @@
-# 🤝 HANDSHAKE
+# 🤝 Handshake Monster
 
-**A minimal trust layer for autonomous agents**
+**The trust layer for humans and AI agents.**
 
-HANDSHAKE is a protocol + skill that allows two unknown agents to create, validate, and sign verifiable agreements using crypto wallets.
+Handshake Monster is a mobile-first, Telegram-native app that turns a plain-language conversation into a structured, on-chain agreement — signed by humans (via TON wallet) or by AI agents (via API).
 
-No PDFs. No legal fluff. Just deterministic, machine-readable pacts.
+🔗 Live: [handshake.monster](https://handshake.monster)
+🤖 Telegram bot: [@handshakemonsterbot](https://t.me/handshakemonsterbot)
 
 ---
 
-## ⚡ What problem does this solve?
+## ✨ What it does
 
-Agents can talk to each other.  
-They can even collaborate.
-
-But they **can’t trust each other.**
-
-HANDSHAKE gives agents a way to:
-
-- prove identity (via wallet)
-- agree on clear structured terms
-- sign the same agreement
-- verify it later
+- **Chat → Agreement.** Describe a deal in natural language. The AI drafts a structured pact with parties, terms, allocations, and full text.
+- **Sign onchain.** Counterparties sign with their TON wallet. Signatures are verifiable on TONScan.
+- **Share in DM.** Send a deep link via Telegram. The other party signs in seconds — no account required to sign.
+- **Agent API.** AI agents can create, sign, and verify agreements headlessly via REST endpoints.
+- **Manifesto pacts.** Pre-built templates (e.g. non-aggression, collaboration) signable with gasless `ton_proof`.
 
 ---
 
 ## 🧠 How it works
 
-1. Agent A creates a pact (JSON)
-2. Pact is canonicalized → hashed
-3. Agent A signs the hash
-4. Agent B validates + signs the same hash
-5. Pact becomes **active and verifiable**
+1. User chats with the Handshake AI agent (in-app or via Telegram).
+2. AI generates a canonical agreement JSON + human-readable text.
+3. Each party signs on-chain with their TON wallet (or via API for agents).
+4. Status updates stream in real-time. Once fully signed, the pact is verifiable and immutable.
 
-No ambiguity. No interpretation. Only structure.
-
----
-
-## 🧩 What’s inside this repo
-/examples → sample valid & invalid pacts
-/references → schema, canonicalization, signing rules
-/scripts → reference implementation (Python)
-SKILL.md → HANDSHAKE agent skill definition
-README.md → you are here
-
+Default allocation rule: **85% primary party / 15% Handshake Agent Reserve.**
 
 ---
 
-## 🛠 Example pact
+## 🛠 Tech stack
+
+- **Frontend:** React 18 + Vite + TypeScript + Tailwind
+- **Backend:** Lovable Cloud (Supabase) — Postgres, Edge Functions, Realtime, Storage
+- **Wallets:** TON Connect (primary), Solana, World ID
+- **AI:** Lovable AI Gateway (Gemini / GPT-5 family)
+- **Hosting:** Lovable + custom domain
+
+---
+
+## 🤖 For AI agents
+
+Handshake exposes a headless API so agents can participate in agreements without a browser:
+
+- `POST /create-agreement` — draft a signable pact
+- `POST /agent-sign` — sign with `x-agent-key` (no wallet popup)
+- `GET /check-agreement-status` — poll signatures and status
+
+Full docs at [handshake.monster/agent-docs](https://handshake.monster/agent-docs). Register your agent with [@handshakemonsterbot](https://t.me/handshakemonsterbot) to get an API key.
+
+---
+
+## 🧩 Example agreement
 
 ```json
 {
   "version": "1.0",
-  "pact_type": "collaborate_task",
-  "agent_a": { "wallet": "0xA...", "name": "Agent A" },
-  "agent_b": { "wallet": "0xB...", "name": "Agent B" },
-  "terms": {
-    "goal": "Analyze 100 leads",
-    "agent_a_role": "Collect leads",
-    "agent_b_role": "Enrich and format report",
-    "non_harm": true,
-    "expires_at": "2026-03-31T12:00:00Z"
-  },
-  "created_at": "2026-03-24T00:00:00Z"
+  "title": "Data Processing Pact",
+  "parties": [
+    { "name": "ProcessorBot", "role": "Agent", "wallet": "EQD..." },
+    { "name": "Alice", "role": "Client", "wallet": "EQA..." }
+  ],
+  "terms": [
+    "Process up to 1000 records/day",
+    "Payment: 0.5 TON/month",
+    "Either party may terminate with 7 days notice"
+  ],
+  "allocations": [
+    { "party": "ProcessorBot", "percentage": 85 },
+    { "party": "Handshake Agent Reserve", "percentage": 15 }
+  ],
+  "created_at": "2026-05-01T00:00:00Z"
 }
+```
+
+---
+
+## 🚀 Local development
+
+```bash
+bun install
+bun run dev
+```
+
+The project is built and managed in [Lovable](https://lovable.dev). Changes pushed here sync back to the Lovable editor automatically.
+
+---
+
+## 📜 License
+
+MIT
