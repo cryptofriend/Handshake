@@ -43,7 +43,7 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (address) navigate('/agent');
+    if (address) navigate('/dashboard');
   }, [address, navigate]);
 
   return (

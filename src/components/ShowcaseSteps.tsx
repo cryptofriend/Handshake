@@ -47,10 +47,10 @@ export default function ShowcaseSteps() {
   const address = useTonAddress();
   const authIdentity = useAppStore((s) => s.authIdentity);
 
-  // Redirect to agent chat once any auth method is established
+  // Redirect to dashboard once any auth method is established
   useEffect(() => {
     if (address || authIdentity) {
-      navigate('/agent');
+      navigate('/dashboard');
     }
   }, [address, authIdentity, navigate]);
 
