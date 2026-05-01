@@ -1,9 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, FileCheck, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useTonAddress } from '@tonconnect/ui-react';
-import { useAppStore } from '@/store/appStore';
 import { LoginDialog } from '@/components/handshake/LoginDialog';
 
 const steps = [
