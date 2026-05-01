@@ -416,22 +416,25 @@ const SignPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          {signerAddress && (
+          {isAuthed && signerAddress && (
             <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-muted/50">
               <Wallet className="w-3.5 h-3.5 text-primary" />
-              <span className="text-xs font-mono text-muted-foreground">
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70 mr-1">
+                {signerMethod}
+              </span>
+              <span className="text-xs font-mono text-muted-foreground truncate">
                 {signerAddress.slice(0, 8)}...{signerAddress.slice(-4)}
               </span>
             </div>
           )}
 
-          {!signerAddress ? (
+          {!isAuthed ? (
             <Button
               className="w-full rounded-2xl h-14 text-base font-semibold gap-2"
-              onClick={() => openTonModal()}
+              onClick={() => setLoginOpen(true)}
             >
               <Wallet className="w-4 h-4" />
-              Connect TON Wallet
+              Sign in to Sign
             </Button>
           ) : userHasSigned ? (
             <Button
@@ -448,7 +451,7 @@ const SignPage = () => {
               onClick={() => setConfirmOpen(true)}
             >
               <PenTool className="w-4 h-4" />
-              {signing ? 'Signing...' : 'Sign (Gasless)'}
+              {signing ? 'Signing...' : signerMethod === 'ton' ? 'Sign (Gasless)' : `Sign with ${signerMethod?.toUpperCase()}`}
             </Button>
           )}
 
