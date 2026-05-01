@@ -43,17 +43,6 @@ export default function ShowcaseSteps() {
   const [paused, setPaused] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const navigate = useNavigate();
-  const address = useTonAddress();
-  const authIdentity = useAppStore((s) => s.authIdentity);
-
-  // Redirect to dashboard once any auth method is established
-  useEffect(() => {
-    if (address || authIdentity) {
-      navigate('/dashboard');
-    }
-  }, [address, authIdentity, navigate]);
-
   const next = useCallback(() => {
     setActive(prev => (prev + 1) % steps.length);
   }, []);
