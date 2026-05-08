@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import YinYangSimulation from '@/components/YinYangSimulation';
 import ShowcaseSteps from '@/components/ShowcaseSteps';
+import TrailerPopup from '@/components/TrailerPopup';
 import { COLOR_PRESETS } from '@/components/dashboard/MonsterCreator';
 
 const Index = () => {
