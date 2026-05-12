@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, FileCheck, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { LoginDialog } from '@/components/handshake/LoginDialog';
+import { useAppStore } from '@/store/appStore';
 
 const steps = [
   {
@@ -39,6 +41,7 @@ export default function ShowcaseSteps() {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+  const user = useAppStore((s) => s.user);
   const videoRef = useRef<HTMLVideoElement>(null);
   const next = useCallback(() => {
     setActive(prev => (prev + 1) % steps.length);
@@ -72,13 +75,24 @@ export default function ShowcaseSteps() {
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
       >
-        <button
-          onClick={() => setLoginOpen(true)}
-          className="mb-6 px-8 py-3 rounded-full bg-primary text-primary-foreground font-semibold text-sm tracking-wide hover:opacity-90 transition-opacity shadow-lg"
-        >
-          LOGIN
-        </button>
-        <LoginDialog open={loginOpen} onOpenChange={setLoginOpen} />
+        {user ? (
+          <Link
+            to="/agent"
+            className="inline-block mb-6 px-8 py-3 rounded-full bg-primary text-primary-foreground font-semibold text-sm tracking-wide hover:opacity-90 transition-opacity shadow-lg"
+          >
+            OPEN CHAT
+          </Link>
+        ) : (
+          <>
+            <button
+              onClick={() => setLoginOpen(true)}
+              className="mb-6 px-8 py-3 rounded-full bg-primary text-primary-foreground font-semibold text-sm tracking-wide hover:opacity-90 transition-opacity shadow-lg"
+            >
+              LOGIN
+            </button>
+            <LoginDialog open={loginOpen} onOpenChange={setLoginOpen} />
+          </>
+        )}
         <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-2 font-serif">How it works</p>
         <AnimatePresence mode="wait">
           <motion.h2
