@@ -93,6 +93,7 @@ export default function ShowcaseSteps() {
             <LoginDialog open={loginOpen} onOpenChange={setLoginOpen} />
           </>
         )}
+        <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-2 font-serif">How it works</p>
         <AnimatePresence mode="wait">
           <motion.h2
             key={active}
