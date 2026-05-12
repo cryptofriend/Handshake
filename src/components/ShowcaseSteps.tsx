@@ -41,6 +41,7 @@ export default function ShowcaseSteps() {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+  const user = useAppStore((s) => s.user);
   const videoRef = useRef<HTMLVideoElement>(null);
   const next = useCallback(() => {
     setActive(prev => (prev + 1) % steps.length);
